@@ -1,0 +1,37 @@
+{
+  "name": "benjaminmedia/wp-cxense",
+  "description": "Log in users from the WA platform",
+  "type": "wordpress-plugin",
+  "keywords": ["wordpress", "plugin"],
+  "homepage": "https://github.com/BenjaminMedia/wp-cxense",
+  "repositories":[
+    {
+      "type": "composer",
+      "url": "http://wpackagist.org"
+    }
+  ],
+  "authors": [
+    {
+      "name": "Bonnier Publications",
+      "email": "interactive@bonnier.dk",
+      "homepage": "http://bonnierpublications.com"
+    },
+    {
+      "name": "Alf Henderson",
+      "email": "alf.henderson@bonnier.dk",
+      "homepage": ""
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/BenjaminMedia/wp-cxense/issues",
+    "source": "https://github.com/BenjaminMedia/wp-cxense"
+  },
+  "autoload": {
+    "psr-4": {
+      "Bonnier\\WP\\Cxense\\": "src/Bonnier/WP/Cxense/"
+    }
+  },
+  "require": {
+    "php": ">=5.6"
+  }
+}
