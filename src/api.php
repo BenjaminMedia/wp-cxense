@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Returns an instance of the bp-wa-oauth plugin
+ * Returns an instance of the wp_cxense plugin
  *
- * @return \Bonnier\WP\WaOauth\Plugin|null
+ * @return \Bonnier\WP\Cxense\Plugin|null
  */
 function wp_cxense()
 {
