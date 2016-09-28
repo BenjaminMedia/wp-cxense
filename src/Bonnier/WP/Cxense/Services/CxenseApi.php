@@ -5,7 +5,7 @@ namespace Bonnier\WP\Cxense\Services;
 use Bonnier\WP\Cxense\Http\Client;
 use Bonnier\WP\Cxense\Settings\SettingsPage;
 
-class CxenseAPI {
+class CxenseApi {
 
     const EXCEPTION_USER_NOT_DEFINED = 0;
     const EXCEPTION_UNAUTHORIZED = 1;
