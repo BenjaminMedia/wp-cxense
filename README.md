@@ -59,7 +59,7 @@ following methods to get the widget data:
 
 ``` php
 
-wp_cxense()->render_widget(500, 600);
+wp_cxense()->render_widget();
 
 ```
 

@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: WP cXense
- * Version: 1.0.2
+ * Version: 1.0.3
  * Plugin URI: https://github.com/BenjaminMedia/wp-cxense
  * Description: This plugin integrates your site with cXense by adding meta tags and calling the cXense api
  * Author: Bonnier - Alf Henderson
@@ -119,15 +119,12 @@ class Plugin
      * Render the widget for the current page includes html structure from cXense,
      * returns null on failure and true on success
      *
-     * @param $width
-     * @param $height
-     *
-     * @return boolean|null
+     * @return bool|null
      *
      */
-    public function render_widget($width, $height) {
+    public function render_widget() {
 
-        return Widget::render($this->settings, $width, $height);
+        return Widget::render($this->settings);
 
     }
 
