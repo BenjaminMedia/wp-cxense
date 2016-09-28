@@ -2,7 +2,7 @@
 
 namespace Bonnier\WP\Cxense\Models;
 
-use Bonnier\WP\Cxense\Services\CxenseAPI;
+use Bonnier\WP\Cxense\Services\CxenseApi;
 use Bonnier\WP\Cxense\Settings\SettingsPage;
 
 class Post
@@ -24,6 +24,6 @@ class Post
 
     public static function ping_cxense_crawler($postId) {
 
-        return CxenseAPI::pingCrawler($postId);
+        return CxenseApi::pingCrawler($postId);
     }
 }

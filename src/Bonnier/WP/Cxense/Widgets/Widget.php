@@ -2,7 +2,7 @@
 
 namespace Bonnier\WP\Cxense\Widgets;
 
-use Bonnier\WP\Cxense\Services\CxenseAPI;
+use Bonnier\WP\Cxense\Services\CxenseApi;
 use Bonnier\WP\Cxense\Settings\SettingsPage;
 
 class Widget
@@ -37,7 +37,7 @@ class Widget
 
         if ($widgetId = self::get_widget_id($settingsPage)) {
 
-            if($widgetData = CxenseAPI::get_widget_data($widgetId)) {
+            if($widgetData = CxenseApi::get_widget_data($widgetId)) {
                 return $widgetData;
             }
         }

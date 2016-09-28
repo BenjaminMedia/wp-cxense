@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: WP cXense
- * Version: 1.0.0
+ * Version: 1.0.2
  * Plugin URI: https://github.com/BenjaminMedia/wp-cxense
  * Description: This plugin integrates your site with cXense by adding meta tags and calling the cXense api
  * Author: Bonnier - Alf Henderson
@@ -12,7 +12,7 @@ namespace Bonnier\WP\Cxense;
 
 use Bonnier\WP\Cxense\Assets\Scripts;
 use Bonnier\WP\Cxense\Models\Post;
-use Bonnier\WP\Cxense\Services\CxenseAPI;
+use Bonnier\WP\Cxense\Services\CxenseApi;
 use Bonnier\WP\Cxense\Settings\SettingsPage;
 use Bonnier\WP\Cxense\Widgets\Widget;
 
@@ -92,7 +92,7 @@ class Plugin
 
         Post::watch_post_changes($this->settings);
         Scripts::bootstrap($this->settings);
-        CxenseAPI::bootstrap($this->settings);
+        CxenseApi::bootstrap($this->settings);
     }
 
     /**
