@@ -7,23 +7,30 @@ use Bonnier\WP\Cxense\Settings\SettingsPage;
 
 class Widget
 {
-    public static function render (SettingsPage $settingsPage, $width, $height) {
+    public static function render (SettingsPage $settingsPage) {
 
         if($widgetId = self::get_widget_id($settingsPage)) {
 
             echo "
                 <!-- cXense widget begin -->
-                <div id=\"$widgetId\" style=\"display:none\"></div>
                 
-                <script type=\"text/javascript\">
-                  var cX = cX || {}; cX.callQueue = cX.callQueue || [];
-                  cX.callQueue.push(['insertWidget',{
-                      widgetId: '$widgetId',
-                      insertBeforeElementId: '$widgetId',
-                      renderTemplateUrl: 'auto',
-                      width: $width, height: $height
-                  }]);
+                <div id=\"cx_$widgetId\"></div>
+                <div id=\"cx_temp_$widgetId\" style=\"display: none;\"></div>
+                <script type = \"text/javascript\" > 
+                    var cX = cX || {}; cX.callQueue = cX.callQueue || [];
+                    var cxwid = '$widgetId';
+                    cX.callQueue.push([
+                        'insertWidget',
+                         { 	
+                            widgetId: cxwid,
+                            renderFunction: function(data, context) {
+                                document.getElementById('cx_temp_' + cxwid).innerHTML = data.response.template;
+                                cX.renderTemplate('cx_temp_' + cxwid, 'cx_' + cxwid, data, context); 		
+                            }.bind(cxwid)
+                        }
+                    ]);
                 </script>
+               
                 <!-- cXense widget end -->
             ";
 
