@@ -3,13 +3,21 @@
 namespace Bonnier\WP\Cxense\Services;
 
 use Bonnier\WP\Cxense\Http\Client;
+use Bonnier\WP\Cxense\Http\Exceptions\HttpException;
+use Bonnier\WP\Cxense\Models\Post;
 use Bonnier\WP\Cxense\Settings\SettingsPage;
+use Exception;
 
 class CxenseApi {
 
     const EXCEPTION_USER_NOT_DEFINED = 0;
     const EXCEPTION_UNAUTHORIZED = 1;
     const EXCEPTION_TIME_OUT = 2;
+    const CXENSE_API_ENDPOINT = 'https://api.cxense.com';
+    const CXENSE_PROFILE_PUSH = '/profile/content/push';
+    const CXENSE_PROFILE_DELETE = '/profile/content/delete';
+    const CXENSE_WIDGET_DATA = '/public/widget/data';
+
 
     /* @var SettingsPage $settings */
     protected static $settings;
@@ -21,7 +29,7 @@ class CxenseApi {
     public static function get_widget_data($widgetId) {
 
         $client = new Client([
-            'base_uri' => 'http://api.cxense.com'
+            'base_uri' => self::CXENSE_API_ENDPOINT
         ]);
 
         $requestOptions = [
@@ -35,7 +43,7 @@ class CxenseApi {
             ])
         ];
 
-        $response = $client->post('public/widget/data', $requestOptions);
+        $response = $client->post(self::CXENSE_WIDGET_DATA, $requestOptions);
 
         if ($response->getStatusCode() !== 200) {
             return null;
@@ -45,16 +53,27 @@ class CxenseApi {
     }
 
     /**
-     * @param string|int $post_id Either post ID or permalink
+     * @param string|int $postId Either post ID or permalink
      * @return array|null|object
      */
-    public static function pingCrawler($post_id)
+    public static function pingCrawler($postId, $delete = false)
     {
-        if( !is_numeric($post_id) || (!wp_is_post_revision($post_id) && !wp_is_post_autosave($post_id)) ) {
-            $url = is_numeric($post_id) ? get_permalink($post_id) : $post_id;
+        if( !wp_is_post_revision($postId) && !wp_is_post_autosave($postId) ) {
+            
+            $contentUrl = is_numeric($postId) ? get_permalink($postId) : $postId;
+            
+            $apiPath = $delete || ! Post::is_published($postId) ? self::CXENSE_PROFILE_DELETE : self::CXENSE_PROFILE_PUSH;
+            
             try {
-                return self::request('/profile/content/push', array('url'=> $url));
+                
+                return self::request($apiPath, ['url'=> $contentUrl]);
+                
             } catch(Exception $e) {
+
+                if($e instanceof HttpException) {
+                    error_log('WP cXense: Failed calling cXense api: ' . $apiPath . ' response code: '. $e->getCode() .' error: ' . $e->getMessage());
+                }
+
                 if( $e->getCode() == self::EXCEPTION_USER_NOT_DEFINED ) {
                     error_log('PHP Warning: To use CXense push you must define constants CXENSE_USER_NAME and CXENSE_API_KEY');
                 } elseif( $e->getCode() == self::EXCEPTION_UNAUTHORIZED ) {
@@ -69,46 +88,45 @@ class CxenseApi {
      * @param string $path
      * @param array|string $args
      * @param int $timeout Seconds until timeout
-     * @return array|null|object
+     * @return boolean
+     * @throws Exception
      */
     public static function request($path, $args, $timeout=5)
     {
-        $cx_user = self::$settings->get_api_user();
-        if( !$cx_user ) {
+        $cxUser = self::$settings->get_api_user();
+
+        if( !$cxUser ) {
             throw new Exception('You must define constants CXENSE_USER_NAME and CXENSE_API_KEY', self::EXCEPTION_USER_NOT_DEFINED);
         }
 
-        $date = date("o-m-d\TH:i:s.000O");
+        $date = date("Y-m-d\TH:i:s.000O");
         $signature = hash_hmac("sha256", $date, self::$settings->get_api_key());
 
-        $request_opts = array(
-            'method' => 'POST', // the api seems only to allow POST?
+        $requestOpts = [
+            'method'  => 'POST',
             'body' =>  is_array($args) ? json_encode($args):$args,
             'timeout' => $timeout,
-            'headers' => array(
+            'headers' => [
+                'Content-Type' => 'application/json',
                 'X-cXense-Authentication' => 'username='.self::$settings->get_api_user().' date='.$date.' hmac-sha256-hex='.$signature
-            )
-        );
+            ]
+        ];
 
-        $http = new WP_Http();
-        $url = 'https://api.cxense.com/'.trim($path, '/');
-        $resp = $http->request($url, $request_opts);
+        $client = new Client([
+            'base_uri' => self::CXENSE_API_ENDPOINT
+        ]);
 
-        if( is_wp_error($resp) ) {
-            /* @var WP_Error $resp */
-            $message = $resp->get_error_message();
-            if( strpos($message, 'timed out') !== false ) {
-                throw new Exception($message, self::EXCEPTION_TIME_OUT);
-            } else {
-                throw new Exception($message, -1);
-            }
-        }
+        $resp = $client->post($path, $requestOpts);
 
-        if( $resp['response']['code'] == 401 )
+        if( $resp->getStatusCode() === 401 ){
+
             throw new Exception('Authorization required', self::EXCEPTION_UNAUTHORIZED);
-        elseif( $resp['response']['code'] < 200 || $resp['response']['code'] >= 300 )
-            throw new Exception('Unexpected response, code: '.$resp['response']['code'].' message: '.$resp['response']['message'], -1);
-        return json_decode($resp['body']);
+
+        } elseif( $resp->getStatusCode() < 200 || $resp->getStatusCode() >= 300 ) {
+
+            throw new Exception('Unexpected response, code: '.$resp->getStatusCode().' message: '.$resp->getMessage(), -1);
+        }
+        return true;
     }
 
 }
