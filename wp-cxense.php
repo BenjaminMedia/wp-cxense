@@ -88,7 +88,7 @@ class Plugin
         $this->settings = new SettingsPage();
     }
 
-    private function boostrap() {
+    private function bootstrap() {
 
         Post::watch_post_changes($this->settings);
         Scripts::bootstrap($this->settings);
@@ -104,7 +104,7 @@ class Plugin
             self::$instance = new self;
             global $wp_cxense;
             $wp_cxense = self::$instance;
-            self::$instance->boostrap();
+            self::$instance->bootstrap();
 
             /**
              * Run after the plugin has been loaded.

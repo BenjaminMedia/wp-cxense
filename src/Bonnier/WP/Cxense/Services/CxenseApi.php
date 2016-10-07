@@ -59,15 +59,15 @@ class CxenseApi {
     public static function pingCrawler($postId, $delete = false)
     {
         if( !wp_is_post_revision($postId) && !wp_is_post_autosave($postId) ) {
-            
+
             $contentUrl = is_numeric($postId) ? get_permalink($postId) : $postId;
-            
+
             $apiPath = $delete || ! Post::is_published($postId) ? self::CXENSE_PROFILE_DELETE : self::CXENSE_PROFILE_PUSH;
-            
+
             try {
-                
+
                 return self::request($apiPath, ['url'=> $contentUrl]);
-                
+
             } catch(Exception $e) {
 
                 if($e instanceof HttpException) {

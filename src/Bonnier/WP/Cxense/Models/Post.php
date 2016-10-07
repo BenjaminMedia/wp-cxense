@@ -9,17 +9,13 @@ class Post
 {
     public static function watch_post_changes(SettingsPage $settingsPage) {
 
-        add_action('admin_init', function() use($settingsPage) {
+        if( $settingsPage->get_enabled() ) {
 
-            if( $settingsPage->get_enabled() ) {
+            // Ping crawler when post is changed
+            add_action('save_post', [__CLASS__, 'update_post']);
+        }
 
-                // Ping crawler when post is changed
-                add_action('save_post', [__CLASS__, 'update_post']);
-            }
-
-            add_action('delete_post', [__CLASS__, 'delete_post']);
-
-        });
+        add_action('delete_post', [__CLASS__, 'delete_post']);
     }
 
     public static function update_post($postId) {
