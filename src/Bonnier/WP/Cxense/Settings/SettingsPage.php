@@ -51,6 +51,8 @@ class SettingsPage
      */
     private $settingsValues;
 
+    private $currentLocale;
+
     /**
      * Start up
      */
@@ -211,7 +213,7 @@ class SettingsPage
         }
 
         if ($locale) {
-            return $locale . '_' . $settingKey;
+            return $this->locale_to_lang_code($locale) . '_' . $settingKey;
         }
 
         return $settingKey;
@@ -253,8 +255,7 @@ class SettingsPage
 
         foreach ($this->get_languages() as $language) {
             foreach ($this->settingsFields as $fieldKey => $settingsField) {
-
-                $localeFieldKey = $language->locale . '_' . $fieldKey;
+                $localeFieldKey = $this->get_localized_setting_key($fieldKey, $language->locale);
                 $languageEnabledFields[$localeFieldKey] = $settingsField;
                 $languageEnabledFields[$localeFieldKey]['name'] .= ' ' . $language->locale;
                 $languageEnabledFields[$localeFieldKey]['locale'] = $language->locale;
@@ -264,6 +265,16 @@ class SettingsPage
 
         $this->settingsFields = $languageEnabledFields;
 
+    }
+
+    /**
+     * Returns the language code from locale ie. 'da_DK' becomes 'da'
+     * 
+     * @param $locale
+     * @return string
+     */
+    public function locale_to_lang_code($locale) {
+        return substr($locale, 0, 2);
     }
 
     public function languages_is_enabled()
@@ -292,7 +303,18 @@ class SettingsPage
         return null;
     }
 
+    public function set_current_locale($locale) {
+        if($locale && !empty($locale) && $this->languages_is_enabled()) {
+            $this->currentLocale = $this->locale_to_lang_code($locale);
+        } else {
+            $this->currentLocale = null;
+        }
+    }
+
     public function get_current_locale() {
+        if($this->currentLocale !== null ) {
+            return $this->currentLocale;
+        }
         $currentLang = $this->get_current_language();
         return $currentLang ? $currentLang->locale : null;
     }
