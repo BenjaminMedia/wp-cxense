@@ -3,7 +3,7 @@
 namespace Bonnier\WP\Cxense\Http;
 
 use Exception;
-use Bonnier\WP\Cxense\Http\Exceptions\HttpException;
+use Bonnier\WP\Cxense\Exceptions\HttpException;
 
 class HttpResponse
 {

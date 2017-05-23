@@ -12,7 +12,9 @@ namespace Bonnier\WP\Cxense;
 
 use Bonnier\WP\Cxense\Assets\Scripts;
 use Bonnier\WP\Cxense\Models\Post;
+use Bonnier\WP\Cxense\Http\HttpRequest;
 use Bonnier\WP\Cxense\Services\CxenseApi;
+use Bonnier\WP\Cxense\Services\DocumentSearch;
 use Bonnier\WP\Cxense\Settings\SettingsPage;
 use Bonnier\WP\Cxense\Widgets\Widget;
 
@@ -138,6 +140,30 @@ class Plugin
         return Widget::get_widget_data($this->settings);
 
     }
+	
+	/**
+	 * Search documents
+	 *
+	 * @param array $arrSearch
+	 * @return array
+	 */
+	public function search_documents(array $arrSearch) {
+		
+		return DocumentSearch::get_instance($arrSearch)->set_settings($this->settings)->get_results();
+
+	}
+	
+	/**
+	 * Get facets
+	 *
+	 * @param array $arrSearch
+	 * @return array
+	 */
+	public function get_facets(array $arrSearch) {
+		
+		return DocumentSearch::get_instance($arrSearch)->set_settings($this->settings)->get_facets();
+
+	}
 }
 
 /**
