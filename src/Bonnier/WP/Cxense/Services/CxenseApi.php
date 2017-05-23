@@ -2,7 +2,7 @@
 
 namespace Bonnier\WP\Cxense\Services;
 
-use Bonnier\WP\Cxense\Http\HttRequest;
+use Bonnier\WP\Cxense\Http\HttpRequest;
 use Bonnier\WP\Cxense\Exceptions\HttpException;
 use Bonnier\WP\Cxense\Models\Post;
 use Bonnier\WP\Cxense\Settings\SettingsPage;
