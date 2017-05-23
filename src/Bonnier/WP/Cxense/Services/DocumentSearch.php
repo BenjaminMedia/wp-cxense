@@ -108,7 +108,6 @@ class DocumentSearch {
 		
 		$this->arrPayload['facets'][] = [
 			'type' => 'string',
-			'field' => 'bod-cat-top',
 			'field' => $this->arrSearch['facet_field'],
 			'count' => 5,
 			'min' => 1
@@ -176,6 +175,7 @@ class DocumentSearch {
 	/**
 	 * Set token operator
 	 *
+	 * @todo Not used at the moment, check need of token operator
 	 * @return DocumentSearch
 	 */
 	private function set_token_operator() {
