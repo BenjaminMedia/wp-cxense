@@ -46,6 +46,24 @@ class DocumentSearch {
 	private $objSettings;
 	
 	/**
+	 * Returning fields
+	 *
+	 * @var array $arrFields
+	 */
+	private $arrFields = [
+		'bod-cat',
+		'bod-cat-top',
+		'bod-pagetype',
+		'author',
+		'description',
+		'title',
+		'click_url',
+		'url',
+		'bod-cat-url',
+		'recs-publishtime'
+	];
+	
+	/**
 	 * Constructor
 	 *
 	 * @param array $arrSearch
@@ -82,13 +100,13 @@ class DocumentSearch {
 	}
 	
 	/**
-	 * Get search results
+	 * Get documents from search result
 	 *
 	 * @return array
 	 */
-	public function get_results() {
+	public function get_documents() {
 		
-		$objDocuments = $this->set_per_page()->set_page()->set_filter()->get();
+		$objDocuments = $this->set_per_page()->set_page()->set_filter()->set_result_fields()->get();
 		
 		return [
 			'totalCount' => $objDocuments->totalCount,
@@ -132,7 +150,7 @@ class DocumentSearch {
 		$this->set_site_id();
 		$this->set_log_query();
 		$this->arrPayload['query'] = QueryLanguage::getQuery($this->arrSearch['query']);
-		
+
 		$objResponse = HttpRequest::get_instance()->set_auth($this->objSettings)->post('document/search', [
 			'body' => json_encode($this->arrPayload)
 		]);
@@ -248,6 +266,16 @@ class DocumentSearch {
 		// set the starting point
 		$this->arrPayload['start'] = $this->arrPayload['count'] * ($intPage - 1);
 		
+		return $this;
+	}
+	
+	/**
+	 * Set result fields
+	 *
+	 * @return DocumentSearch
+	 */
+	private function set_result_fields() {
+		$this->arrPayload['resultFields'] = $this->arrFields;
 		return $this;
 	}
 	

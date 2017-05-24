@@ -149,7 +149,7 @@ class Plugin
 	 */
 	public function search_documents(array $arrSearch) {
 		
-		return DocumentSearch::get_instance($arrSearch)->set_settings($this->settings)->get_results();
+		return DocumentSearch::get_instance($arrSearch)->set_settings($this->settings)->get_documents();
 
 	}
 	
