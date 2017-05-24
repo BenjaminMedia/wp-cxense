@@ -138,3 +138,149 @@ array (size=12)
   2 => ...
 
 ```
+
+### Documents
+
+#### Searching documents
+
+If the key 'query' is missing from the search array then a [DocumentSearchMissingSearch](https://github.com/BenjaminMedia/wp-cxense/blob/search_documents/src/Bonnier/WP/Cxense/Exceptions/DocumentSearchMissingSearch.php) exception is thrown.
+
+##### Search
+
+``` php
+wp_cxense()->search_documents([
+	'query' => 'search_term', // mandatory
+	'page' => 1, // optional, defaults to 1
+	'count' => 10, // optional, defaults to 10
+]);
+```
+
+##### Search with filters
+
+``` php
+wp_cxense()->search_documents([
+	'query' => 'search_term',
+	'filter' => [
+		0 => [
+			'field' => 'field', // this could be category
+			'value' => 'value' // this could be the name of the category
+		]
+	]
+]);
+```
+
+#### Widget documents
+
+If the key 'widget_id' is missing from the input array then a [WidgetMissingId](https://github.com/BenjaminMedia/wp-cxense/blob/search_documents/src/Bonnier/WP/Cxense/Exceptions/WidgetMissingId.php) exception is thrown.
+
+``` php
+wp_cxense()->get_widget_documents([
+	'widgetId' => 'widget_id', // mandatory
+	'categories' => [
+		'type' => 'value' // 'taxonomy' => 'trend'
+	],
+	'parameters' => [
+		0 => [
+			'key' => 'key', // 'key' => 'category'
+			'value' => 'value' // 'value' => 'shopping'
+		],
+		...
+	]
+]);
+```
+
+Searching documents will return an array of the following format:
+
+``` php
+array (size=2)
+  'totalCount' => int 61
+  'matches' =>
+    array (size=10)
+      0 =>
+        object(Bonnier\WP\Cxense\Parsers\Document)[714]
+          public 'id' => string 'id' (length=40)
+          public 'siteId' => string 'siteId' (length=19)
+          public 'score' => float 0.40565416
+          public 'fields' =>
+            array (size=9)
+              ...
+```
+
+The 'matches' key contains an array of objects that have the 'fields' value accessible directly through the magic method __get(). This means that you can call any field from the 'fields' with the direct pointer:
+
+``` php
+$objResults['matches'][0]->author;
+```
+
+A complete document result looks like:
+``` php
+object(Bonnier\WP\Cxense\Parsers\Document)[710]
+  public 'id' => string '551790ba522b4b9427ca947e1b3353e137d78a85' (length=40)
+  public 'siteId' => string '1129402680464567580' (length=19)
+  public 'score' => float 0.40566906
+  public 'fields' =>
+    array (size=9)
+      0 =>
+        object(stdClass)[715]
+          public 'field' => string 'author' (length=6)
+          public 'value' => string 'i form' (length=6)
+      1 =>
+        object(stdClass)[718]
+          public 'field' => string 'bod-cat' (length=7)
+          public 'value' => string 'Sund graviditet' (length=15)
+      2 =>
+        object(stdClass)[719]
+          public 'field' => string 'bod-cat-top' (length=11)
+          public 'value' => string 'Sundhed' (length=7)
+      3 =>
+        object(stdClass)[720]
+          public 'field' => string 'bod-cat-url' (length=11)
+          public 'value' => string 'http://iform.dk/sundhed/sund-graviditet' (length=39)
+      4 =>
+        object(stdClass)[721]
+          public 'field' => string 'bod-pagetype' (length=12)
+          public 'value' => string 'article' (length=7)
+      5 =>
+        object(stdClass)[722]
+          public 'field' => string 'description' (length=11)
+          public 'value' => string 'Går du med babytanker, har du en fordel, hvis du bor tæt på din mor.' (length=71)
+      6 =>
+        object(stdClass)[723]
+          public 'field' => string 'recs-publishtime' (length=16)
+          public 'value' => string '2015-04-19T22:00:00.000Z' (length=24)
+      7 =>
+        object(stdClass)[724]
+          public 'field' => string 'title' (length=5)
+          public 'value' => string 'Din mor øger dine baby-chancer' (length=31)
+      8 =>
+        object(stdClass)[725]
+          public 'field' => string 'url' (length=3)
+          public 'value' => string 'http://iform.dk/sundhed/sund-graviditet/din-mor-kan-hjaelpe-til-familieforoegelsen' (length=82)
+```
+
+
+### Facets
+
+If the key 'facet_field' is missing from the search array then a [DocumentSearchMissingSearch](https://github.com/BenjaminMedia/wp-cxense/blob/search_documents/src/Bonnier/WP/Cxense/Exceptions/DocumentSearchMissingSearch.php) exception is thrown.
+
+#### Calling facets
+
+``` php
+wp_cxense()->get_facets([
+	'query' => 'search_term',
+	'facet_field' => 'category' // mandatory
+]);
+```
+
+The result array looks like:
+
+``` php
+array (size=2)
+  'totalCount' => int 61
+  'matches' =>
+    array (size=5)
+      0 =>
+        object(Bonnier\WP\Cxense\Parsers\Facet)[714]
+          public 'label' => string 'Category name' (length=7)
+          public 'count' => int 18
+```
