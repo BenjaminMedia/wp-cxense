@@ -15,6 +15,7 @@ use Bonnier\WP\Cxense\Models\Post;
 use Bonnier\WP\Cxense\Http\HttpRequest;
 use Bonnier\WP\Cxense\Services\CxenseApi;
 use Bonnier\WP\Cxense\Services\DocumentSearch;
+use Bonnier\WP\Cxense\Services\WidgetDocument;
 use Bonnier\WP\Cxense\Settings\SettingsPage;
 use Bonnier\WP\Cxense\Widgets\Widget;
 
@@ -162,6 +163,18 @@ class Plugin
 	public function get_facets(array $arrSearch) {
 		
 		return DocumentSearch::get_instance($arrSearch)->set_settings($this->settings)->get_facets();
+
+	}
+
+	/**
+	 * Get widget documents
+	 *
+	 * @param array $arrInput
+	 * @return array
+	 */
+	public function get_widget_documents(array $arrInput) {
+
+		return WidgetDocument::get_instance($arrInput)->set_settings($this->settings)->get_documents();
 
 	}
 }
