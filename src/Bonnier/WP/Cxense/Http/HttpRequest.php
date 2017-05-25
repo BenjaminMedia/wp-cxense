@@ -41,15 +41,6 @@ class HttpRequest {
 	];
 	
 	/**
-	 * Constructor
-	 *
-	 * @return HttpRequest
-	 */
-	private function __construct() {
-
-	}
-	
-	/**
 	 * Singleton implementation
 	 *
 	 * @return HttpRequest
