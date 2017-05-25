@@ -16,6 +16,6 @@ class WidgetMissingId extends \Exception {
 	 * @return WidgetMissingId
 	 */
 	public function __construct($strMessage = '') {
-		return parent::__construct($strMessage, 12);
+		return parent::__construct($strMessage, 20);
 	}
 }

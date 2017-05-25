@@ -7,6 +7,8 @@ namespace Bonnier\WP\Cxense\Services;
 
 use Bonnier\WP\Cxense\Exceptions\DocumentSearchMissingSearch;
 use Bonnier\WP\Cxense\Exceptions\DocumentSearchMissingCount;
+use Bonnier\WP\Cxense\Exceptions\DocumentSearchMissingFacet;
+use Bonnier\WP\Cxense\Exceptions\DocumentSearchWrongFilter;
 use Bonnier\WP\Cxense\Http\HttpRequest;
 use Bonnier\WP\Cxense\Settings\SettingsPage;
 use Bonnier\WP\Cxense\Parsers\Document;
@@ -176,7 +178,7 @@ class DocumentSearch {
 	 */
 	private function validate_facet_key() {
 		if (!isset($this->arrSearch['facet_field'])) {
-			throw new DocumentSearchMissingSearch('Missing request "facet_field" key!');
+			throw new DocumentSearchMissingFacet('Missing request "facet_field" key!');
 		}
 	}
 	
@@ -210,7 +212,7 @@ class DocumentSearch {
 		
 		if (isset($this->arrSearch['filter'])) {
 			if (!is_array($this->arrSearch['filter'])) {
-				throw new DocumentSearchMissingSearch('"Filter" key is not an array');
+				throw new DocumentSearchWrongFilter('"Filter" key is not an array');
 			}
 			
 			$arrFilterLines = [];
