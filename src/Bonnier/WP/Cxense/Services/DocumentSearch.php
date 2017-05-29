@@ -53,16 +53,20 @@ class DocumentSearch {
 	 * @var array $arrFields
 	 */
 	private $arrFields = [
-		'bod-cat',
-		'bod-cat-top',
-		'bod-pagetype',
-		'author',
-		'description',
-		'title',
-		'click_url',
-		'url',
-		'bod-cat-url',
-		'recs-publishtime'
+		'organisation' => [
+			'cat',
+			'cat-top',
+			'pagetype',
+			'cat-url',
+		],
+		'generic' => [
+			'author',
+			'description',
+			'title',
+			'click_url',
+			'url',
+			'recs-publishtime'
+		]
 	];
 	
 	/**
@@ -98,6 +102,12 @@ class DocumentSearch {
 	 */
 	public function set_settings(SettingsPage $objSettings) {
 		$this->objSettings = $objSettings;
+		
+		if ($strPrefix = $this->objSettings->get_organisation_prefix()) {
+			$this->arrFields['organisation'] = array_map(function($strValue) use ($strPrefix){
+				return $strPrefix . '-' . $strValue;
+			}, $this->arrFields['organisation']);
+		}
 		return $this;
 	}
 	
@@ -277,7 +287,7 @@ class DocumentSearch {
 	 * @return DocumentSearch
 	 */
 	private function set_result_fields() {
-		$this->arrPayload['resultFields'] = $this->arrFields;
+		$this->arrPayload['resultFields'] = array_merge($this->arrFields['generic'], $this->arrFields['organisation']);
 		return $this;
 	}
 	
