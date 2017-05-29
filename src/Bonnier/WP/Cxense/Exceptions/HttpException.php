@@ -1,6 +1,6 @@
 <?php
 
-namespace Bonnier\WP\Cxense\Http\Exceptions;
+namespace Bonnier\WP\Cxense\Exceptions;
 
 use Exception;
 
