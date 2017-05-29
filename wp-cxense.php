@@ -173,9 +173,17 @@ class Plugin
 	 * @return array
 	 */
 	public function get_widget_documents(array $arrInput) {
-
-		return WidgetDocument::get_instance($arrInput)->set_settings($this->settings)->get_documents();
-
+		
+		$strCacheKey = md5(json_encode($arrInput));
+		
+		if ($arrResult = wp_cache_get($strCacheKey, 'cxense_plugin')) {
+			return $arrResult;
+		}
+		
+		$arrResult = WidgetDocument::get_instance($arrInput)->set_settings($this->settings)->get_documents();
+		wp_cache_add($strCacheKey, $arrResult, 'cxense_plugin', 30);
+		
+		return $arrResult;
 	}
 }
 
