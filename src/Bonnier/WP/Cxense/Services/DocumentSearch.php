@@ -56,9 +56,12 @@ class DocumentSearch {
 		'organisation' => [
 			'cat',
 			'cat-top',
+			'cat-url',
+			'taxo-cat',
+			'taxo-cat-top',
+			'taxo-cat-url',
 			'taxo-editorialtype',
-			'pagetype',
-			'cat-url'
+			'pagetype'
 		],
 		'generic' => [
 			'author',
