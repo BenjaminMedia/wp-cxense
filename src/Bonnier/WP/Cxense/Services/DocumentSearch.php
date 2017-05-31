@@ -56,8 +56,9 @@ class DocumentSearch {
 		'organisation' => [
 			'cat',
 			'cat-top',
+			'taxo-editorialtype',
 			'pagetype',
-			'cat-url',
+			'cat-url'
 		],
 		'generic' => [
 			'author',
@@ -65,6 +66,7 @@ class DocumentSearch {
 			'title',
 			'click_url',
 			'url',
+			'dominantthumbnail',
 			'recs-publishtime'
 		]
 	];
