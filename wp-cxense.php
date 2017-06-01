@@ -141,57 +141,57 @@ class Plugin
         return Widget::get_widget_data($this->settings);
 
     }
-	
-	/**
-	 * Search documents
-	 *
-	 * @param array $arrSearch
-	 * @return array
-	 */
-	public function search_documents(array $arrSearch) {
-		
-		return DocumentSearch::get_instance()
+    
+    /**
+     * Search documents
+     *
+     * @param array $arrSearch
+     * @return array
+     */
+    public function search_documents(array $arrSearch) {
+        
+        return DocumentSearch::get_instance()
             ->set_search($arrSearch)
             ->set_settings($this->settings)
             ->get_documents();
-	}
-	
-	/**
-	 * Get facets
-	 *
-	 * @param array $arrSearch
-	 * @return array
-	 */
-	public function get_facets(array $arrSearch) {
-		
-		return DocumentSearch::get_instance()
+    }
+    
+    /**
+     * Get facets
+     *
+     * @param array $arrSearch
+     * @return array
+     */
+    public function get_facets(array $arrSearch) {
+        
+        return DocumentSearch::get_instance()
             ->set_search($arrSearch)
             ->set_settings($this->settings)
             ->get_facets();
-	}
+    }
 
-	/**
-	 * Get widget documents
-	 *
-	 * @param array $arrInput
-	 * @return array
-	 */
-	public function get_widget_documents(array $arrInput) {
-		
-		$strCacheKey = md5(json_encode($arrInput));
-		
-		if ($arrResult = wp_cache_get($strCacheKey, 'cxense_plugin')) {
-			return $arrResult;
-		}
-		
-		$arrResult = WidgetDocument::get_instance($arrInput)
+    /**
+     * Get widget documents
+     *
+     * @param array $arrInput
+     * @return array
+     */
+    public function get_widget_documents(array $arrInput) {
+        
+        $strCacheKey = md5(json_encode($arrInput));
+        
+        if ($arrResult = wp_cache_get($strCacheKey, 'cxense_plugin')) {
+            return $arrResult;
+        }
+        
+        $arrResult = WidgetDocument::get_instance($arrInput)
             ->set_settings($this->settings)
             ->get_documents();
 
-		wp_cache_add($strCacheKey, $arrResult, 'cxense_plugin', 30);
-		
-		return $arrResult;
-	}
+        wp_cache_add($strCacheKey, $arrResult, 'cxense_plugin', 30);
+        
+        return $arrResult;
+    }
 }
 
 /**
