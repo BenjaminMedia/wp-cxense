@@ -150,8 +150,10 @@ class Plugin
 	 */
 	public function search_documents(array $arrSearch) {
 		
-		return DocumentSearch::get_instance($arrSearch)->set_settings($this->settings)->get_documents();
-
+		return DocumentSearch::get_instance()
+            ->set_search($arrSearch)
+            ->set_settings($this->settings)
+            ->get_documents();
 	}
 	
 	/**
@@ -162,8 +164,10 @@ class Plugin
 	 */
 	public function get_facets(array $arrSearch) {
 		
-		return DocumentSearch::get_instance($arrSearch)->set_settings($this->settings)->get_facets();
-
+		return DocumentSearch::get_instance()
+            ->set_search($arrSearch)
+            ->set_settings($this->settings)
+            ->get_facets();
 	}
 
 	/**
@@ -180,7 +184,10 @@ class Plugin
 			return $arrResult;
 		}
 		
-		$arrResult = WidgetDocument::get_instance($arrInput)->set_settings($this->settings)->get_documents();
+		$arrResult = WidgetDocument::get_instance($arrInput)
+            ->set_settings($this->settings)
+            ->get_documents();
+
 		wp_cache_add($strCacheKey, $arrResult, 'cxense_plugin', 30);
 		
 		return $arrResult;

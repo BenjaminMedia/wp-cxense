@@ -76,25 +76,21 @@ class DocumentSearch {
 	
 	/**
 	 * Constructor
-	 *
-	 * @param array $arrSearch
-	 * @return DocumentSearch
 	 */
-	private function __construct(array $arrSearch) {
-		$this->arrSearch = $arrSearch;
-		$this->validate_query_key();
+	private function __construct() {
+		//
 	}
-	
-	/**
-	 * Singleton implementation
-	 *
-	 * @param array $arrSearch
-	 * @return DocumentSearch
-	 */
-	public static function get_instance(array $arrSearch) {
+
+    /**
+     * Singleton implementation
+     *
+     * @return DocumentSearch
+     * @internal param array $arrSearch
+     */
+	public static function get_instance() {
 		if (!isset(self::$objInstance)) {
 			$obj = __CLASS__;
-			self:: $objInstance = new $obj($arrSearch);
+			self:: $objInstance = new $obj();
 		}
 		return self::$objInstance;
 	}
@@ -115,6 +111,12 @@ class DocumentSearch {
 		}
 		return $this;
 	}
+
+	public function set_search($arrSearch) {
+	    $this->arrSearch = $arrSearch;
+
+	    return $this;
+    }
 	
 	/**
 	 * Get documents from search result
@@ -122,6 +124,8 @@ class DocumentSearch {
 	 * @return array
 	 */
 	public function get_documents() {
+
+        $this->validate_query_key();
 		
 		$objDocuments = $this->set_per_page()->set_page()->set_filter()->set_result_fields()->get();
 		
@@ -174,23 +178,25 @@ class DocumentSearch {
 		
 		return json_decode($objResponse->getBody());
 	}
-	
-	/**
-	 * Validate the search request
-	 *
-	 * @return null
-	 */
+
+    /**
+     * Validate the search request
+     *
+     * @return null
+     * @throws DocumentSearchMissingSearch
+     */
 	private function validate_query_key() {
 		if (!isset($this->arrSearch['query'])) {
 			throw new DocumentSearchMissingSearch('Missing request "query" key!');
 		}
 	}
-	
-	/**
-	 * Validate the facet request
-	 *
-	 * @return null
-	 */
+
+    /**
+     * Validate the facet request
+     *
+     * @return null
+     * @throws DocumentSearchMissingFacet
+     */
 	private function validate_facet_key() {
 		if (!isset($this->arrSearch['facet_field'])) {
 			throw new DocumentSearchMissingFacet('Missing request "facet_field" key!');
@@ -217,12 +223,13 @@ class DocumentSearch {
 		$this->arrPayload['token-op'] = 'and';
 		return $this;
 	}
-	
-	/**
-	 * Set filter
-	 *
-	 * @return DocumentSearch
-	 */
+
+    /**
+     * Set filter
+     *
+     * @return DocumentSearch
+     * @throws DocumentSearchWrongFilter
+     */
 	private function set_filter() {
 		
 		if (isset($this->arrSearch['filter'])) {
@@ -262,13 +269,14 @@ class DocumentSearch {
 		
 		return $this;
 	}
-	
-	/**
-	 * Set page number for calculating the correct starting offset
-	 *
-	 * @param integer $intPage Page number
-	 * @return Search
-	 */
+
+    /**
+     * Set page number for calculating the correct starting offset
+     *
+     * @param integer $intPage Page number
+     * @return Search
+     * @throws DocumentSearchMissingCount
+     */
 	private function set_page($intPage = 1) {
 		
 		if (!isset($this->arrPayload['count']) || !$this->arrPayload['count']) {
