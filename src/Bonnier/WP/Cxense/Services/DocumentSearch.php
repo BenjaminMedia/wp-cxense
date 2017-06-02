@@ -85,7 +85,6 @@ class DocumentSearch {
      * Singleton implementation
      *
      * @return DocumentSearch
-     * @internal param array $arrSearch
      */
 	public static function get_instance() {
 		if (!isset(self::$objInstance)) {
