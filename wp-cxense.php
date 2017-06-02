@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: WP cXense
- * Version: 1.0.9
+ * Version: 1.0.10
  * Plugin URI: https://github.com/BenjaminMedia/wp-cxense
  * Description: This plugin integrates your site with cXense by adding meta tags and calling the cXense api
  * Author: Bonnier - Alf Henderson
@@ -12,7 +12,6 @@ namespace Bonnier\WP\Cxense;
 
 use Bonnier\WP\Cxense\Assets\Scripts;
 use Bonnier\WP\Cxense\Models\Post;
-use Bonnier\WP\Cxense\Http\HttpRequest;
 use Bonnier\WP\Cxense\Services\CxenseApi;
 use Bonnier\WP\Cxense\Services\DocumentSearch;
 use Bonnier\WP\Cxense\Services\WidgetDocument;
@@ -141,50 +140,57 @@ class Plugin
         return Widget::get_widget_data($this->settings);
 
     }
-	
-	/**
-	 * Search documents
-	 *
-	 * @param array $arrSearch
-	 * @return array
-	 */
-	public function search_documents(array $arrSearch) {
-		
-		return DocumentSearch::get_instance($arrSearch)->set_settings($this->settings)->get_documents();
+    
+    /**
+     * Search documents
+     *
+     * @param array $arrSearch
+     * @return array
+     */
+    public function search_documents(array $arrSearch) {
+        
+        return DocumentSearch::get_instance()
+            ->set_search($arrSearch)
+            ->set_settings($this->settings)
+            ->get_documents();
+    }
+    
+    /**
+     * Get facets
+     *
+     * @param array $arrSearch
+     * @return array
+     */
+    public function get_facets(array $arrSearch) {
+        
+        return DocumentSearch::get_instance()
+            ->set_search($arrSearch)
+            ->set_settings($this->settings)
+            ->get_facets();
+    }
 
-	}
-	
-	/**
-	 * Get facets
-	 *
-	 * @param array $arrSearch
-	 * @return array
-	 */
-	public function get_facets(array $arrSearch) {
-		
-		return DocumentSearch::get_instance($arrSearch)->set_settings($this->settings)->get_facets();
+    /**
+     * Get widget documents
+     *
+     * @param array $arrInput
+     * @return array
+     */
+    public function get_widget_documents(array $arrInput) {
+        
+        $strCacheKey = md5(json_encode($arrInput));
+        
+        if ($arrResult = wp_cache_get($strCacheKey, 'cxense_plugin')) {
+            return $arrResult;
+        }
+        
+        $arrResult = WidgetDocument::get_instance($arrInput)
+            ->set_settings($this->settings)
+            ->get_documents();
 
-	}
-
-	/**
-	 * Get widget documents
-	 *
-	 * @param array $arrInput
-	 * @return array
-	 */
-	public function get_widget_documents(array $arrInput) {
-		
-		$strCacheKey = md5(json_encode($arrInput));
-		
-		if ($arrResult = wp_cache_get($strCacheKey, 'cxense_plugin')) {
-			return $arrResult;
-		}
-		
-		$arrResult = WidgetDocument::get_instance($arrInput)->set_settings($this->settings)->get_documents();
-		wp_cache_add($strCacheKey, $arrResult, 'cxense_plugin', 30);
-		
-		return $arrResult;
-	}
+        wp_cache_add($strCacheKey, $arrResult, 'cxense_plugin', 30);
+        
+        return $arrResult;
+    }
 }
 
 /**
