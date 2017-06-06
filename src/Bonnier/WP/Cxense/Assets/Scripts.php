@@ -2,8 +2,6 @@
 
 namespace Bonnier\WP\Cxense\Assets;
 
-use Bonnier\WP\Cxense;
-use Bonnier\WP\Cxense\Plugin;
 use Bonnier\WP\Cxense\Settings\SettingsPage;
 
 class Scripts
@@ -22,7 +20,7 @@ class Scripts
 
     public static function head_tags()
     {
-        $recs_tags = (isset($recs_tags)) ? $recs_tags : [];
+        $recs_tags = [];
 
         if ( is_singular() || is_single() ) {
 
@@ -37,11 +35,10 @@ class Scripts
             $recs_tags['recs:articleid'] = $post->ID;
 
             // Set the pagetype
-            $recs_tags['' . $org_prefix . 'pagetype'] = $post->post_type;
+            $recs_tags[$org_prefix . 'pagetype'] = $post->post_type;
 
             // Set the publish time
             $recs_tags['recs:publishtime'] = date('c', strtotime($post->post_date));
-
         }
 
         // Tell cXense wether the current page is a front page or an article
@@ -53,7 +50,7 @@ class Scripts
     public static function add_head_tags()
     {
         $recs_tags = apply_filters('cxense_head_tags', []);
-        
+
         foreach($recs_tags as $name => $val) {
             echo '<meta name="cXenseParse:'.$name.'" content="'.$val.'" />'.PHP_EOL;
         }
@@ -86,6 +83,5 @@ class Scripts
             echo $script;
 
         }
-
     }
 }
