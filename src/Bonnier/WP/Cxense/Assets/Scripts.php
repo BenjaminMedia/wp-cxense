@@ -8,34 +8,37 @@ class Scripts
 {
 
     private static $settings;
+    private $org_prefix;
 
-    public static function bootstrap(SettingsPage $settings)
+    public function bootstrap(SettingsPage $settings)
     {
         self::$settings = $settings;
 
-        add_filter('cxense_head_tags', [__CLASS__, 'head_tags'], 5);
-        add_action('wp_head', [__CLASS__, 'add_head_tags']);
-        add_action('wp_footer', [__CLASS__, 'add_cxense_script']);
+        $org_prefix_setting = self::$settings->get_organisation_prefix();
+        $this->org_prefix = $org_prefix_setting ? $org_prefix_setting . '-' : '';
+
+        add_filter('cxense_head_tags', [$this, 'head_tags'], 5);
+        add_action('wp_head', [$this, 'add_head_tags']);
+        add_action('wp_footer', [$this, 'add_cxense_script']);
     }
 
-    public static function head_tags()
+    public function head_tags()
     {
         $recs_tags = [];
+
+        $locale = explode('_', get_locale());
+        $recs_tags[$this->org_prefix . 'country'] = $locale[1];
+        $recs_tags[$this->org_prefix . 'language'] = strtoupper($locale[0]);
 
         if ( is_singular() || is_single() ) {
 
             global $post;
 
-            $org_prefix_setting = self::$settings->get_organisation_prefix();
-
-            // Get organisation prefix
-            $org_prefix = $org_prefix_setting ? $org_prefix_setting . '-' : '';
-
             // Set the ID
             $recs_tags['recs:articleid'] = $post->ID;
 
             // Set the pagetype
-            $recs_tags[$org_prefix . 'pagetype'] = $post->post_type;
+            $recs_tags[$this->org_prefix . 'pagetype'] = $post->post_type;
 
             // Set the publish time
             $recs_tags['recs:publishtime'] = date('c', strtotime($post->post_date));
@@ -47,7 +50,7 @@ class Scripts
         return $recs_tags;
     }
 
-    public static function add_head_tags()
+    public function add_head_tags()
     {
         $recs_tags = apply_filters('cxense_head_tags', []);
 
@@ -56,7 +59,7 @@ class Scripts
         }
     }
 
-    public static function add_cxense_script()
+    public function add_cxense_script()
     {
 
         if( self::$settings->get_enabled() ) {

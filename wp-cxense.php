@@ -69,6 +69,11 @@ class Plugin
     public $plugin_dir;
 
     /**
+     * @var Object
+     */
+    public $scripts;
+
+    /**
      * @var string Plugins url for this plugin.
      */
     public $plugin_url;
@@ -88,12 +93,14 @@ class Plugin
         load_plugin_textdomain(self::TEXT_DOMAIN, false, dirname($this->basename) . '/languages');
 
         $this->settings = new SettingsPage();
+        $this->scripts = new Scripts();
     }
 
     private function bootstrap() {
 
         Post::watch_post_changes($this->settings);
-        Scripts::bootstrap($this->settings);
+        $this->scripts->bootstrap($this->settings);
+        //Scripts::bootstrap($this->settings);
         CxenseApi::bootstrap($this->settings);
     }
 
