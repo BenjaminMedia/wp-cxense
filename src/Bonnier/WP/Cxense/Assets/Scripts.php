@@ -6,8 +6,14 @@ use Bonnier\WP\Cxense\Settings\SettingsPage;
 
 class Scripts
 {
-
+    /**
+     * @var static SettingsPage
+     */
     private static $settings;
+
+    /**
+     * @var string Organization prefix
+     */
     private $org_prefix;
 
     public function bootstrap(SettingsPage $settings)
@@ -42,6 +48,20 @@ class Scripts
 
             // Set the publish time
             $recs_tags['recs:publishtime'] = date('c', strtotime($post->post_date));
+
+            if ($this->get_category()) {
+                $recs_tags[$this->org_prefix . 'taxo-cat'] = $this->get_category()->name;
+                $recs_tags[$this->org_prefix . 'taxo-cat-top'] = $this->get_category()->name;
+
+                // Override the previous meta value if category parent exists
+                if ($this->get_category()->parent) {
+                    $recs_tags[$this->org_prefix . 'taxo-cat-top'] = $this->get_root_category($this->get_category()->cat_ID);
+                }
+            }
+
+            if (get_the_tags($post->ID)) {
+                $recs_tags[$this->org_prefix . 'taxo-tag'] = $this->get_post_tags($post);
+            }
         }
 
         // Tell cXense wether the current page is a front page or an article
@@ -50,18 +70,33 @@ class Scripts
         return $recs_tags;
     }
 
+    private function get_post_tags($post)
+    {
+        $data = [];
+        foreach (get_the_tags($post->ID) as $post) {
+            $data[] = $post->name;
+        }
+
+        return $data;
+    }
+
     public function add_head_tags()
     {
         $recs_tags = apply_filters('cxense_head_tags', []);
 
         foreach($recs_tags as $name => $val) {
-            echo '<meta name="cXenseParse:'.$name.'" content="'.$val.'" />'.PHP_EOL;
+            if( is_array($val)) {
+                foreach ($val as $sub_name => $sub_value) {
+                    echo '<meta name="cXenseParse:'.$name.'" content="'.$sub_value.'" />'.PHP_EOL;
+                }
+            } else {
+                echo '<meta name="cXenseParse:'.$name.'" content="'.$val.'" />'.PHP_EOL;
+            }
         }
     }
 
     public function add_cxense_script()
     {
-
         if( self::$settings->get_enabled() ) {
 
             $siteId = self::$settings->get_site_id();
@@ -86,5 +121,29 @@ class Scripts
             echo $script;
 
         }
+    }
+
+    private function get_root_category($catid) {
+        var_dump($catid);
+        $catParent = null;
+        while ($catid) {
+            $cat = get_category($catid);
+            $catid = $cat->category_parent;
+            var_dump($catid);
+            $catParent = $cat->name;
+        }
+
+        return $catParent;
+    }
+
+    private function get_category() {
+
+        $category = get_the_category();
+
+        if(!$category) {
+            return;
+        }
+
+        return $category[0];
     }
 }
