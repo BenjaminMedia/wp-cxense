@@ -15,13 +15,14 @@ class Scripts
     {
         self::$settings = $settings;
 
+        add_filter('cxense_head_tags', [__CLASS__, 'head_tags'], 5);
         add_action('wp_head', [__CLASS__, 'add_head_tags']);
         add_action('wp_footer', [__CLASS__, 'add_cxense_script']);
     }
 
-    public static function add_head_tags()
+    public static function head_tags()
     {
-        $recs_tags = [];
+        $recs_tags = (isset($recs_tags)) ? $recs_tags : [];
 
         if ( is_singular() || is_single() ) {
 
@@ -33,21 +34,28 @@ class Scripts
             $org_prefix = $org_prefix_setting ? $org_prefix_setting . '-' : '';
 
             // Set the ID
-            $recs_tags['cXenseParse:recs:articleid'] = $post->ID;
+            $recs_tags['recs:articleid'] = $post->ID;
 
             // Set the pagetype
-            $recs_tags['cXenseParse:' . $org_prefix . 'pagetype'] = $post->post_type;
+            $recs_tags['' . $org_prefix . 'pagetype'] = $post->post_type;
 
             // Set the publish time
-            $recs_tags['cXenseParse:recs:publishtime'] = date('c', strtotime($post->post_date));
+            $recs_tags['recs:publishtime'] = date('c', strtotime($post->post_date));
 
         }
 
         // Tell cXense wether the current page is a front page or an article
-        $recs_tags['cXenseParse:pageclass'] = is_front_page() ? 'frontpage' : 'article';
+        $recs_tags['pageclass'] = is_front_page() ? 'frontpage' : 'article';
 
+        return $recs_tags;
+    }
+
+    public static function add_head_tags()
+    {
+        $recs_tags = apply_filters('cxense_head_tags', []);
+        
         foreach($recs_tags as $name => $val) {
-            echo '<meta name="'.$name.'" content="'.$val.'" />'.PHP_EOL;
+            echo '<meta name="cXenseParse:'.$name.'" content="'.$val.'" />'.PHP_EOL;
         }
     }
 
