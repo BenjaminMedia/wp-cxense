@@ -100,7 +100,6 @@ class Plugin
 
         Post::watch_post_changes($this->settings);
         $this->scripts->bootstrap($this->settings);
-        //Scripts::bootstrap($this->settings);
         CxenseApi::bootstrap($this->settings);
     }
 
