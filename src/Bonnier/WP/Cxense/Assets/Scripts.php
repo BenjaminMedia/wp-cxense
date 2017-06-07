@@ -23,6 +23,7 @@ class Scripts
         $org_prefix_setting = self::$settings->get_organisation_prefix();
         $this->org_prefix = $org_prefix_setting ? $org_prefix_setting . '-' : '';
 
+        // Filter to add custom cxense meta tags if needed
         add_filter('cxense_head_tags', [$this, 'head_tags'], 5);
         add_action('wp_head', [$this, 'add_head_tags']);
         add_action('wp_footer', [$this, 'add_cxense_script']);
@@ -65,9 +66,6 @@ class Scripts
             if (get_the_tags($post->ID)) {
                 $recs_tags[$this->org_prefix . 'taxo-tag'] = $this->get_post_tags($post);
             }
-
-            // Current category link to listpage
-            //$recs_tags[''] = wp_get_canonical_url();
         }
 
         // Tell cXense wether the current page is a front page or an article
@@ -79,7 +77,7 @@ class Scripts
     private function get_post_tags()
     {
         $tags = get_the_tags();
-        if(!is_wp_error($tags)) {
+        if (!is_wp_error($tags)) {
             $data = [];
             foreach (get_the_tags() as $tag) {
                 $data[] = $tag->name;
@@ -94,7 +92,7 @@ class Scripts
     {
         $recs_tags = apply_filters('cxense_head_tags', []);
 
-        foreach($recs_tags as $name => $val) {
+        foreach ($recs_tags as $name => $val) {
             if( is_array($val)) {
                 foreach ($val as $sub_name => $sub_value) {
                     echo '<meta name="cXenseParse:'.$name.'" content="'.$sub_value.'" />'.PHP_EOL;
@@ -107,7 +105,7 @@ class Scripts
 
     public function add_cxense_script()
     {
-        if( self::$settings->get_enabled() ) {
+        if ( self::$settings->get_enabled() ) {
 
             $siteId = self::$settings->get_site_id();
 
@@ -135,12 +133,10 @@ class Scripts
 
     private function get_root_category($catid)
     {
-    //  var_dump($catid);
         $catParent = null;
         while ($catid) {
             $cat = get_category($catid);
             $catid = $cat->category_parent;
-    //      var_dump($catid);
             $catParent = $cat->name;
         }
 
