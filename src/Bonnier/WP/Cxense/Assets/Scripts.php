@@ -57,11 +57,17 @@ class Scripts
                 if ($this->get_category()->parent) {
                     $recs_tags[$this->org_prefix . 'taxo-cat-top'] = $this->get_root_category($this->get_category()->cat_ID);
                 }
+
+                // Current category link to listpage
+                $recs_tags[$this->org_prefix .'bod-taxo-cat-url'] = get_category_link($this->get_category()->cat_ID);
             }
 
             if (get_the_tags($post->ID)) {
                 $recs_tags[$this->org_prefix . 'taxo-tag'] = $this->get_post_tags($post);
             }
+
+            // Current category link to listpage
+            //$recs_tags[''] = wp_get_canonical_url();
         }
 
         // Tell cXense wether the current page is a front page or an article
@@ -70,14 +76,18 @@ class Scripts
         return $recs_tags;
     }
 
-    private function get_post_tags($post)
+    private function get_post_tags()
     {
-        $data = [];
-        foreach (get_the_tags($post->ID) as $post) {
-            $data[] = $post->name;
-        }
+        $tags = get_the_tags();
+        if(!is_wp_error($tags)) {
+            $data = [];
+            foreach (get_the_tags() as $tag) {
+                $data[] = $tag->name;
+            }
 
-        return $data;
+            return $data;
+        }
+        return '';
     }
 
     public function add_head_tags()
@@ -123,27 +133,23 @@ class Scripts
         }
     }
 
-    private function get_root_category($catid) {
-        var_dump($catid);
+    private function get_root_category($catid)
+    {
+    //  var_dump($catid);
         $catParent = null;
         while ($catid) {
             $cat = get_category($catid);
             $catid = $cat->category_parent;
-            var_dump($catid);
+    //      var_dump($catid);
             $catParent = $cat->name;
         }
 
         return $catParent;
     }
 
-    private function get_category() {
-
+    private function get_category()
+    {
         $category = get_the_category();
-
-        if(!$category) {
-            return;
-        }
-
-        return $category[0];
+        return $category ? $category[0] : '';
     }
 }
