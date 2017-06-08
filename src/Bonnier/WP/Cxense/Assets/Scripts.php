@@ -142,12 +142,12 @@ class Scripts
         }
     }
 
-    private function get_root_category($catid)
+    private function get_root_category($category_id)
     {
         $catParent = null;
-        while ($catid) {
-            $cat = get_category($catid);
-            $catid = $cat->category_parent;
+        while ($category_id) {
+            $cat = get_category($category_id);
+            $category_id = $cat->category_parent;
             $catParent = $cat->name;
         }
 
