@@ -68,18 +68,24 @@ class Scripts
             }
         }
 
+        // The date is just a fallback, and is the day it was coded
+        $recs_tags['metatag-changedate'] = getenv('CXENSE_CHANGEDATE') ?: '07062017';
+
         // Tell cXense wether the current page is a front page or an article
         $recs_tags['pageclass'] = is_front_page() ? 'frontpage' : 'article';
 
         return $recs_tags;
     }
 
+    /**
+     * @return array|string
+     */
     private function get_post_tags()
     {
         $tags = get_the_tags();
         if (!is_wp_error($tags)) {
             $data = [];
-            foreach (get_the_tags() as $tag) {
+            foreach ($tags as $tag) {
                 $data[] = $tag->name;
             }
 
@@ -92,12 +98,17 @@ class Scripts
     {
         $recs_tags = apply_filters('cxense_head_tags', []);
 
+        $this->recursive_get_meta_tag($recs_tags);
+    }
+
+    private function recursive_get_meta_tag($recs_tags, $org_cxense_key = '')
+    {
         foreach ($recs_tags as $name => $val) {
-            if( is_array($val)) {
-                foreach ($val as $sub_name => $sub_value) {
-                    echo '<meta name="cXenseParse:'.$name.'" content="'.$sub_value.'" />'.PHP_EOL;
-                }
+            if (is_array($val)) {
+                $array = array_values($val);
+                $this->recursive_get_meta_tag($array, $name);
             } else {
+                $name = (!is_numeric($name) && !$org_cxense_key) ? $name : $org_cxense_key;
                 echo '<meta name="cXenseParse:'.$name.'" content="'.$val.'" />'.PHP_EOL;
             }
         }
