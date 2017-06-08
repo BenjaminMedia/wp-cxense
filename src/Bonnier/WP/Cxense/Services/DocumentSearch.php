@@ -125,7 +125,7 @@ class DocumentSearch {
 	/**
 	 * Get documents from search result
 	 *
-	 * @return array
+	 * @return \stdClass
 	 */
 	public function get_documents() {
 
