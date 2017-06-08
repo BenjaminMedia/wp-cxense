@@ -154,20 +154,6 @@ class Plugin
             ->set_settings($this->settings)
             ->get_documents();
     }
-    
-    /**
-     * Get facets
-     *
-     * @param array $arrSearch
-     * @return array
-     */
-    public function get_facets(array $arrSearch) {
-        
-        return DocumentSearch::get_instance()
-            ->set_search($arrSearch)
-            ->set_settings($this->settings)
-            ->get_facets();
-    }
 
     /**
      * Get widget documents

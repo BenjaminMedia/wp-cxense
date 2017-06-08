@@ -152,64 +152,78 @@ wp_cxense()->search_documents([
 	'query' => 'search_term', // mandatory
 	'page' => 1, // optional, defaults to 1
 	'count' => 10, // optional, defaults to 10
-]);
-```
-
-##### Search with filters
-
-``` php
-wp_cxense()->search_documents([
-	'query' => 'search_term',
-	'filter' => [
+	'filter' => [ // optional
 		0 => [
 			'field' => 'field', // this could be category
 			'value' => 'value' // this could be the name of the category
+		]
+	],
+	'facets' => [ // optional
+		0 => [
+			'type' => 'string',
+			'field' => 'field'
+		],
+		1 => [
+			'type' => 'string',
+			'field' => 'field'
+		]
+	],
+	'spellcheck' => true, // optional
+	'highlights' => [ // optional
+		0 => [
+			'field' => 'body',
+			'start' => '<em>',
+			'stop' => '</em>',
+			'length' => 50
 		]
 	]
 ]);
 ```
 
-#### Widget documents
-
-If the key 'widget_id' is missing from the input array then a [WidgetMissingId](https://github.com/BenjaminMedia/wp-cxense/blob/search_documents/src/Bonnier/WP/Cxense/Exceptions/WidgetMissingId.php) exception is thrown.
+Searching documents will return an object of the following format:
 
 ``` php
-wp_cxense()->get_widget_documents([
-	'widgetId' => 'widget_id', // mandatory
-	'categories' => [
-		'type' => 'value' // 'taxonomy' => 'trend'
-	],
-	'parameters' => [
-		0 => [
-			'key' => 'key', // 'key' => 'category'
-			'value' => 'value' // 'value' => 'shopping'
-		],
-		...
-	]
-]);
-```
-
-Searching documents will return an array of the following format:
-
-``` php
-array (size=2)
-  'totalCount' => int 61
-  'matches' =>
+object(stdClass)[543]
+  public 'facets' =>
+    array (size=2)
+      0 =>
+        object(stdClass)[538]
+          public 'buckets' =>
+            array (size=6)
+              ...
+      1 =>
+        object(stdClass)[542]
+          public 'buckets' =>
+            array (size=3)
+              ...
+  public 'totalCount' => int 79
+  public 'matches' =>
     array (size=10)
       0 =>
-        object(Bonnier\WP\Cxense\Parsers\Document)[714]
-          public 'id' => string 'id' (length=40)
-          public 'siteId' => string 'siteId' (length=19)
-          public 'score' => float 0.40565416
+        object(Bonnier\WP\Cxense\Parsers\Document)[521]
+          public 'id' => string '551790ba522b4b9427ca947e1b3353e137d78a85' (length=40)
+          public 'siteId' => string '1129402680464567580' (length=19)
+          public 'score' => float 2.0455377
           public 'fields' =>
-            array (size=9)
+            array (size=10)
               ...
+          public 'highlights' =>
+            array (size=1)
+              ...
+  public 'spellcheck' =>
+      array (size=1)
+        0 =>
+          object(stdClass)[663]
+            public 'term' => string 'mor' (length=3)
+            public 'suggestions' =>
+              array (size=0)
+                ...
 ```
 
 The 'matches' key contains an array of objects that have the 'fields' value accessible directly through the magic method __get(). This means that you can call any field from the 'fields' with the direct pointer:
 
 ``` php
-$objResults['matches'][0]->author;
+$objResults->matches[0]->author;
 ```
 
 A complete document result looks like:
@@ -258,29 +272,22 @@ object(Bonnier\WP\Cxense\Parsers\Document)[710]
           public 'value' => string 'http://iform.dk/sundhed/sund-graviditet/din-mor-kan-hjaelpe-til-familieforoegelsen' (length=82)
 ```
 
+#### Widget documents
 
-### Facets
-
-If the key 'facet_field' is missing from the search array then a [DocumentSearchMissingSearch](https://github.com/BenjaminMedia/wp-cxense/blob/search_documents/src/Bonnier/WP/Cxense/Exceptions/DocumentSearchMissingSearch.php) exception is thrown.
-
-#### Calling facets
+If the key 'widget_id' is missing from the input array then a [WidgetMissingId](https://github.com/BenjaminMedia/wp-cxense/blob/search_documents/src/Bonnier/WP/Cxense/Exceptions/WidgetMissingId.php) exception is thrown.
 
 ``` php
-wp_cxense()->get_facets([
-	'query' => 'search_term',
-	'facet_field' => 'category' // mandatory
+wp_cxense()->get_widget_documents([
+	'widgetId' => 'widget_id', // mandatory
+	'categories' => [
+		'type' => 'value' // 'taxonomy' => 'trend'
+	],
+	'parameters' => [
+		0 => [
+			'key' => 'key', // 'key' => 'category'
+			'value' => 'value' // 'value' => 'shopping'
+		],
+		...
+	]
 ]);
-```
-
-The result array looks like:
-
-``` php
-array (size=2)
-  'totalCount' => int 61
-  'matches' =>
-    array (size=5)
-      0 =>
-        object(Bonnier\WP\Cxense\Parsers\Facet)[714]
-          public 'label' => string 'Category name' (length=7)
-          public 'count' => int 18
 ```
