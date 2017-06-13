@@ -20,9 +20,6 @@ class Scripts
     {
         self::$settings = $settings;
 
-        $org_prefix_setting = self::$settings->get_organisation_prefix();
-        $this->org_prefix = $org_prefix_setting ? $org_prefix_setting . '-' : '';
-
         // Filter to add custom cxense meta tags if needed
         add_filter('cxense_head_tags', [$this, 'head_tags'], 5);
         add_action('wp_head', [$this, 'add_head_tags']);
@@ -31,6 +28,9 @@ class Scripts
 
     public function head_tags()
     {
+        $org_prefix_setting = self::$settings->get_organisation_prefix();
+        $this->org_prefix = $org_prefix_setting ? $org_prefix_setting . '-' : '';
+
         $recs_tags = [];
 
         $locale = explode('_', get_locale());
