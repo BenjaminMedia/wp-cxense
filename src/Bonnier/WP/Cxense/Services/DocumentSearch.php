@@ -247,7 +247,7 @@ class DocumentSearch {
 				$arrFilterLines[] = 'filter(' . $arrFilter['field'] . ':"' . stripslashes($arrFilter['value']) . '")';
 			}
 			
-			$strFilterOperator = 'AND';
+			$strFilterOperator = 'OR';
 			if (isset($this->arrSearch['filter_operator'])) {
 				$strFilterOperator = $this->arrSearch['filter_operator'];
 			}
