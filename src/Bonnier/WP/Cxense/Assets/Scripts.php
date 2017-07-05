@@ -37,6 +37,10 @@ class Scripts
         $recs_tags[$this->org_prefix . 'country'] = $locale[1];
         $recs_tags[$this->org_prefix . 'language'] = strtoupper($locale[0]);
 
+        if(self::$settings->get_brand()) {
+            $recs_tags[$this->org_prefix . 'brand'] = self::$settings->get_brand();
+        }
+
         if ( is_singular() || is_single() ) {
 
             global $post;

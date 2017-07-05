@@ -33,6 +33,10 @@ class SettingsPage
             'type' => 'text',
             'name' => 'Organisation Prefix',
         ],
+        'brand' => [
+            'type' => 'text',
+            'name' => 'Brand name (GDS)',
+        ],
         'enabled' => [
             'type' => 'checkbox',
             'name' => 'Enabled',
@@ -227,6 +231,11 @@ class SettingsPage
     public function get_organisation_prefix($locale = null)
     {
         return $this->get_setting_value('organisation_prefix', $locale) ?: '';
+    }
+
+    public function get_brand($locale = null)
+    {
+        return $this->get_setting_value('brand', $locale) ?: '';
     }
 
     public function get_api_user($locale = null)
