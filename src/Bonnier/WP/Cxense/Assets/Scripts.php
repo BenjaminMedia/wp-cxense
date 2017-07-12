@@ -55,6 +55,8 @@ class Scripts
             $recs_tags['recs:publishtime'] = date('c', strtotime($post->post_date));
 
             if ($this->get_category()) {
+                //dd($post);
+
                 $recs_tags[$this->org_prefix . 'taxo-cat'] = $this->get_category()->name;
                 $recs_tags[$this->org_prefix . 'taxo-cat-top'] = $this->get_category()->name;
 
@@ -67,8 +69,24 @@ class Scripts
                 $recs_tags[$this->org_prefix .'bod-taxo-cat-url'] = get_category_link($this->get_category()->cat_ID);
             }
 
+            // This post type requires acf. Therefor we don't check if it's installed
+            if($post->post_type === 'contenthub_composite') {
+                $fields = get_fields($post);
+
+                //Override current pagetype with the correct one from the composite
+                $recs_tags[$this->org_prefix . 'pagetype'] = $fields['kind'];
+
+                if(isset($fields['editorial_type'])) {
+                    $recs_tags[$this->org_prefix . 'taxo-editorialtype'] = $this->objects_to_array($fields['editorial_type']);
+                }
+
+                if(isset($fields['difficulty'])) {
+                    $recs_tags[$this->org_prefix . 'taxo-difficulty'] = $this->objects_to_array($fields['difficulty']);
+                }
+            }
+
             if (get_the_tags($post->ID)) {
-                $recs_tags[$this->org_prefix . 'taxo-tag'] = $this->get_post_tags($post);
+                $recs_tags[$this->org_prefix . 'taxo-tag'] = $this->objects_to_array(get_the_tags());
             }
         }
 
@@ -82,15 +100,23 @@ class Scripts
     }
 
     /**
+     * @param $items
      * @return array|string
      */
-    private function get_post_tags()
+    private function objects_to_array($items)
     {
-        $tags = get_the_tags();
-        if (!is_wp_error($tags)) {
+        if (!is_wp_error($items)) {
+
+            // Only one? Just return it
+            if(count($items) <= 1) {
+                return $items->name;
+            }
+
+
             $data = [];
-            foreach ($tags as $tag) {
-                $data[] = $tag->name;
+            // More than one? Start the loop!
+            foreach ($items as $item) {
+                $data[] = $item->name;
             }
 
             return $data;
@@ -163,4 +189,6 @@ class Scripts
         $category = get_the_category();
         return $category ? $category[0] : '';
     }
+
+
 }
