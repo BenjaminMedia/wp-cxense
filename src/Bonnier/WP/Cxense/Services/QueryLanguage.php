@@ -15,7 +15,7 @@ class QueryLanguage {
 	 *
 	 * @var string $strFieldPriority
 	 */
-	private static $strFieldPriority = 'title^3, bod-cat^2, description^2, bod-cat-top^1, body^1';
+	private static $strFieldPriority = 'title^3, bod-taxo-cat^2, description^2, bod-taxo-cat-top^1, body^1';
 	
 	/**
 	 * Get query
