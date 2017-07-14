@@ -53,9 +53,6 @@ class DocumentSearch {
 	 */
 	private $arrFields = [
 		'organisation' => [
-			'cat',
-			'cat-top',
-			'cat-url',
 			'taxo-cat',
 			'taxo-cat-top',
 			'taxo-cat-url',
