@@ -76,11 +76,11 @@ class Scripts
                 //Override current pagetype with the correct one from the composite
                 $recs_tags[$this->org_prefix . 'pagetype'] = $fields['kind'];
 
-                if(isset($fields['editorial_type'])) {
+                if(!empty($fields['editorial_type'])) {
                     $recs_tags[$this->org_prefix . 'taxo-editorialtype'] = $this->objects_to_array($fields['editorial_type']);
                 }
 
-                if(isset($fields['difficulty'])) {
+                if(!empty($fields['difficulty'])) {
                     $recs_tags[$this->org_prefix . 'taxo-difficulty'] = $this->objects_to_array($fields['difficulty']);
                 }
             }
@@ -189,6 +189,4 @@ class Scripts
         $category = get_the_category();
         return $category ? $category[0] : '';
     }
-
-
 }
