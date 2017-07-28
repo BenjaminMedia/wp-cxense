@@ -55,7 +55,6 @@ class Scripts
             $recs_tags['recs:publishtime'] = date('c', strtotime($post->post_date));
 
             if ($this->get_category()) {
-                //dd($post);
 
                 $recs_tags[$this->org_prefix . 'taxo-cat'] = $this->get_category()->name;
                 $recs_tags[$this->org_prefix . 'taxo-cat-top'] = $this->get_category()->name;
@@ -66,7 +65,7 @@ class Scripts
                 }
 
                 // Current category link to listpage
-                $recs_tags[$this->org_prefix .'bod-taxo-cat-url'] = get_category_link($this->get_category()->cat_ID);
+                $recs_tags[$this->org_prefix .'taxo-cat-url'] = get_category_link($this->get_category()->cat_ID);
             }
 
             // This post type requires acf. Therefor we don't check if it's installed
