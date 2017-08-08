@@ -108,7 +108,7 @@ class Scripts
 
             // Only one? Just return it
             if(count($items) <= 1) {
-                return $items->name;
+                return $items[0]->name;
             }
 
 
