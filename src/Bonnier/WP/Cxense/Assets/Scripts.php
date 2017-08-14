@@ -112,7 +112,7 @@ class Scripts
             }
 
             $data = [];
-            
+
             // More than one? Start the loop!
             foreach ($items as $item) {
                 $data[] = $item->name;
