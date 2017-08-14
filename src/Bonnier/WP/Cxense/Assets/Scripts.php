@@ -107,7 +107,9 @@ class Scripts
         if (!is_wp_error($items) && !empty($items)) {
             // Only one? Just return it
             if(is_array($items)){
-                return $items[0]->name;
+                if(count($items) === 1) {
+                    return $items[0]->name;
+                }
             }
             if(is_object($items)){
                 if(count($items) === 1) {
