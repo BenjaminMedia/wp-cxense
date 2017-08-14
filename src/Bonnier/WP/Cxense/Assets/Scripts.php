@@ -105,19 +105,21 @@ class Scripts
     private function objects_to_array($items)
     {
         if (!is_wp_error($items) && !empty($items)) {
-
             // Only one? Just return it
-            if(count($items) === 1) {
+            if(is_array($items)){
                 return $items[0]->name;
+            }
+            if(is_object($items)){
+                if(count($items) === 1) {
+                    return $items->name;
+                }
             }
 
             $data = [];
-
             // More than one? Start the loop!
             foreach ($items as $item) {
                 $data[] = $item->name;
             }
-
             return $data;
         }
         return '';
