@@ -5,6 +5,8 @@
 
 namespace Bonnier\WP\Cxense\Services;
 
+use Bonnier\WP\Cxense\Exceptions\HttpException;
+use Bonnier\WP\Cxense\Exceptions\WidgetException;
 use Bonnier\WP\Cxense\Exceptions\WidgetMissingId;
 use Bonnier\WP\Cxense\Http\HttpRequest;
 use Bonnier\WP\Cxense\Settings\SettingsPage;
@@ -86,11 +88,11 @@ class WidgetDocument {
 	 */
 	public function get_documents() {
 		
-		$objDocuments = $this->set_categories()->set_parameters()->get();
+		$objDocuments = $this->set_categories()->set_parameters()->get()->items ?? [];
 
 		return [
-			'totalCount' => count($objDocuments->items),
-			'matches' => $this->parse_documents($objDocuments->items)
+			'totalCount' => count($objDocuments),
+			'matches' => $this->parse_documents($objDocuments)
 		];
 	}
 	
@@ -100,7 +102,7 @@ class WidgetDocument {
 	 * @return null
 	 */
 	private function validate_widget_id() {
-		if (!isset($this->arrInput['widgetId'])) {
+		if (!isset($this->arrInput['widgetId']) && is_admin()) {
 			throw new WidgetMissingId('Missing request "widgetId" key!');
 		}
 	}
@@ -114,10 +116,17 @@ class WidgetDocument {
 		
 		$this->set_widget_id();
 
-		$objResponse = HttpRequest::get_instance()->post('public/widget/data', [
-			'body' => json_encode($this->arrPayload)
-		]);
-		
+        try {
+            $objResponse = HttpRequest::get_instance()->post('public/widget/data', [
+                'body' => json_encode($this->arrPayload)
+            ]);
+        } catch (HttpException $exception) {
+            if(is_admin()) {
+                throw new WidgetException('Failed to load widget:' . $exception->getMessage());
+            }
+            return null;
+        }
+
 		return json_decode($objResponse->getBody());
 	}
 	
