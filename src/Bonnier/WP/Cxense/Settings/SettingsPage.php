@@ -37,6 +37,10 @@ class SettingsPage
             'type' => 'text',
             'name' => 'Brand name (GDS)',
         ],
+        'sortby_widget_id' => [
+            'type' => 'text',
+            'name' => 'SortBy Widget ID',
+        ],
         'enabled' => [
             'type' => 'checkbox',
             'name' => 'Enabled',
