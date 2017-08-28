@@ -168,20 +168,33 @@ class Plugin
      * @return array
      */
     public function get_widget_documents(array $arrInput) {
-        
-        $strCacheKey = md5(json_encode($arrInput));
-        
-        if ($arrResult = wp_cache_get($strCacheKey, 'cxense_plugin')) {
+
+        //If cache is enabled in settings
+        if($this->settings->get_setting_value('enable_query_cache', get_locale())) {
+            $strCacheKey = md5(json_encode($arrInput));
+
+            if ($arrResult = wp_cache_get($strCacheKey, 'cxense_plugin')) {
+                return $arrResult;
+            }
+
+            $arrResult = $this->getResult($arrInput);
+            wp_cache_add($strCacheKey, $arrResult, 'cxense_plugin', 30);
+
             return $arrResult;
         }
-        
-        $arrResult = WidgetDocument::get_instance($arrInput)
+
+        return $this->getResult($arrInput);
+    }
+
+    /**
+     * @param array $arrInput
+     * @return array
+     */
+    public function getResult(array $arrInput)
+    {
+        return WidgetDocument::get_instance($arrInput)
             ->set_settings($this->settings)
             ->get_documents();
-
-        wp_cache_add($strCacheKey, $arrResult, 'cxense_plugin', 30);
-        
-        return $arrResult;
     }
 }
 
