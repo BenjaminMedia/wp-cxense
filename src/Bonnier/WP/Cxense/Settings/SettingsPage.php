@@ -41,6 +41,10 @@ class SettingsPage
             'type' => 'text',
             'name' => 'SortBy Widget ID',
         ],
+        'enable_query_cache' => [
+            'type' => 'checkbox',
+            'name' => 'Enable Query Cache',
+        ],
         'enabled' => [
             'type' => 'checkbox',
             'name' => 'Enabled',
