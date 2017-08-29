@@ -88,7 +88,7 @@ class WidgetDocument {
 	 */
 	public function get_documents() {
 		
-		$objDocuments = $this->set_categories()->set_parameters()->get()->items ?? [];
+		$objDocuments = $this->set_categories()->set_parameters()->set_user()->get()->items ?? [];
 
 		return [
 			'totalCount' => count($objDocuments),
@@ -165,6 +165,20 @@ class WidgetDocument {
 		}
 		return $this;
 	}
+
+    /**
+     * Set user array to the request payload
+     *
+     * @return WidgetDocument
+     */
+    private function set_user() {
+
+        if (isset($this->arrInput['user']) && is_array($this->arrInput['user'])){
+            $this->arrPayload['user']= $this->arrInput['user'];
+        }
+
+        return $this;
+    }
 	
 	/**
 	 * Parse documents to cxense object

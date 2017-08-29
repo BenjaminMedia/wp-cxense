@@ -40,6 +40,10 @@ you have available on your WordPress Installation. Here you must enter the
 cXense recommendation widget ID that you would like represented on your
 content type.
 
+For debug purpose you can enable or disable the query cache. It is recommended to be enabled in production.
+
+SortBy Widget ID will be only used for widgets sortby options in wp-base.
+
 #### Rendering widgets
 
 In order to render the widgets available for your post you should make sure
@@ -279,6 +283,7 @@ If the key 'widget_id' is missing from the input array then a [WidgetMissingId](
 ``` php
 wp_cxense()->get_widget_documents([
 	'widgetId' => 'widget_id', // mandatory
+	'user' => ['ids' => ['usi' => 'cxUserId']], // optional
 	'categories' => [
 		'type' => 'value' // 'taxonomy' => 'trend'
 	],
