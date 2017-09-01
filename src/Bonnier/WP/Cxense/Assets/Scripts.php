@@ -34,7 +34,7 @@ class Scripts
         $recs_tags = [];
 
         $locale = explode('_', get_locale());
-        $recs_tags[$this->org_prefix . 'country'] = $locale[1];
+        $recs_tags[$this->org_prefix . 'country'] = (strtoupper($locale[1] ?? $locale[0]));
         $recs_tags[$this->org_prefix . 'language'] = strtoupper($locale[0]);
 
         if(self::$settings->get_brand()) {
