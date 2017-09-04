@@ -50,41 +50,41 @@ class SettingsPage
             'name' => 'Enabled',
         ],
         WidgetSettings::SETTING_KEY => [
-            'type' => 'callback',
-            'name' => 'Widgets',
-            'callback' => [WidgetSettings::class, 'render'],
-            'sanitize_callback' => [WidgetSettings::class, 'sanitize_input']
+            'type'              => 'callback',
+            'name'              => 'Widgets',
+            'callback'          => [WidgetSettings::class, 'render'],
+            'sanitize_callback' => [WidgetSettings::class, 'sanitize_input'],
 
-        ]
+        ],
     ];
 
     /**
-     * Holds the values to be used in the fields callbacks
+     * Holds the values to be used in the fields callbacks.
      */
     private $settingsValues;
 
     private $currentLocale;
 
     /**
-     * Start up
+     * Start up.
      */
     public function __construct()
     {
         $this->settingsValues = get_option(self::SETTINGS_KEY);
-        add_action('admin_menu', array($this, 'add_plugin_page'));
-        add_action('admin_init', array($this, 'register_settings'));
+        add_action('admin_menu', [$this, 'add_plugin_page']);
+        add_action('admin_init', [$this, 'register_settings']);
     }
 
-    function print_error($error)
+    public function print_error($error)
     {
         $out = "<div class='error settings-error notice is-dismissible'>";
-        $out .= "<strong>" . self::NOTICE_PREFIX . "</strong><p>$error</p>";
-        $out .= "</div>";
-        print $out;
+        $out .= '<strong>'.self::NOTICE_PREFIX."</strong><p>$error</p>";
+        $out .= '</div>';
+        echo $out;
     }
 
     /**
-     * Add options page
+     * Add options page.
      */
     public function add_plugin_page()
     {
@@ -94,33 +94,30 @@ class SettingsPage
             self::Settings_PAGE_NAME,
             'manage_options',
             self::SETTINGS_PAGE,
-            array($this, 'create_admin_page')
+            [$this, 'create_admin_page']
         );
     }
 
     /**
-     * Options page callback
+     * Options page callback.
      */
     public function create_admin_page()
     {
-        // Set class property
-
-        ?>
+        // Set class property?>
         <div class="wrap">
             <form method="post" action="options.php">
                 <?php
                 // This prints out all hidden setting fields
                 settings_fields(self::SETTINGS_GROUP);
-                do_settings_sections(self::SETTINGS_PAGE);
-                submit_button();
-                ?>
+        do_settings_sections(self::SETTINGS_PAGE);
+        submit_button(); ?>
             </form>
         </div>
         <?php
     }
 
     /**
-     * Register and add settings
+     * Register and add settings.
      */
     public function register_settings()
     {
@@ -131,13 +128,13 @@ class SettingsPage
         register_setting(
             self::SETTINGS_GROUP, // Option group
             self::SETTINGS_KEY, // Option name
-            array($this, 'sanitize') // Sanitize
+            [$this, 'sanitize'] // Sanitize
         );
 
         add_settings_section(
             self::SETTINGS_SECTION, // ID
             self::Settings_PAGE_TITLE, // Title
-            array($this, 'print_section_info'), // Callback
+            [$this, 'print_section_info'], // Callback
             self::SETTINGS_PAGE // Page
         );
 
@@ -145,7 +142,7 @@ class SettingsPage
             add_settings_field(
                 $settingsKey, // ID
                 $settingField['name'], // Title
-                array($this, $settingsKey), // Callback
+                [$this, $settingsKey], // Callback
                 self::SETTINGS_PAGE, // Page
                 self::SETTINGS_SECTION // Section
             );
@@ -153,9 +150,10 @@ class SettingsPage
     }
 
     /**
-     * Sanitize each setting field as needed
+     * Sanitize each setting field as needed.
      *
      * @param array $input Contains all settings fields as array keys
+     *
      * @return array
      */
     public function sanitize($input)
@@ -170,8 +168,8 @@ class SettingsPage
                 if ($settingsField['type'] === 'text' || $settingsField['type'] === 'select') {
                     $sanitizedInput[$fieldKey] = sanitize_text_field($input[$fieldKey]);
                 }
-                if($settingsField['type'] === 'callback') {
-                    $sanitizedInput[$fieldKey] =call_user_func_array($settingsField['sanitize_callback'], [$input[$fieldKey]]);
+                if ($settingsField['type'] === 'callback') {
+                    $sanitizedInput[$fieldKey] = call_user_func_array($settingsField['sanitize_callback'], [$input[$fieldKey]]);
                 }
             }
         }
@@ -180,17 +178,19 @@ class SettingsPage
     }
 
     /**
-     * Print the Section text
+     * Print the Section text.
      */
     public function print_section_info()
     {
-        print 'Enter your settings below:';
+        echo 'Enter your settings below:';
     }
 
     /**
-     * Catch callbacks for creating setting fields
+     * Catch callbacks for creating setting fields.
+     *
      * @param string $function
-     * @param array $arguments
+     * @param array  $arguments
+     *
      * @return bool
      */
     public function __call($function, $arguments)
@@ -201,12 +201,11 @@ class SettingsPage
 
         $field = $this->settingsFields[$function];
         $this->create_settings_field($field, $function);
-
     }
 
     public function get_setting_value($settingKey, $locale = null)
     {
-        if(!$this->settingsValues) {
+        if (!$this->settingsValues) {
             $this->settingsValues = get_option(self::SETTINGS_KEY);
         }
 
@@ -215,17 +214,18 @@ class SettingsPage
         if (isset($this->settingsValues[$settingKey]) && !empty($this->settingsValues[$settingKey])) {
             return $this->settingsValues[$settingKey];
         }
+
         return false;
     }
 
-    public function get_localized_setting_key($settingKey, $locale = null) {
-
-        if($locale === null && $this->languages_is_enabled()) {
+    public function get_localized_setting_key($settingKey, $locale = null)
+    {
+        if ($locale === null && $this->languages_is_enabled()) {
             $locale = $this->get_current_locale();
         }
 
         if ($locale) {
-            return $this->locale_to_lang_code($locale) . '_' . $settingKey;
+            return $this->locale_to_lang_code($locale).'_'.$settingKey;
         }
 
         return $settingKey;
@@ -274,23 +274,23 @@ class SettingsPage
             foreach ($this->settingsFields as $fieldKey => $settingsField) {
                 $localeFieldKey = $this->get_localized_setting_key($fieldKey, $language->locale);
                 $languageEnabledFields[$localeFieldKey] = $settingsField;
-                $languageEnabledFields[$localeFieldKey]['name'] .= ' ' . $language->locale;
+                $languageEnabledFields[$localeFieldKey]['name'] .= ' '.$language->locale;
                 $languageEnabledFields[$localeFieldKey]['locale'] = $language->locale;
-
             }
         }
 
         $this->settingsFields = $languageEnabledFields;
-
     }
 
     /**
-     * Returns the language code from locale ie. 'da_DK' becomes 'da'
-     * 
+     * Returns the language code from locale ie. 'da_DK' becomes 'da'.
+     *
      * @param $locale
+     *
      * @return string
      */
-    public function locale_to_lang_code($locale) {
+    public function locale_to_lang_code($locale)
+    {
         return substr($locale, 0, 2);
     }
 
@@ -304,11 +304,12 @@ class SettingsPage
         if ($this->languages_is_enabled()) {
             return PLL()->model->get_languages_list();
         }
+
         return false;
     }
 
     /**
-     * Get the current language by looking at the current HTTP_HOST
+     * Get the current language by looking at the current HTTP_HOST.
      *
      * @return null|PLL_Language
      */
@@ -317,22 +318,24 @@ class SettingsPage
         if ($this->languages_is_enabled()) {
             return PLL()->model->get_language(pll_current_language());
         }
-        return null;
     }
 
-    public function set_current_locale($locale) {
-        if($locale && !empty($locale) && $this->languages_is_enabled()) {
+    public function set_current_locale($locale)
+    {
+        if ($locale && !empty($locale) && $this->languages_is_enabled()) {
             $this->currentLocale = $this->locale_to_lang_code($locale);
         } else {
             $this->currentLocale = null;
         }
     }
 
-    public function get_current_locale() {
-        if($this->currentLocale !== null ) {
+    public function get_current_locale()
+    {
+        if ($this->currentLocale !== null) {
             return $this->currentLocale;
         }
         $currentLang = $this->get_current_language();
+
         return $currentLang ? $currentLang->locale : null;
     }
 
@@ -346,12 +349,11 @@ class SettingsPage
         }
 
         return [];
-
     }
 
     private function create_settings_field($field, $fieldKey)
     {
-        $fieldName = self::SETTINGS_KEY . "[$fieldKey]";
+        $fieldName = self::SETTINGS_KEY."[$fieldKey]";
         $fieldOutput = false;
 
         if ($field['type'] === 'text') {
@@ -369,20 +371,18 @@ class SettingsPage
             $options = $this->get_select_field_options($field);
             foreach ($options as $option) {
                 $selected = ($option['system_key'] === $fieldValue) ? 'selected' : '';
-                $fieldOutput .= "<option value='" . $option['system_key'] . "' $selected >" . $option['system_key'] . "</option>";
+                $fieldOutput .= "<option value='".$option['system_key']."' $selected >".$option['system_key'].'</option>';
             }
-            $fieldOutput .= "</select>";
+            $fieldOutput .= '</select>';
         }
-        if($field['type'] === 'callback') {
-
+        if ($field['type'] === 'callback') {
             $fieldValue = isset($this->settingsValues[$fieldKey]) ? $this->settingsValues[$fieldKey] : [];
 
             call_user_func_array($field['callback'], [$fieldName, $fieldValue]);
         }
 
         if ($fieldOutput) {
-            print $fieldOutput;
+            echo $fieldOutput;
         }
     }
-
 }

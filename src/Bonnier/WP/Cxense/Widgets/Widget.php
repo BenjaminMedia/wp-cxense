@@ -7,10 +7,9 @@ use Bonnier\WP\Cxense\Settings\SettingsPage;
 
 class Widget
 {
-    public static function render (SettingsPage $settingsPage) {
-
-        if($widgetId = self::get_widget_id($settingsPage)) {
-
+    public static function render(SettingsPage $settingsPage)
+    {
+        if ($widgetId = self::get_widget_id($settingsPage)) {
             echo "
                 <!-- cXense widget begin -->
                 
@@ -33,40 +32,30 @@ class Widget
                
                 <!-- cXense widget end -->
             ";
-
         }
-
-        return null;
     }
 
-    public static function get_widget_data(SettingsPage $settingsPage) {
-
-
+    public static function get_widget_data(SettingsPage $settingsPage)
+    {
         if ($widgetId = self::get_widget_id($settingsPage)) {
-
-            if($widgetData = CxenseApi::get_widget_data($widgetId)) {
+            if ($widgetData = CxenseApi::get_widget_data($widgetId)) {
                 return $widgetData;
             }
         }
-
-        return null;
     }
 
-    private static function get_widget_id(SettingsPage $settingsPage) {
-
+    private static function get_widget_id(SettingsPage $settingsPage)
+    {
         if (is_singular() || is_single()) {
-
             $widgetIds = $settingsPage->get_widget_ids();
 
             global $post;
 
             if (isset($widgetIds[$post->post_type])) {
-
                 return $widgetIds[$post->post_type];
-
             }
 
-            return null;
+            return;
         }
     }
 }
