@@ -1,21 +1,22 @@
 <?php
 /**
- * DocumentSearchMissingCount exception file
+ * DocumentSearchMissingCount exception file.
  */
 
 namespace Bonnier\WP\Cxense\Exceptions;
 
 /**
- * DocumentSearchMissingCount class
+ * DocumentSearchMissingCount class.
  */
-class DocumentSearchMissingCount extends \Exception {
-	
-	/**
-	 * Constructor
-	 *
-	 * @return DocumentSearchMissingCount
-	 */
-	public function __construct($strMessage = '') {
-		return parent::__construct($strMessage, 11);
-	}
+class DocumentSearchMissingCount extends \Exception
+{
+    /**
+     * Constructor.
+     *
+     * @return DocumentSearchMissingCount
+     */
+    public function __construct($strMessage = '')
+    {
+        return parent::__construct($strMessage, 11);
+    }
 }

@@ -1,5 +1,7 @@
 # Bonnier Publications - WordPress cXense plugin
 
+[![StyleCI](https://styleci.io/repos/69002187/shield?branch=analysis-qvwlyN)](https://styleci.io/repos/69002187)
+
 This plugin enables your WordPress site to integrate with cXense.
 It adds the meta tags and scripts needed by cXense in order to scan your site.
 It also calls cXense whenever you make changes to your content.

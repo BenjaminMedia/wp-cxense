@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Returns an instance of the wp_cxense plugin
+ * Returns an instance of the wp_cxense plugin.
  *
  * @return \Bonnier\WP\Cxense\Plugin|null
  */

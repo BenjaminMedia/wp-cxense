@@ -1,21 +1,22 @@
 <?php
 /**
- * DocumentSearchWrongFacet exception file
+ * DocumentSearchWrongFacet exception file.
  */
 
 namespace Bonnier\WP\Cxense\Exceptions;
 
 /**
- * DocumentSearchWrongFacet class
+ * DocumentSearchWrongFacet class.
  */
-class DocumentSearchWrongFacet extends \Exception {
-	
-	/**
-	 * Constructor
-	 *
-	 * @return DocumentSearchWrongFacet
-	 */
-	public function __construct($strMessage = '') {
-		return parent::__construct($strMessage, 12);
-	}
+class DocumentSearchWrongFacet extends \Exception
+{
+    /**
+     * Constructor.
+     *
+     * @return DocumentSearchWrongFacet
+     */
+    public function __construct($strMessage = '')
+    {
+        return parent::__construct($strMessage, 12);
+    }
 }
