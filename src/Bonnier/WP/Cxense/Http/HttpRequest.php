@@ -79,7 +79,7 @@ class HttpRequest
      * Post http request.
      *
      * @param string $strPath
-     * @param array $arrOptions
+     * @param array  $arrOptions
      *
      * @return HttpResponse
      */
