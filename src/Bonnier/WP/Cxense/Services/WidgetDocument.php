@@ -67,6 +67,8 @@ class WidgetDocument {
 			$obj = __CLASS__;
 			self:: $objInstance = new $obj($arrInput);
 		}
+
+        self::set_arrayInput($arrInput);
 		return self::$objInstance;
 	}
 	
@@ -80,6 +82,17 @@ class WidgetDocument {
 		$this->objSettings = $objSettings;
 		return $this;
 	}
+
+    /**
+     * Set ArrayInput to update Singleton object if called again with different args
+     *
+     * @param array $arrInput
+     */
+    public static function set_arrayInput(array $arrInput)
+    {
+        self::$objInstance->validate_widget_id();
+        self::$objInstance->arrInput = $arrInput;
+    }
 	
 	/**
 	 * Get documents
