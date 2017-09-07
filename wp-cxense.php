@@ -32,7 +32,7 @@ spl_autoload_register(function ($className) {
 });
 
 // Load plugin api
-require_once (__DIR__ . '/'.Plugin::CLASS_DIR.'/api.php');
+require_once(__DIR__ . '/'.Plugin::CLASS_DIR.'/api.php');
 
 class Plugin
 {
@@ -96,8 +96,8 @@ class Plugin
         $this->scripts = new Scripts();
     }
 
-    private function bootstrap() {
-
+    private function bootstrap()
+    {
         Post::watch_post_changes($this->settings);
         $this->scripts->bootstrap($this->settings);
         CxenseApi::bootstrap($this->settings);
@@ -130,10 +130,9 @@ class Plugin
      * @return bool|null
      *
      */
-    public function render_widget() {
-
+    public function render_widget()
+    {
         return Widget::render($this->settings);
-
     }
 
     /**
@@ -141,10 +140,9 @@ class Plugin
      *
      * @return null|array
      */
-    public function get_widget_data() {
-
+    public function get_widget_data()
+    {
         return Widget::get_widget_data($this->settings);
-
     }
     
     /**
@@ -153,8 +151,8 @@ class Plugin
      * @param array $arrSearch
      * @return array
      */
-    public function search_documents(array $arrSearch) {
-        
+    public function search_documents(array $arrSearch)
+    {
         return DocumentSearch::get_instance()
             ->set_search($arrSearch)
             ->set_settings($this->settings)
@@ -167,10 +165,11 @@ class Plugin
      * @param array $arrInput
      * @return array
      */
-    public function get_widget_documents(array $arrInput) {
+    public function get_widget_documents(array $arrInput)
+    {
 
         //If cache is enabled in settings
-        if($this->settings->get_setting_value('enable_query_cache', get_locale())) {
+        if ($this->settings->get_setting_value('enable_query_cache', get_locale())) {
             $strCacheKey = md5(json_encode($arrInput));
 
             if ($arrResult = wp_cache_get($strCacheKey, 'cxense_plugin')) {
