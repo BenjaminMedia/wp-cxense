@@ -48,11 +48,13 @@ class CxenseApi {
 		return json_decode($objResponse->getBody())->items;
 	}
 
-	/**
-	 * @param string|int $postId Either post ID or permalink
-	 * @return array|null|object
-	 */
-	public static function pingCrawler($postId, $delete = false) {
+
+    /**
+     * @param string|int $postId Either post ID or permalink
+     * @param bool $delete
+     * @return bool|null
+     */
+    public static function pingCrawler($postId, $delete = false) {
 
 		if( !wp_is_post_revision($postId) && !wp_is_post_autosave($postId) ) {
 
