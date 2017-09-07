@@ -48,5 +48,4 @@ class HttpResponse
         }
         return false;
     }
-
 }
