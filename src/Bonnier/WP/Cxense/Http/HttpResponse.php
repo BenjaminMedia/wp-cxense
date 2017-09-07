@@ -2,8 +2,8 @@
 
 namespace Bonnier\WP\Cxense\Http;
 
-use Exception;
 use Bonnier\WP\Cxense\Exceptions\HttpException;
+use Exception;
 
 class HttpResponse
 {
@@ -30,6 +30,7 @@ class HttpResponse
         if (isset($this->originalRequest['body'])) {
             return $this->originalRequest['body'];
         }
+
         return false;
     }
 
@@ -38,6 +39,7 @@ class HttpResponse
         if (isset($this->originalRequest['response']['code'])) {
             return $this->originalRequest['response']['code'];
         }
+
         return false;
     }
 
@@ -46,7 +48,7 @@ class HttpResponse
         if (isset($this->originalRequest['response']['message'])) {
             return $this->originalRequest['response']['message'];
         }
+
         return false;
     }
-
 }
