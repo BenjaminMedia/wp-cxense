@@ -5,7 +5,7 @@
  * Plugin URI: https://github.com/BenjaminMedia/wp-cxense
  * Description: This plugin integrates your site with cXense by adding meta tags and calling the cXense api
  * Author: Bonnier - Alf Henderson
- * License: GPL v3
+ * License: GPL v3.
  */
 
 namespace Bonnier\WP\Cxense;
@@ -26,18 +26,18 @@ if (!defined('ABSPATH')) {
 // Handle autoload so we can use namespaces
 spl_autoload_register(function ($className) {
     if (strpos($className, __NAMESPACE__) !== false) {
-        $className = str_replace("\\", DIRECTORY_SEPARATOR, $className);
-        require_once(__DIR__ . DIRECTORY_SEPARATOR . Plugin::CLASS_DIR . DIRECTORY_SEPARATOR . $className . '.php');
+        $className = str_replace('\\', DIRECTORY_SEPARATOR, $className);
+        require_once __DIR__.DIRECTORY_SEPARATOR.Plugin::CLASS_DIR.DIRECTORY_SEPARATOR.$className.'.php';
     }
 });
 
 // Load plugin api
-require_once (__DIR__ . '/'.Plugin::CLASS_DIR.'/api.php');
+require_once __DIR__.'/'.Plugin::CLASS_DIR.'/api.php';
 
 class Plugin
 {
     /**
-     * Text domain for translators
+     * Text domain for translators.
      */
     const TEXT_DOMAIN = 'wp-cxense';
 
@@ -69,7 +69,7 @@ class Plugin
     public $plugin_dir;
 
     /**
-     * @var Object
+     * @var object
      */
     public $scripts;
 
@@ -90,14 +90,14 @@ class Plugin
         $this->plugin_url = plugin_dir_url($this->file);
 
         // Load textdomain
-        load_plugin_textdomain(self::TEXT_DOMAIN, false, dirname($this->basename) . '/languages');
+        load_plugin_textdomain(self::TEXT_DOMAIN, false, dirname($this->basename).'/languages');
 
         $this->settings = new SettingsPage();
         $this->scripts = new Scripts();
     }
 
-    private function bootstrap() {
-
+    private function bootstrap()
+    {
         Post::watch_post_changes($this->settings);
         $this->scripts->bootstrap($this->settings);
         CxenseApi::bootstrap($this->settings);
@@ -109,12 +109,12 @@ class Plugin
     public static function instance()
     {
         if (!self::$instance) {
-            self::$instance = new self;
+            self::$instance = new self();
             global $wp_cxense;
             $wp_cxense = self::$instance;
             self::$instance->bootstrap();
 
-            /**
+            /*
              * Run after the plugin has been loaded.
              */
             do_action('wp_cxense_loaded');
@@ -125,36 +125,34 @@ class Plugin
 
     /**
      * Render the widget for the current page includes html structure from cXense,
-     * returns null on failure and true on success
+     * returns null on failure and true on success.
      *
      * @return bool|null
-     *
      */
-    public function render_widget() {
-
+    public function render_widget()
+    {
         return Widget::render($this->settings);
-
     }
 
     /**
-     * Returns an array of the items to be displayed in the widget for the current page or null on failure
+     * Returns an array of the items to be displayed in the widget for the current page or null on failure.
      *
      * @return null|array
      */
-    public function get_widget_data() {
-
+    public function get_widget_data()
+    {
         return Widget::get_widget_data($this->settings);
-
     }
-    
+
     /**
-     * Search documents
+     * Search documents.
      *
      * @param array $arrSearch
+     *
      * @return array
      */
-    public function search_documents(array $arrSearch) {
-        
+    public function search_documents(array $arrSearch)
+    {
         return DocumentSearch::get_instance()
             ->set_search($arrSearch)
             ->set_settings($this->settings)
@@ -162,15 +160,17 @@ class Plugin
     }
 
     /**
-     * Get widget documents
+     * Get widget documents.
      *
      * @param array $arrInput
+     *
      * @return array
      */
-    public function get_widget_documents(array $arrInput) {
+    public function get_widget_documents(array $arrInput)
+    {
 
         //If cache is enabled in settings
-        if($this->settings->get_setting_value('enable_query_cache', get_locale())) {
+        if ($this->settings->get_setting_value('enable_query_cache', get_locale())) {
             $strCacheKey = md5(json_encode($arrInput));
 
             if ($arrResult = wp_cache_get($strCacheKey, 'cxense_plugin')) {
@@ -188,6 +188,7 @@ class Plugin
 
     /**
      * @param array $arrInput
+     *
      * @return array
      */
     public function getResult(array $arrInput)
@@ -206,4 +207,4 @@ function instance()
     return Plugin::instance();
 }
 
-add_action('plugins_loaded', __NAMESPACE__ . '\instance', 0);
+add_action('plugins_loaded', __NAMESPACE__.'\instance', 0);
