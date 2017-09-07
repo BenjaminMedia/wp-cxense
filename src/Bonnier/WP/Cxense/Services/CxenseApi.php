@@ -7,6 +7,8 @@ use Bonnier\WP\Cxense\Exceptions\HttpException;
 use Bonnier\WP\Cxense\Models\Post;
 use Bonnier\WP\Cxense\Settings\SettingsPage;
 use Exception;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 
 class CxenseApi {
 
@@ -16,6 +18,10 @@ class CxenseApi {
 	const CXENSE_PROFILE_PUSH = '/profile/content/push';
 	const CXENSE_PROFILE_DELETE = '/profile/content/delete';
 	const CXENSE_WIDGET_DATA = '/public/widget/data';
+
+    const CACHE_BASE_URI = 'https://cache-service.bonnier.cloud';
+    const CACHE_UPDATE = '/api/v1/update';
+    const CACHE_DELETE = '/api/v1/delete';
 
 
 	/* @var SettingsPage $settings */
@@ -52,13 +58,11 @@ class CxenseApi {
 
 			$contentUrl = is_numeric($postId) ? get_permalink($postId) : $postId;
 
-			$apiPath = $delete || ! Post::is_published($postId) ? self::CXENSE_PROFILE_DELETE : self::CXENSE_PROFILE_PUSH;
+            $apiPath = $delete || !Post::is_published($postId) ? self::CACHE_DELETE : self::CACHE_UPDATE;
 
 			try {
-
-				return self::request($apiPath, ['url'=> $contentUrl]);
-
-			} catch(Exception $e) {
+                return self::CacheService($apiPath, $contentUrl);
+            } catch(Exception $e) {
 
 				if($e instanceof HttpException) {
 					error_log('WP cXense: Failed calling cXense api: ' . $apiPath . ' response code: '. $e->getCode() .' error: ' . $e->getMessage());
@@ -82,12 +86,7 @@ class CxenseApi {
 	 * @throws Exception
 	 */
 	public static function request($path, $args, $timeout=5) {
-
-		$cxUser = self::$settings->get_api_user();
-
-		if( !$cxUser ) {
-			throw new Exception('You must define constants CXENSE_USER_NAME and CXENSE_API_KEY', self::EXCEPTION_USER_NOT_DEFINED);
-		}
+	    self::getCxenseUser();
 
 		$objResponse = HttpRequest::get_instance()->set_auth(self::$settings)->post($path, [
 			'body' => json_encode($args),
@@ -104,5 +103,44 @@ class CxenseApi {
 		}
 		return true;
 	}
+
+    /**
+     * @param $uri
+     * @param $url
+     * @return bool
+     */
+    private static function CacheService($uri, $url)
+    {
+        self::getCxenseUser();
+
+        $client = new Client([
+            'base_uri' => self::CACHE_BASE_URI,
+        ]);
+
+        try {
+            $response = $client->post($uri, ['json' => ['url' => $url]]);
+        } catch(ClientException $e) {
+            return false;
+        }
+
+        if(200 === $response->getStatusCode()) {
+            $result = \json_decode($response->getBody());
+            return isset($result->status) && 200 == $result->status;
+        }
+
+        return false;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private static function getCxenseUser()
+    {
+        $cxUser = self::$settings->get_api_user();
+
+        if( !$cxUser ) {
+            throw new Exception('You must define constants CXENSE_USER_NAME and CXENSE_API_KEY', self::EXCEPTION_USER_NOT_DEFINED);
+        }
+    }
 
 }
