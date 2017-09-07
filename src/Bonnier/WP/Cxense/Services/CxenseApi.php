@@ -27,11 +27,18 @@ class CxenseApi {
 	/* @var SettingsPage $settings */
 	protected static $settings;
 
-	public static function bootstrap(SettingsPage $settingsPage) {
+    /**
+     * @param SettingsPage $settingsPage
+     */
+    public static function bootstrap(SettingsPage $settingsPage) {
 		self::$settings = $settingsPage;
 	}
 
-	public static function get_widget_data($widgetId) {
+    /**
+     * @param $widgetId
+     * @return null
+     */
+    public static function get_widget_data($widgetId) {
 
 		$objResponse = HttpRequest::get_instance()->post(self::CXENSE_WIDGET_DATA, [
 			'timeout' => 2,
