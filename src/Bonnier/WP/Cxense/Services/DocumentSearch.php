@@ -243,15 +243,15 @@ class DocumentSearch
      * @return DocumentSearch
      * @throws DocumentSearchWrongFilter
      */
-    private function set_filter() {
-
+    private function set_filter()
+    {
         if (isset($this->arrSearch['filter'])) {
             if (!is_array($this->arrSearch['filter'])) {
                 throw new DocumentSearchWrongFilter('"Filter" key is not an array');
             }
 
             $arrFilterLines = [];
-            foreach ($this->arrSearch['filter'] as $field => $value ) {
+            foreach ($this->arrSearch['filter'] as $field => $value) {
                 $arrFilterLines[] = sprintf('filter(%s:%s)', $field, json_encode(array_map('stripslashes', $value)));
             }
 
@@ -272,8 +272,8 @@ class DocumentSearch
      * @return $this
      * @throws DocumentSearchWrongSorting
      */
-    private function set_sorting() {
-
+    private function set_sorting()
+    {
         if (isset($this->arrSearch['sorting'])) {
             if (!is_array($this->arrSearch['sorting']) ||
                 !in_array($this->arrSearch['sorting']['type'], ['score', 'time']) ||
@@ -284,7 +284,7 @@ class DocumentSearch
                 );
             }
 
-            if($this->arrSearch['sorting']['type'] === 'time') {
+            if ($this->arrSearch['sorting']['type'] === 'time') {
                 $this->arrSearch['sorting']['field'] = 'recs-publishtime';
             }
 
