@@ -51,4 +51,5 @@ class Post
             self::$settings->set_current_locale(pll_get_post_language($postId));
         }
     }
+
 }

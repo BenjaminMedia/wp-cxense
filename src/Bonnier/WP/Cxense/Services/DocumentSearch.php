@@ -9,6 +9,7 @@ use Bonnier\WP\Cxense\Exceptions\DocumentSearchMissingSearch;
 use Bonnier\WP\Cxense\Exceptions\DocumentSearchMissingCount;
 use Bonnier\WP\Cxense\Exceptions\DocumentSearchWrongFacet;
 use Bonnier\WP\Cxense\Exceptions\DocumentSearchWrongFilter;
+use Bonnier\WP\Cxense\Exceptions\DocumentSearchWrongSorting;
 use Bonnier\WP\Cxense\Http\HttpRequest;
 use Bonnier\WP\Cxense\Settings\SettingsPage;
 use Bonnier\WP\Cxense\Parsers\Document;
@@ -18,21 +19,21 @@ use Bonnier\WP\Cxense\Parsers\Document;
  */
 class DocumentSearch
 {
-    
+
     /**
      * Instance object
      *
      * @var DocumentSearch $objInstance
      */
     private static $objInstance;
-    
+
     /**
      * Search array
      *
      * @var array $arrSearch
      */
     private $arrSearch = [];
-    
+
     /**
      * Payload array
      *
@@ -46,7 +47,7 @@ class DocumentSearch
      * @var SettingsPage $objSettings
      */
     private $objSettings;
-    
+
     /**
      * Returning fields
      *
@@ -70,7 +71,7 @@ class DocumentSearch
             'recs-publishtime'
         ]
     ];
-    
+
     /**
      * Constructor
      */
@@ -92,7 +93,7 @@ class DocumentSearch
         }
         return self::$objInstance;
     }
-    
+
     /**
      * Set settings object
      *
@@ -102,7 +103,7 @@ class DocumentSearch
     public function set_settings(SettingsPage $objSettings)
     {
         $this->objSettings = $objSettings;
-        
+
         if ($strPrefix = $this->objSettings->get_organisation_prefix()) {
             $this->arrFields['organisation'] = array_map(function ($strValue) use ($strPrefix) {
                 return $strPrefix . '-' . $strValue;
@@ -123,7 +124,7 @@ class DocumentSearch
 
         return $this;
     }
-    
+
     /**
      * Get documents from search result
      *
@@ -132,21 +133,22 @@ class DocumentSearch
     public function get_documents()
     {
         $this->validate_query_key();
-        
+
         $objDocuments = $this
             ->set_per_page()
             ->set_page()
             ->set_facets()
             ->set_filter()
+            ->set_sorting()
             ->set_spellcheck()
             ->set_highlights()
             ->set_result_fields()
             ->get();
-        
+
         $objDocuments->matches = $this->parse_documents($objDocuments->matches);
         return $objDocuments;
     }
-    
+
     /**
      * Get documents
      *
@@ -158,10 +160,11 @@ class DocumentSearch
         $this->set_log_query();
         $this->arrPayload['query'] = QueryLanguage::getQuery($this->arrSearch['query']);
 
+
         $objResponse = HttpRequest::get_instance()->set_auth($this->objSettings)->post('document/search', [
             'body' => json_encode($this->arrPayload)
         ]);
-        
+
         return json_decode($objResponse->getBody());
     }
 
@@ -177,7 +180,7 @@ class DocumentSearch
             throw new DocumentSearchMissingSearch('Missing request "query" key!');
         }
     }
-    
+
     /**
      * Set siteId to the search request
      *
@@ -188,7 +191,7 @@ class DocumentSearch
         $this->arrPayload['siteId'] = $this->objSettings->get_site_id();
         return $this;
     }
-    
+
     /**
      * Set token operator
      *
@@ -200,7 +203,7 @@ class DocumentSearch
         $this->arrPayload['token-op'] = 'and';
         return $this;
     }
-    
+
     /**
      * Set highlights
      *
@@ -211,10 +214,10 @@ class DocumentSearch
         if (isset($this->arrSearch['highlights'])) {
             $this->arrPayload['highlights'] = $this->arrSearch['highlights'];
         }
-        
+
         return $this;
     }
-    
+
     /**
      * Set facets
      *
@@ -227,56 +230,83 @@ class DocumentSearch
             if (!is_array($this->arrSearch['facets'])) {
                 throw new DocumentSearchWrongFacet('"Facets" key is not an array');
             }
-            
+
             $this->arrPayload['facets'] = $this->arrSearch['facets'];
         }
-        
+
         return $this;
     }
-    
+
     /**
      * Set filter
      *
      * @return DocumentSearch
      * @throws DocumentSearchWrongFilter
      */
-    private function set_filter()
-    {
+    private function set_filter() {
+
         if (isset($this->arrSearch['filter'])) {
             if (!is_array($this->arrSearch['filter'])) {
                 throw new DocumentSearchWrongFilter('"Filter" key is not an array');
             }
-            
+
             $arrFilterLines = [];
-            foreach ($this->arrSearch['filter'] as $arrFilter) {
-                $arrFilterLines[] = 'filter(' . $arrFilter['field'] . ':"' . stripslashes($arrFilter['value']) . '")';
+            foreach ($this->arrSearch['filter'] as $field => $value ) {
+                $arrFilterLines[] = sprintf('filter(%s:%s)', $field, json_encode(array_map('stripslashes', $value)));
             }
-            
+
             $strFilterOperator = 'OR';
             if (isset($this->arrSearch['filter_operator'])) {
                 $strFilterOperator = $this->arrSearch['filter_operator'];
             }
-            
+
             $this->arrPayload['filter'] = implode(' ' . $strFilterOperator . ' ', $arrFilterLines);
         }
-        
+
         return $this;
     }
-    
+
+    /**
+     * Set sorting
+     *
+     * @return $this
+     * @throws DocumentSearchWrongSorting
+     */
+    private function set_sorting() {
+
+        if (isset($this->arrSearch['sorting'])) {
+            if (!is_array($this->arrSearch['sorting']) ||
+                !in_array($this->arrSearch['sorting']['type'], ['score', 'time']) ||
+                !in_array($this->arrSearch['sorting']['order'], ['ascending', 'descending'])
+            ) {
+                throw new DocumentSearchWrongSorting(
+                    '"sorting" key must be an array with keys "type" = "score|time" & "order" = "ascending|descending" '
+                );
+            }
+
+            if($this->arrSearch['sorting']['type'] === 'time') {
+                $this->arrSearch['sorting']['field'] = 'recs-publishtime';
+            }
+
+            $this->arrPayload['sort'][] = $this->arrSearch['sorting'];
+        }
+
+        return $this;
+    }
     /**
      * Set page limit to the search array
      *
      * @param integer $intCount Total items per page
-     * @return Search
+     * @return $this
      */
     private function set_per_page($intCount = 10)
     {
         $this->arrPayload['count'] = $intCount;
-        
+
         if (isset($this->arrSearch['count'])) {
             $this->arrPayload['count'] = $this->arrSearch['count'];
         }
-        
+
         return $this;
     }
 
@@ -284,26 +314,26 @@ class DocumentSearch
      * Set page number for calculating the correct starting offset
      *
      * @param integer $intPage Page number
-     * @return Search
+     * @return $this
      * @throws DocumentSearchMissingCount
      */
     private function set_page($intPage = 1)
     {
-        if (!isset($this->arrPayload['count']) || !$this->arrPayload['count']) {
+        if (!isset($this->arrPayload['count'])) {
             throw new DocumentSearchMissingCount('\DocumentSearch::setPerPage() is required before \DocumentSearch::setPage()');
         }
-        
+
         // get the page
         if (isset($this->arrSearch['page'])) {
             $intPage = $this->arrSearch['page'];
         }
-        
+
         // set the starting point
         $this->arrPayload['start'] = $this->arrPayload['count'] * ($intPage - 1);
-        
+
         return $this;
     }
-    
+
     /**
      * Set result fields
      *
@@ -314,7 +344,7 @@ class DocumentSearch
         $this->arrPayload['resultFields'] = array_merge($this->arrFields['generic'], $this->arrFields['organisation']);
         return $this;
     }
-    
+
     /**
      * Set logQuery
      *
@@ -325,7 +355,7 @@ class DocumentSearch
         $this->arrPayload['logQuery'] = $this->arrSearch['query'];
         return $this;
     }
-    
+
     /**
      * Set spellcheck
      *
@@ -338,7 +368,7 @@ class DocumentSearch
         }
         return $this;
     }
-    
+
     /**
      * Parse documents to cxense object
      *
@@ -348,11 +378,11 @@ class DocumentSearch
     private function parse_documents(array $arrDocuments)
     {
         $arrCollection = [];
-        
+
         foreach ($arrDocuments as $objDocument) {
             $arrCollection[] = new Document($objDocument);
         }
-        
+
         return $arrCollection;
     }
 }
