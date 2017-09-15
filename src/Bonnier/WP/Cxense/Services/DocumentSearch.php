@@ -162,7 +162,7 @@ class DocumentSearch
 
 
         $objResponse = HttpRequest::get_instance()->set_auth($this->objSettings)->post('document/search', [
-            'body' => json_encode($this->arrPayload)
+            'body' => json_encode($this->arrPayload, JSON_UNESCAPED_UNICODE)
         ]);
 
         return json_decode($objResponse->getBody());
@@ -252,7 +252,7 @@ class DocumentSearch
 
             $arrFilterLines = [];
             foreach ($this->arrSearch['filter'] as $field => $value) {
-                $arrFilterLines[] = sprintf('filter(%s:%s)', $field, json_encode(array_map('stripslashes', $value)));
+                $arrFilterLines[] = sprintf('filter(%s:%s)', $field, json_encode(array_map('stripslashes', $value), JSON_UNESCAPED_UNICODE));
             }
 
             $strFilterOperator = 'OR';
