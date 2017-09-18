@@ -41,11 +41,11 @@ class Scripts
             $recs_tags[$this->org_prefix . 'brand'] = self::$settings->get_brand();
         }
 
-        if(is_category()) {
+        if (is_category()) {
             $recs_tags[$this->org_prefix . 'pagetype'] = 'category';
         }
 
-        if(is_tag()) {
+        if (is_tag()) {
             $recs_tags[$this->org_prefix . 'pagetype'] = 'tag';
         }
 
