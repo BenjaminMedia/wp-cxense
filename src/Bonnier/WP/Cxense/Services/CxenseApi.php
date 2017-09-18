@@ -19,10 +19,10 @@ class CxenseApi
     const CXENSE_PROFILE_DELETE = '/profile/content/delete';
     const CXENSE_WIDGET_DATA = '/public/widget/data';
 
-    const CACHE_BASE_URI = 'https://cache-service.bonnier.cloud';
     const CACHE_UPDATE = '/api/v1/update';
     const CACHE_DELETE = '/api/v1/delete';
 
+    protected static $cacheBaseUri;
 
     /* @var SettingsPage $settings */
     protected static $settings;
@@ -33,6 +33,7 @@ class CxenseApi
     public static function bootstrap(SettingsPage $settingsPage)
     {
         self::$settings = $settingsPage;
+        self::$cacheBaseUri = get_option('wp_cache_settings');
     }
 
     /**
@@ -67,10 +68,15 @@ class CxenseApi
         if (!wp_is_post_revision($postId) && !wp_is_post_autosave($postId)) {
             $contentUrl = is_numeric($postId) ? get_permalink($postId) : $postId;
 
-            $apiPath = $delete || !Post::is_published($postId) ? self::CACHE_DELETE : self::CACHE_UPDATE;
-
             try {
-                return self::CacheService($apiPath, $contentUrl);
+                //If cache Service is set in WP Bonnier Cache Plugin
+                if (isset(self::$cacheBaseUri['host_url'])) {
+                    $apiPath = $delete || !Post::is_published($postId) ? self::CACHE_DELETE : self::CACHE_UPDATE;
+                    return self::CacheService($apiPath, $contentUrl);
+                } else {
+                    $apiPath = $delete || ! Post::is_published($postId) ? self::CXENSE_PROFILE_DELETE : self::CXENSE_PROFILE_PUSH;
+                    return self::request($apiPath, ['url'=> $contentUrl]);
+                }
             } catch (Exception $e) {
                 if ($e instanceof HttpException) {
                     error_log('WP cXense: Failed calling cXense api: ' . $apiPath . ' response code: '. $e->getCode() .' error: ' . $e->getMessage());
@@ -120,7 +126,7 @@ class CxenseApi
         self::getCxenseUser();
 
         $client = new Client([
-            'base_uri' => self::CACHE_BASE_URI,
+            'base_uri' => self::$cacheBaseUri['host_url'],
         ]);
 
         try {
