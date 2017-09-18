@@ -73,12 +73,10 @@ class CxenseApi
                 if (isset(self::$cacheBaseUri['host_url'])) {
                     $apiPath = $delete || !Post::is_published($postId) ? self::CACHE_DELETE : self::CACHE_UPDATE;
                     return self::CacheService($apiPath, $contentUrl);
-                }
-                else {
+                } else {
                     $apiPath = $delete || ! Post::is_published($postId) ? self::CXENSE_PROFILE_DELETE : self::CXENSE_PROFILE_PUSH;
                     return self::request($apiPath, ['url'=> $contentUrl]);
                 }
-
             } catch (Exception $e) {
                 if ($e instanceof HttpException) {
                     error_log('WP cXense: Failed calling cXense api: ' . $apiPath . ' response code: '. $e->getCode() .' error: ' . $e->getMessage());
