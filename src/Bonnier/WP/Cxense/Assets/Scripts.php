@@ -41,6 +41,14 @@ class Scripts
             $recs_tags[$this->org_prefix . 'brand'] = self::$settings->get_brand();
         }
 
+        if(is_category()) {
+            $recs_tags[$this->org_prefix . 'pagetype'] = 'category';
+        }
+
+        if(is_tag()) {
+            $recs_tags[$this->org_prefix . 'pagetype'] = 'tag';
+        }
+
         if (is_singular() || is_single()) {
             global $post;
 
@@ -64,22 +72,6 @@ class Scripts
 
                 // Current category link to listpage
                 $recs_tags[$this->org_prefix .'taxo-cat-url'] = get_category_link($this->get_category()->cat_ID);
-            }
-
-            // This post type requires acf. Therefor we don't check if it's installed
-            if ($post->post_type === 'contenthub_composite') {
-                $fields = get_fields($post);
-
-                //Override current pagetype with the correct one from the composite
-                $recs_tags[$this->org_prefix . 'pagetype'] = $fields['kind'];
-
-                if (!empty($fields['editorial_type'])) {
-                    $recs_tags[$this->org_prefix . 'taxo-editorialtype'] = $this->objects_to_array($fields['editorial_type']);
-                }
-
-                if (!empty($fields['difficulty'])) {
-                    $recs_tags[$this->org_prefix . 'taxo-difficulty'] = $this->objects_to_array($fields['difficulty']);
-                }
             }
 
             if (get_the_tags($post->ID)) {
