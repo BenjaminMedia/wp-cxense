@@ -2,6 +2,7 @@
 
 namespace Bonnier\WP\Cxense\Settings;
 
+use Bonnier\WP\Cxense\Settings\Partials\CustomTaxonomiesSettings;
 use Bonnier\WP\Cxense\Settings\Partials\WidgetSettings;
 use PLL_Language;
 
@@ -54,6 +55,13 @@ class SettingsPage
             'name' => 'Widgets',
             'callback' => [WidgetSettings::class, 'render'],
             'sanitize_callback' => [WidgetSettings::class, 'sanitize_input']
+
+        ],
+        CustomTaxonomiesSettings::SETTING_KEY => [
+            'type' => 'callback',
+            'name' => 'Custom Taxonomies',
+            'callback' => [CustomTaxonomiesSettings::class, 'render'],
+            'sanitize_callback' => [CustomTaxonomiesSettings::class, 'sanitize_input']
 
         ]
     ];
@@ -260,6 +268,11 @@ class SettingsPage
     public function get_widget_ids($locale = null)
     {
         return $this->get_setting_value(WidgetSettings::SETTING_KEY, $locale) ?: [];
+    }
+
+    public function get_custom_taxonomies($locale = null)
+    {
+        return array_keys($this->get_setting_value(CustomTaxonomiesSettings::SETTING_KEY, $locale)) ?: [];
     }
 
     private function enable_language_fields()

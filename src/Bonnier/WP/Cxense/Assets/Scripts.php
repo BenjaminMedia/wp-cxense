@@ -85,6 +85,8 @@ class Scripts
         // Tell cXense wether the current page is a front page or an article
         $recs_tags['pageclass'] = is_front_page() ? 'frontpage' : 'article';
 
+        $recs_tags = $this->get_custom_taxonomy_terms($post->ID, $recs_tags);
+
         return $recs_tags;
     }
 
@@ -175,5 +177,16 @@ class Scripts
     {
         $category = get_the_category();
         return $category ? $category[0] : '';
+    }
+
+    private function get_custom_taxonomy_terms($postId, $recs_tags)
+    {
+        $customTaxonomies = static::$settings->get_custom_taxonomies(get_locale());
+        foreach ($customTaxonomies as $customTaxonomy) {
+            foreach (wp_get_post_terms($postId, $customTaxonomy) as $term) {
+                $recs_tags[$this->org_prefix . 'taxo-' . str_replace('_', '-', $customTaxonomy)] = $term->name;
+            }
+        }
+        return $recs_tags;
     }
 }
