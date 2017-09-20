@@ -272,7 +272,7 @@ class SettingsPage
 
     public function get_custom_taxonomies($locale = null)
     {
-        return array_keys($this->get_setting_value(CustomTaxonomiesSettings::SETTING_KEY, $locale)) ?: [];
+        return array_keys($this->get_setting_value(CustomTaxonomiesSettings::SETTING_KEY, $locale) ?: []);
     }
 
     private function enable_language_fields()
