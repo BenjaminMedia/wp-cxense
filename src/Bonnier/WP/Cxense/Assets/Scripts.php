@@ -77,6 +77,8 @@ class Scripts
             if (get_the_tags($post->ID)) {
                 $recs_tags[$this->org_prefix . 'taxo-tag'] = $this->objects_to_array(get_the_tags());
             }
+
+            $recs_tags = $this->get_custom_taxonomy_terms($post->ID, $recs_tags);
         }
 
         // The date is just a fallback, and is the day it was coded
@@ -84,8 +86,6 @@ class Scripts
 
         // Tell cXense wether the current page is a front page or an article
         $recs_tags['pageclass'] = is_front_page() ? 'frontpage' : 'article';
-
-        $recs_tags = $this->get_custom_taxonomy_terms($post->ID, $recs_tags);
 
         return $recs_tags;
     }
