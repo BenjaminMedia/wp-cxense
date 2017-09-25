@@ -192,7 +192,7 @@ class Scripts
 
     private function get_page_type($post)
     {
-        if(function_exists('get_field') && $post->post_type === 'contenthub_composite') {
+        if (function_exists('get_field') && $post->post_type === 'contenthub_composite') {
             return get_field('kind', $post->ID);
         }
         return 'Article';
