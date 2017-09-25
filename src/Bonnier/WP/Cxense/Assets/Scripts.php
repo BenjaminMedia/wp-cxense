@@ -56,7 +56,7 @@ class Scripts
             $recs_tags['recs:articleid'] = $post->ID;
 
             // Set the pagetype
-            $recs_tags[$this->org_prefix . 'pagetype'] = $post->post_type;
+            $recs_tags[$this->org_prefix . 'pagetype'] = $this->get_page_type($post);
 
             // Set the publish time
             $recs_tags['recs:publishtime'] = date('c', strtotime($post->post_date));
@@ -188,5 +188,13 @@ class Scripts
             }
         }
         return $recs_tags;
+    }
+
+    private function get_page_type($post)
+    {
+        if(function_exists('get_field') && $post->post_type === 'contenthub_composite') {
+            return get_field('kind', $post->ID);
+        }
+        return 'Article';
     }
 }
