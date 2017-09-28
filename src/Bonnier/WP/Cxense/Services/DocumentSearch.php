@@ -158,8 +158,7 @@ class DocumentSearch
     {
         $this->set_site_id();
         $this->set_log_query();
-        $this->arrPayload['query'] = QueryLanguage::getQuery($this->arrSearch['query']);
-
+        $this->arrPayload['query'] = QueryLanguage::getQuery($this->objSettings->get_organisation_prefix(), $this->arrSearch['query']);
 
         $objResponse = HttpRequest::get_instance()->set_auth($this->objSettings)->post('document/search', [
             'body' => json_encode($this->arrPayload, JSON_UNESCAPED_UNICODE)
