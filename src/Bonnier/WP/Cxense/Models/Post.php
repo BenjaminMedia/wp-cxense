@@ -19,14 +19,13 @@ class Post
 
     public static function post_status_changed($new_status, $old_status, $post)
     {
-        if($old_status === 'draft' && $new_status === 'trash') {
+        if ($old_status === 'draft' && $new_status === 'trash') {
             return;
         }
 
-        if($new_status === 'publish'){
+        if ($new_status === 'publish') {
             self::update_post($post->ID);
-        }
-        elseif($new_status === 'trash'){
+        } elseif ($new_status === 'trash') {
             self::delete_post($post->ID);
         }
     }
