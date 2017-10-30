@@ -19,11 +19,6 @@ class CxenseApi
     const CXENSE_PROFILE_DELETE = '/profile/content/delete';
     const CXENSE_WIDGET_DATA = '/public/widget/data';
 
-    const CACHE_UPDATE = '/api/v1/update';
-    const CACHE_DELETE = '/api/v1/delete';
-
-    protected static $cacheBaseUri;
-
     /* @var SettingsPage $settings */
     protected static $settings;
 
@@ -33,7 +28,6 @@ class CxenseApi
     public static function bootstrap(SettingsPage $settingsPage)
     {
         self::$settings = $settingsPage;
-        self::$cacheBaseUri = get_option('wp_cache_settings');
     }
 
     /**
@@ -69,11 +63,7 @@ class CxenseApi
             $contentUrl = is_numeric($postId) ? get_permalink($postId) : $postId;
 
             try {
-                //If cache Service is set in WP Bonnier Cache Plugin
-                if (isset(self::$cacheBaseUri['host_url'])) {
-                    $apiPath = $delete || !Post::is_published($postId) ? self::CACHE_DELETE : self::CACHE_UPDATE;
-                    return self::CacheService($apiPath, $contentUrl);
-                } else {
+                if(!is_plugin_active( 'wp-bonnier-cache/wp-bonnier-cache.php' )){
                     $apiPath = $delete || ! Post::is_published($postId) ? self::CXENSE_PROFILE_DELETE : self::CXENSE_PROFILE_PUSH;
                     return self::request($apiPath, ['url'=> $contentUrl]);
                 }
@@ -114,33 +104,6 @@ class CxenseApi
             throw new Exception('Unexpected response, code: '.$objResponse->getStatusCode().' message: '.$objResponse->getMessage(), -1);
         }
         return true;
-    }
-
-    /**
-     * @param $uri
-     * @param $url
-     * @return bool
-     */
-    private static function CacheService($uri, $url)
-    {
-        self::getCxenseUser();
-
-        $client = new Client([
-            'base_uri' => self::$cacheBaseUri['host_url'],
-        ]);
-
-        try {
-            $response = $client->post($uri, ['json' => ['url' => $url]]);
-        } catch (ClientException $e) {
-            return false;
-        }
-
-        if (200 === $response->getStatusCode()) {
-            $result = \json_decode($response->getBody());
-            return isset($result->status) && 200 == $result->status;
-        }
-
-        return false;
     }
 
     /**
