@@ -14,8 +14,20 @@ class Post
         self::$settings = $settingsPage;
 
         // Ping crawler when post is changed
-        add_action('save_post', [__CLASS__, 'update_post']);
-        add_action('delete_post', [__CLASS__, 'delete_post']);
+        add_action('transition_post_status', [__CLASS__, 'post_status_changed'], 10, 3);
+    }
+
+    public static function post_status_changed($new_status, $old_status, $post)
+    {
+        if ($old_status === 'draft' && $new_status === 'trash') {
+            return;
+        }
+
+        if ($new_status === 'publish') {
+            self::update_post($post->ID);
+        } elseif ($new_status === 'trash') {
+            self::delete_post($post->ID);
+        }
     }
 
     public static function update_post($postId)
