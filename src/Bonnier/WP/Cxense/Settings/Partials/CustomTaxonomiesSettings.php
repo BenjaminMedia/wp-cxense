@@ -48,4 +48,15 @@ class CustomTaxonomiesSettings
 
         return $sanitizedInput;
     }
+
+    public static function get_printable_taxonomies() {
+        $taxonomies = get_taxonomies();
+        $prinableTaxonomies = [];
+        foreach($taxonomies as $taxonomy) {
+            if (!in_array($taxonomy, static::DISABLED_TAXONOMIES) && $taxonomy !== 'category') {
+                $prinableTaxonomies[] = $taxonomy;
+            }
+        }
+        return $prinableTaxonomies;
+    }
 }

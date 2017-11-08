@@ -2,7 +2,7 @@
 
 namespace Bonnier\WP\Cxense\Assets;
 
-use Bonnier\WP\ContentHub\Editor\Models\WpTaxonomy;
+use Bonnier\WP\Cxense\Settings\Partials\CustomTaxonomiesSettings;
 use Bonnier\WP\Cxense\Settings\SettingsPage;
 
 class Scripts
@@ -182,7 +182,7 @@ class Scripts
 
     private function get_custom_taxonomy_terms($postId, $recs_tags)
     {
-        $customTaxonomies = WpTaxonomy::get_custom_taxonomies()->pluck('machine_name')->toArray();
+        $customTaxonomies = CustomTaxonomiesSettings::get_printable_taxonomies();
         foreach ($customTaxonomies as $customTaxonomy) {
             foreach (wp_get_post_terms($postId, $customTaxonomy) as $term) {
                 $recs_tags[$this->org_prefix . 'taxo-' . str_replace('_', '-', $customTaxonomy)] = $term->name;
