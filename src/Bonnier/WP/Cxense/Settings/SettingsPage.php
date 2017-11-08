@@ -59,7 +59,7 @@ class SettingsPage
         ],
         CustomTaxonomiesSettings::SETTING_KEY => [
             'type' => 'callback',
-            'name' => 'Custom Taxonomies',
+            'name' => 'Searchable Taxonomies',
             'callback' => [CustomTaxonomiesSettings::class, 'render'],
             'sanitize_callback' => [CustomTaxonomiesSettings::class, 'sanitize_input']
 
@@ -270,7 +270,7 @@ class SettingsPage
         return $this->get_setting_value(WidgetSettings::SETTING_KEY, $locale) ?: [];
     }
 
-    public function get_custom_taxonomies($locale = null)
+    public function get_searchable_taxonomies($locale = null)
     {
         return array_keys($this->get_setting_value(CustomTaxonomiesSettings::SETTING_KEY, $locale) ?: []);
     }
