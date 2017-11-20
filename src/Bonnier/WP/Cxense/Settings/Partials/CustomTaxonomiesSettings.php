@@ -67,6 +67,7 @@ class CustomTaxonomiesSettings
     }
 
     private static function get_enabled_taxonomies() {
-        return array_diff(get_taxonomies(), static::DISABLED_TAXONOMIES);
+        // return array values to get a numbered array rather than associative ie. ['category' => 'category']
+        return array_values(array_diff(get_taxonomies(), static::DISABLED_TAXONOMIES));
     }
 }
