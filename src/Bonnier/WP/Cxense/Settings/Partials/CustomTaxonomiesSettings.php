@@ -60,13 +60,15 @@ class CustomTaxonomiesSettings
         return $sanitizedInput;
     }
 
-    public static function get_printable_taxonomies() {
+    public static function get_printable_taxonomies()
+    {
         $taxonomies = static::get_enabled_taxonomies();
         unset($taxonomies['category']); // Disable category as it is by default always printed
         return $taxonomies;
     }
 
-    private static function get_enabled_taxonomies() {
+    private static function get_enabled_taxonomies()
+    {
         // return array values to get a numbered array rather than associative ie. ['category' => 'category']
         return array_values(array_diff(get_taxonomies(), static::DISABLED_TAXONOMIES));
     }
