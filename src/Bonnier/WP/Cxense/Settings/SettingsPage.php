@@ -62,7 +62,12 @@ class SettingsPage
             'name' => 'Searchable Taxonomies',
             'callback' => [CustomTaxonomiesSettings::class, 'render'],
             'sanitize_callback' => [CustomTaxonomiesSettings::class, 'sanitize_input']
-
+        ],
+        CustomTaxonomiesSettings::SETTING_KEY_ORDER => [
+            'type' => 'callback',
+            'name' => 'Taxonomy Order',
+            'callback' => [CustomTaxonomiesSettings::class, 'renderTaxonomyOrder'],
+            'sanitize_callback' => [CustomTaxonomiesSettings::class, 'sanitize_input']
         ]
     ];
 
@@ -271,8 +276,13 @@ class SettingsPage
     }
 
     public function get_searchable_taxonomies($locale = null)
-    {
-        return array_keys($this->get_setting_value(CustomTaxonomiesSettings::SETTING_KEY, $locale) ?: []);
+    {   // Flip array so the sort order number becomes the key ie. [1 => 'category', 2 => 'post_tag']
+        $taxonomyOrder = array_flip($this->get_setting_value(CustomTaxonomiesSettings::SETTING_KEY_ORDER, $locale)) ?: [];
+        ksort($taxonomyOrder); // Sort taxonomy by array key, (order number)
+        // Get the searchable taxonomies
+        $taxonomies = array_keys($this->get_setting_value(CustomTaxonomiesSettings::SETTING_KEY, $locale)) ?: [];
+        // Intersect with order so searchable taxonomies are returned in the correct order
+        return array_intersect($taxonomyOrder, $taxonomies);
     }
 
     private function enable_language_fields()
