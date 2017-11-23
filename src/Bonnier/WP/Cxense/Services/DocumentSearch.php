@@ -139,6 +139,7 @@ class DocumentSearch
             ->set_page()
             ->set_facets()
             ->set_filter()
+            ->set_exclude_filter()
             ->set_sorting()
             ->set_spellcheck()
             ->set_highlights()
@@ -260,6 +261,33 @@ class DocumentSearch
             }
 
             $this->arrPayload['filter'] = implode(' ' . $strFilterOperator . ' ', $arrFilterLines);
+        }
+
+        return $this;
+    }
+
+    private function set_exclude_filter()
+    {
+        if (isset($this->arrSearch['filter_exclude'])) {
+            if (!is_array($this->arrSearch['filter_exclude'])) {
+                throw new DocumentSearchWrongFilter('"filter_exclude" key is not an array');
+            }
+
+            $arrFilterLines = [];
+            foreach ($this->arrSearch['filter_exclude'] as $field => $value) {
+                $arrFilterLines[] = sprintf('NOT filter(%s:%s)', $field, json_encode(array_map('stripslashes', $value), JSON_UNESCAPED_UNICODE));
+            }
+
+            $strFilterOperator = 'OR';
+            if (isset($this->arrSearch['filter_operator'])) {
+                $strFilterOperator = $this->arrSearch['filter_operator'];
+            }
+            
+            if(isset($this->arrPayload['filter'])) {
+                $this->arrPayload['filter'] .= ' OR '. implode(' ' . $strFilterOperator . ' ', $arrFilterLines);
+            } else {
+                $this->arrPayload['filter'] = implode(' ' . $strFilterOperator . ' ', $arrFilterLines);
+            }
         }
 
         return $this;

@@ -153,34 +153,39 @@ If the key 'query' is missing from the search array then a [DocumentSearchMissin
 
 ``` php
 wp_cxense()->search_documents([
-	'query' => 'search_term', // mandatory
-	'page' => 1, // optional, defaults to 1
-	'count' => 10, // optional, defaults to 10
-	'filter' => [ // optional
-		0 => [
-			'field' => 'field', // this could be category
-			'value' => 'value' // this could be the name of the category
-		]
-	],
-	'facets' => [ // optional
-		0 => [
-			'type' => 'string',
-			'field' => 'field'
-		],
-		1 => [
-			'type' => 'string',
-			'field' => 'field'
-		]
-	],
-	'spellcheck' => true, // optional
-	'highlights' => [ // optional
-		0 => [
-			'field' => 'body',
-			'start' => '<em>',
-			'stop' => '</em>',
-			'length' => 50
-		]
-	]
+    'query' => 'search_term', // mandatory
+    'page' => 1, // optional, defaults to 1
+    'count' => 10, // optional, defaults to 10
+    'filter_operator => 'AND', // optional, defaults to OR
+    'filter' => [ // optional
+        'field' => [
+            'value',
+        ],
+    ],
+    'filter_exclude' => [ // optional
+        'field' => [
+             'value',
+        ],
+    ],
+    'facets' => [ // optional
+        0 => [
+            'type' => 'string',
+            'field' => 'field'
+        ],
+        1 => [
+            'type' => 'string',
+            'field' => 'field'
+        ]
+    ],
+    'spellcheck' => true, // optional
+    'highlights' => [ // optional
+        0 => [
+            'field' => 'body',
+            'start' => '<em>',
+            'stop' => '</em>',
+            'length' => 50
+        ]
+    ]
 ]);
 ```
 
@@ -282,17 +287,17 @@ If the key 'widget_id' is missing from the input array then a [WidgetMissingId](
 
 ``` php
 wp_cxense()->get_widget_documents([
-	'widgetId' => 'widget_id', // mandatory
-	'user' => ['ids' => ['usi' => 'cxUserId']], // optional
-	'categories' => [
-		'type' => 'value' // 'taxonomy' => 'trend'
-	],
-	'parameters' => [
-		0 => [
-			'key' => 'key', // 'key' => 'category'
-			'value' => 'value' // 'value' => 'shopping'
-		],
-		...
-	]
+    'widgetId' => 'widget_id', // mandatory
+    'user' => ['ids' => ['usi' => 'cxUserId']], // optional
+    'categories' => [
+        'type' => 'value' // 'taxonomy' => 'trend'
+    ],
+    'parameters' => [
+        0 => [
+            'key' => 'key', // 'key' => 'category'
+            'value' => 'value' // 'value' => 'shopping'
+        ],
+        ...
+    ],
 ]);
 ```
