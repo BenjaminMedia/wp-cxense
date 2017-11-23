@@ -283,7 +283,7 @@ class DocumentSearch
                 $strFilterOperator = $this->arrSearch['filter_operator'];
             }
             
-            if(isset($this->arrPayload['filter'])) {
+            if (isset($this->arrPayload['filter'])) {
                 $this->arrPayload['filter'] .= ' OR '. implode(' ' . $strFilterOperator . ' ', $arrFilterLines);
             } else {
                 $this->arrPayload['filter'] = implode(' ' . $strFilterOperator . ' ', $arrFilterLines);
