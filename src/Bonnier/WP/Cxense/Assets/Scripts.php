@@ -79,8 +79,9 @@ class Scripts
                 $recs_tags[$this->org_prefix . 'taxo-tag'] = $this->objects_to_array(get_the_tags());
             }
 
-            if ($commercialType = get_field('commercial_type', $post->ID)) {
-                $recs_tags[$this->org_prefix .'commercial_type'] = pll__($commercialType);
+            if ($commercialType = get_field('commercial_type', $post->ID)){
+                $recs_tags[$this->org_prefix .'commercial_format'] = $commercialType;
+                $recs_tags[$this->org_prefix .'commercial_label'] = pll__($commercialType);
             }
 
             $recs_tags = $this->get_custom_taxonomy_terms($post->ID, $recs_tags);
