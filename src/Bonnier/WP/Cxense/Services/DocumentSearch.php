@@ -278,15 +278,10 @@ class DocumentSearch
                 $arrFilterLines[] = sprintf('NOT filter(%s:%s)', $field, json_encode(array_map('stripslashes', $value), JSON_UNESCAPED_UNICODE));
             }
 
-            $strFilterOperator = 'OR';
-            if (isset($this->arrSearch['filter_operator'])) {
-                $strFilterOperator = $this->arrSearch['filter_operator'];
-            }
-            
             if (isset($this->arrPayload['filter'])) {
-                $this->arrPayload['filter'] .= ' OR '. implode(' ' . $strFilterOperator . ' ', $arrFilterLines);
+                $this->arrPayload['filter'] .= ' AND '. implode(' AND ', $arrFilterLines);
             } else {
-                $this->arrPayload['filter'] = implode(' ' . $strFilterOperator . ' ', $arrFilterLines);
+                $this->arrPayload['filter'] = implode(' AND ', $arrFilterLines);
             }
         }
 
