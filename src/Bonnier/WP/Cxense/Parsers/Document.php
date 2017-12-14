@@ -10,7 +10,6 @@ namespace Bonnier\WP\Cxense\Parsers;
  */
 class Document
 {
-
     protected $data;
 
     /**
