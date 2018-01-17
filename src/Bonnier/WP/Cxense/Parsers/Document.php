@@ -30,6 +30,6 @@ class Document
      */
     public function __get($strKey)
     {
-        return isset($this->data->{$strKey}) ? $this->data->{$strKey} : null;
+        return $this->data->{$strKey} ?? null;
     }
 }

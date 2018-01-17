@@ -105,7 +105,7 @@ class WidgetDocument
      */
     public function get_documents()
     {
-        $objDocuments = isset($this->set_categories()->set_parameters()->set_user()->get()->items) ? $this->set_categories()->set_parameters()->set_user()->get()->items : [];
+        $objDocuments = $this->set_categories()->set_parameters()->set_user()->get()->items ?? [];
 
         return [
             'totalCount' => count($objDocuments),
