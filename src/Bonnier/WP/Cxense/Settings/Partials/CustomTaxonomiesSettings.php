@@ -38,7 +38,7 @@ class CustomTaxonomiesSettings
         echo "<p>Give each taxonomy a number from 1 and up to order the taxonomies, lower numbers come first</p>";
 
         foreach ($taxonomies as $key => $taxonomy) {
-            $value = $fieldValues[$taxonomy] ?? ($key + 1);
+            $value = isset($fieldValues[$taxonomy]) ? $fieldValues[$taxonomy] : ($key + 1);
             echo "
                 <strong>$taxonomy:</strong> 
                 <input type='number' value='$value' min='1' max='$maxOrder' name='${fieldName}[$taxonomy]'>
