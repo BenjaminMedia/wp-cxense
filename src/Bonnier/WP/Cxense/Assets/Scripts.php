@@ -185,7 +185,6 @@ class Scripts
         $customTaxonomies = CustomTaxonomiesSettings::get_printable_taxonomies();
 
         foreach ($customTaxonomies as $customTaxonomy) {
-
             $customTaxonomyKey = $this->org_prefix . 'taxo-' . str_replace('_', '-', $customTaxonomy);
 
             if ($customTaxonomyTerms = wp_get_post_terms($postId, $customTaxonomy)) {
