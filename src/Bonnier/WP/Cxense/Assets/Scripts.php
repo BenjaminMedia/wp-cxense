@@ -183,11 +183,20 @@ class Scripts
     private function get_custom_taxonomy_terms($postId, $recs_tags)
     {
         $customTaxonomies = CustomTaxonomiesSettings::get_printable_taxonomies();
+
         foreach ($customTaxonomies as $customTaxonomy) {
-            foreach (wp_get_post_terms($postId, $customTaxonomy) as $term) {
-                $recs_tags[$this->org_prefix . 'taxo-' . str_replace('_', '-', $customTaxonomy)] = $term->name;
+
+            $customTaxonomyKey = $this->org_prefix . 'taxo-' . str_replace('_', '-', $customTaxonomy);
+
+            if ($customTaxonomyTerms = wp_get_post_terms($postId, $customTaxonomy)) {
+                $recs_tags[$customTaxonomyKey] = [];
+            }
+
+            foreach ($customTaxonomyTerms as $term) {
+                array_push($recs_tags[$customTaxonomyKey], $term->name);
             }
         }
+
         return $recs_tags;
     }
 
