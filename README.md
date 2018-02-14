@@ -299,5 +299,9 @@ wp_cxense()->get_widget_documents([
         ],
         ...
     ],
+    'contextualUrls' => [
+        0 => 'https://articleNotToBeIncludedInResults.com',
+        ...
+    ],
 ]);
 ```
