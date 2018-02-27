@@ -42,6 +42,10 @@ class SettingsPage
             'type' => 'text',
             'name' => 'SortBy Widget ID',
         ],
+        'persisted_query_id' => [
+            'type' => 'text',
+            'name' => 'Persisted Query ID',
+        ],
         'enable_query_cache' => [
             'type' => 'checkbox',
             'name' => 'Enable Query Cache',
@@ -55,7 +59,6 @@ class SettingsPage
             'name' => 'Widgets',
             'callback' => [WidgetSettings::class, 'render'],
             'sanitize_callback' => [WidgetSettings::class, 'sanitize_input']
-
         ],
         CustomTaxonomiesSettings::SETTING_KEY => [
             'type' => 'callback',
