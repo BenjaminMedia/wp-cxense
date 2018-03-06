@@ -45,9 +45,7 @@ class Scripts
         $recs_tags[$this->org_prefix . 'pagetype'] = $this->get_pagetype();
 
         $recs_tags['recs:recommendable'] = $this->get_recommendable();
-
-
-
+        
         if (is_singular() && is_single()) {
             global $post;
 
