@@ -20,10 +20,11 @@ class Query
     public function __construct()
     {
         $this->setWidgetId(wp_cxense()->settings->get_setting_value('sortby_widget_id', get_locale()));
-        $this->setSiteId( wp_cxense()->settings->get_setting_value("site_id", get_locale()));
+        $this->setSiteId(wp_cxense()->settings->get_setting_value("site_id", get_locale()));
     }
 
-    public static function make(){
+    public static function make()
+    {
         return new static();
     }
 
@@ -44,7 +45,8 @@ class Query
         $this->addParameter('siteId', $this->getSiteId());
     }
 
-    public function getWidgetId(){
+    public function getWidgetId()
+    {
         return $this->widgetId;
     }
 
@@ -59,35 +61,40 @@ class Query
 
 
 
-    public function addParameter($key, $value){
-        if(!isset($this->query['parameters'])){
+    public function addParameter($key, $value)
+    {
+        if (!isset($this->query['parameters'])) {
             $this->query['parameters'] = [];
         }
-        array_push($this->query['parameters'],[
+        array_push($this->query['parameters'], [
             'key' => $key,
             'value' => $value
         ]);
         return $this;
     }
 
-    public function bySimilarReads() {
+    public function bySimilarReads()
+    {
         $this->setContext(Query::SIMILAR_READS);
         return $this;
     }
 
-    public function byRecentlyViewed() {
+    public function byRecentlyViewed()
+    {
         $this->setContext(Query::RECENTLY_VIEWED);
         //Recently viewed by User requires cxense user ID.
         $this->setCxenseUserId();
         return $this;
     }
 
-    public function byPopular() {
+    public function byPopular()
+    {
         $this->setContext(Query::POPULAR);
         return $this;
     }
 
-    public function byRelated() {
+    public function byRelated()
+    {
         $this->setContext(Query::RELATED);
         return $this;
     }
@@ -142,7 +149,7 @@ class Query
      * @param String $tags
      * @return Query
      */
-    public function setTags(Array $tags = null): Query
+    public function setTags(array $tags = null): Query
     {
         $this->tags = $this->getWpTerms($tags);
         $this->addParameter('tag', $this->getTags());
@@ -164,14 +171,16 @@ class Query
         return $this->cxenseUserId;
     }
 
-    public function get(){
+    public function get()
+    {
         //ddHtml($this->query);
         return wp_cxense()->get_widget_documents($this->query);
     }
 
-    public function getWpTerms($termsArray){
+    public function getWpTerms($termsArray)
+    {
         $terms = "*";
-        if(is_array($termsArray)) {
+        if (is_array($termsArray)) {
             foreach ($termsArray as $key => $item) {
                 if (!$item instanceof \WP_Term) {
                     break;
