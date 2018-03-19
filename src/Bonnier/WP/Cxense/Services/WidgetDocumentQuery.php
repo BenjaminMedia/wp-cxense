@@ -2,7 +2,7 @@
 
 namespace Bonnier\WP\Cxense\Services;
 
-class Query
+class WidgetDocumentQuery
 {
     private $widgetId;
     private $siteId;
@@ -104,13 +104,13 @@ class Query
 
     public function bySimilarReads()
     {
-        $this->setMatchingMode(Query::SIMILAR_READS);
+        $this->setMatchingMode(self::SIMILAR_READS);
         return $this;
     }
 
     public function byRecentlyViewed()
     {
-        $this->setMatchingMode(Query::RECENTLY_VIEWED);
+        $this->setMatchingMode(self::RECENTLY_VIEWED);
         //Recently viewed by User requires cxense user ID.
         $this->setCxenseUserId();
         return $this;
@@ -118,13 +118,13 @@ class Query
 
     public function byPopular()
     {
-        $this->setMatchingMode(Query::POPULAR);
+        $this->setMatchingMode(self::POPULAR);
         return $this;
     }
 
     public function byRelated()
     {
-        $this->setMatchingMode(Query::RELATED);
+        $this->setMatchingMode(self::RELATED);
         return $this;
     }
 
@@ -138,9 +138,9 @@ class Query
 
     /**
      * @param mixed $context
-     * @return Query
+     * @return WidgetDocumentQuery
      */
-    public function setMatchingMode($context): Query
+    public function setMatchingMode($context): WidgetDocumentQuery
     {
         $this->matchingMode = $context;
         $this->query['categories'] = [ 'taxonomy' => $this->getMatchingMode()];
@@ -157,9 +157,9 @@ class Query
 
     /**
      * @param $categories
-     * @return Query
+     * @return WidgetDocumentQuery
      */
-    public function setCategories(array $categories = null): Query
+    public function setCategories(array $categories = null): WidgetDocumentQuery
     {
         $this->categories = $this->getWpTerms($categories);
         $this->addParameter('category', $this->getCategories());
@@ -176,9 +176,9 @@ class Query
 
     /**
      * @param String $tags
-     * @return Query
+     * @return WidgetDocumentQuery
      */
-    public function setTags(array $tags = null): Query
+    public function setTags(array $tags = null): WidgetDocumentQuery
     {
         $this->tags = $this->getWpTerms($tags);
         $this->addParameter('tag', $this->getTags());
@@ -202,6 +202,7 @@ class Query
 
     public function get()
     {
+        ddHtml($this->query);
         return wp_cxense()->get_widget_documents($this->query);
     }
 
@@ -209,15 +210,8 @@ class Query
     {
         $terms = "*";
         if (is_array($termsArray)) {
-            foreach ($termsArray as $key => $item) {
-                if (!$item instanceof \WP_Term) {
-                    break;
-                }
-                $terms .= $item->name;
-                if ($key < sizeof($termsArray) - 1) {
-                    $terms .= ' ';
-                }
-            }
+            $termsArray = array_column($termsArray, 'name');
+            $terms = implode(' ', $termsArray);
         }
         return $terms;
     }
