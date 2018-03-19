@@ -123,7 +123,7 @@ class Scripts
 
     private function persisted_query_id_tag()
     {
-        if($persisted_query_id = self::$settings->get_persisted_query_id()) {
+        if ($persisted_query_id = self::$settings->get_persisted_query_id()) {
             echo '<meta name="cxense-persisted-query-id" content="' . $persisted_query_id . '"></meta>' . PHP_EOL;
         }
     }
