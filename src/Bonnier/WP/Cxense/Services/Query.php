@@ -7,10 +7,11 @@ class Query
     private $widgetId;
     private $siteId;
     private $cxenseUserId;
-    private $context;
+    private $matchingMode;
     private $categories;
     private $tags;
     private $query;
+    private $context;
 
     const POPULAR = 'trend';
     const RELATED = 'contextual'; // Articles similar to the current article.
@@ -25,6 +26,33 @@ class Query
 
     public static function make(){
         return new static();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getContext()
+    {
+        return $this->context;
+    }
+
+    /**
+     * @param mixed $context
+     */
+    public function setContext($context): void
+    {
+        $this->context = $context;
+        $this->query['context'] = $this->getContext();
+    }
+
+    public function addContext(string $key, $value){
+        if(!isset($this->query['context'])){
+            $this->query['context'] = [];
+        }
+        $context = $this->getContext();
+        $context[$key] = $value;
+        $this->setContext($context);
+        return $this;
     }
 
     /**
@@ -71,43 +99,43 @@ class Query
     }
 
     public function bySimilarReads() {
-        $this->setContext(Query::SIMILAR_READS);
+        $this->setMatchingMode(Query::SIMILAR_READS);
         return $this;
     }
 
     public function byRecentlyViewed() {
-        $this->setContext(Query::RECENTLY_VIEWED);
+        $this->setMatchingMode(Query::RECENTLY_VIEWED);
         //Recently viewed by User requires cxense user ID.
         $this->setCxenseUserId();
         return $this;
     }
 
     public function byPopular() {
-        $this->setContext(Query::POPULAR);
+        $this->setMatchingMode(Query::POPULAR);
         return $this;
     }
 
     public function byRelated() {
-        $this->setContext(Query::RELATED);
+        $this->setMatchingMode(Query::RELATED);
         return $this;
     }
 
     /**
      * @return mixed
      */
-    public function getContext()
+    public function getMatchingMode()
     {
-        return $this->context;
+        return $this->matchingMode;
     }
 
     /**
      * @param mixed $context
      * @return Query
      */
-    public function setContext($context): Query
+    public function setMatchingMode($context): Query
     {
-        $this->context = $context;
-        $this->query['categories'] = [ 'taxonomy' => $this->getContext()];
+        $this->matchingMode = $context;
+        $this->query['categories'] = [ 'taxonomy' => $this->getMatchingMode()];
         return $this;
     }
 
@@ -165,7 +193,6 @@ class Query
     }
 
     public function get(){
-        //ddHtml($this->query);
         return wp_cxense()->get_widget_documents($this->query);
     }
 
