@@ -42,15 +42,11 @@ class Scripts
             $recs_tags[$this->org_prefix . 'brand'] = self::$settings->get_brand();
         }
 
-        if (is_category()) {
-            $recs_tags[$this->org_prefix . 'pagetype'] = 'category';
-        }
+        $recs_tags[$this->org_prefix . 'pagetype'] = $this->get_pagetype();
 
-        if (is_tag()) {
-            $recs_tags[$this->org_prefix . 'pagetype'] = 'tag';
-        }
-
-        if (is_singular() || is_single()) {
+        $recs_tags['recs:recommendable'] = $this->get_recommendable();
+        
+        if (is_singular() && is_single()) {
             global $post;
 
             // Set the ID
@@ -103,7 +99,7 @@ class Scripts
                 return $items[0]->name;
             }
             $data = [];
-            
+
             // More than one? Start the loop!
             foreach ($items as $item) {
                 if (isset($item->name)) {
@@ -214,5 +210,36 @@ class Scripts
             return get_field('kind', $post->ID);
         }
         return 'Article';
+    }
+
+    private function get_pagetype()
+    {
+        if (is_category()) {
+            return 'category';
+        }
+
+        if (is_tag()) {
+            return 'tag';
+        }
+
+        if (is_front_page()) {
+            return 'frontpage';
+        }
+
+        if (is_page()) {
+            return 'panel';
+        }
+
+        return '';
+    }
+
+    private function get_recommendable()
+    {
+        // Ops! It should return strings, not bool!
+        if (is_front_page() || is_tag() || is_category() || is_page()) {
+            return "false";
+        }
+
+        return "true";
     }
 }
