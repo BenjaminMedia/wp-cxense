@@ -46,8 +46,9 @@ class Query
         $this->query['context'] = $this->getContext();
     }
 
-    public function addContext(string $key, $value){
-        if(!isset($this->query['context'])){
+    public function addContext(string $key, $value)
+    {
+        if (!isset($this->query['context'])) {
             $this->query['context'] = [];
         }
         $context = $this->getContext();
