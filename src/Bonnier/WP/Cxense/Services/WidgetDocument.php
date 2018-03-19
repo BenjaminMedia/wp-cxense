@@ -179,7 +179,12 @@ class WidgetDocument
     private function set_parameters()
     {
         if (isset($this->arrInput['parameters']) && is_array($this->arrInput['parameters'])) {
-            $this->arrPayload['context']['parameters'] = $this->arrInput['parameters'];
+            if(isset($this->arrPayload['context'])){
+                $this->arrPayload['context']['parameters'] = $this->arrInput['parameters'];
+            }
+            else {
+                $this->arrPayload['parameters'] = $this->arrInput['parameters'];
+            }
         }
         return $this;
     }
