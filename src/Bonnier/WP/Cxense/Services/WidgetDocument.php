@@ -105,10 +105,9 @@ class WidgetDocument
      */
     public function get_documents()
     {
-        $objDocuments = isset($this->set_categories()->set_parameters()->set_contextualUrls()->set_user()->get()->items)
+        $objDocuments = isset($this->set_categories()->set_parameters()->set_contextualUrls()->set_contextUrl()->set_user()->get()->items)
             ? $this->set_categories()->set_parameters()->set_contextualUrls()->set_user()->get()->items
             : [];
-
         return [
             'totalCount' => count($objDocuments),
             'matches' => $this->parse_documents($objDocuments)
@@ -182,7 +181,7 @@ class WidgetDocument
     private function set_parameters()
     {
         if (isset($this->arrInput['parameters']) && is_array($this->arrInput['parameters'])) {
-            $this->arrPayload['context']['parameters'] = $this->arrInput['parameters'];
+            $this->arrPayload['parameters'] = $this->arrInput['parameters'];
         }
         return $this;
     }
@@ -196,6 +195,19 @@ class WidgetDocument
     {
         if (isset($this->arrInput['contextualUrls']) && is_array($this->arrInput['contextualUrls'])) {
             $this->arrPayload['context']['contextualUrls'] = $this->arrInput['contextualUrls'];
+        }
+        return $this;
+    }
+
+    /**
+     * Set contextualUrls array to the request payload
+     *
+     * @return WidgetDocument
+     */
+    private function set_contextUrl()
+    {
+        if (isset($this->arrInput['context']['url'])) {
+            $this->arrPayload['context']['url'] = $this->arrInput['context']['url'];
         }
         return $this;
     }
