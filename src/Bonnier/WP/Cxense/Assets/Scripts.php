@@ -121,6 +121,15 @@ class Scripts
         $recs_tags = apply_filters('cxense_head_tags', []);
 
         $this->recursive_get_meta_tag($recs_tags);
+
+        $this->persisted_query_id_tag();
+    }
+
+    private function persisted_query_id_tag()
+    {
+        if($persisted_query_id = self::$settings->get_persisted_query_id()) {
+            echo '<meta name="cxense-persisted-query-id" content="' . $persisted_query_id . '"></meta>' . PHP_EOL;
+        }
     }
 
     private function recursive_get_meta_tag($recs_tags, $org_cxense_key = '')
