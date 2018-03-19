@@ -105,9 +105,8 @@ class WidgetDocument
      */
     public function get_documents()
     {
-        $objDocuments = isset($this->set_categories()->set_parameters()->set_contextualUrls()->set_contextUrl()->set_user()->get()->items)
-            ? $this->set_categories()->set_parameters()->set_contextualUrls()->set_user()->get()->items
-            : [];
+        $result = $this->set_categories()->set_contextualUrls()->set_contextUrl()->set_parameters()->set_user()->get();
+        $objDocuments = isset($result->items) ? $result->items : [];
         return [
             'totalCount' => count($objDocuments),
             'matches' => $this->parse_documents($objDocuments)
@@ -134,7 +133,6 @@ class WidgetDocument
     private function get()
     {
         $this->set_widget_id();
-
         try {
             $objResponse = HttpRequest::get_instance()->post('public/widget/data', [
                 'body' => json_encode($this->arrPayload)
@@ -181,7 +179,7 @@ class WidgetDocument
     private function set_parameters()
     {
         if (isset($this->arrInput['parameters']) && is_array($this->arrInput['parameters'])) {
-            $this->arrPayload['parameters'] = $this->arrInput['parameters'];
+            $this->arrPayload['context']['parameters'] = $this->arrInput['parameters'];
         }
         return $this;
     }
