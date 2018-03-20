@@ -278,6 +278,11 @@ class SettingsPage
         return $this->get_setting_value(WidgetSettings::SETTING_KEY, $locale) ?: [];
     }
 
+    public function get_persisted_query_id($locale = null)
+    {
+        return $this->get_setting_value('persisted_query_id', $locale) ?: '';
+    }
+
     public function get_searchable_taxonomies($locale = null)
     {   // Flip array so the sort order number becomes the key ie. [1 => 'category', 2 => 'post_tag']
         $taxonomyOrder = array_flip($this->get_setting_value(CustomTaxonomiesSettings::SETTING_KEY_ORDER, $locale)) ?: [];
