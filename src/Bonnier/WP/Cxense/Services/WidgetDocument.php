@@ -105,10 +105,8 @@ class WidgetDocument
      */
     public function get_documents()
     {
-        $objDocuments = isset($this->set_categories()->set_parameters()->set_contextualUrls()->set_user()->get()->items)
-            ? $this->set_categories()->set_parameters()->set_contextualUrls()->set_user()->get()->items
-            : [];
-
+        $result = $this->set_categories()->set_contextualUrls()->set_contextUrl()->set_parameters()->set_user()->get();
+        $objDocuments = isset($result->items) ? $result->items : [];
         return [
             'totalCount' => count($objDocuments),
             'matches' => $this->parse_documents($objDocuments)
@@ -135,7 +133,6 @@ class WidgetDocument
     private function get()
     {
         $this->set_widget_id();
-
         try {
             $objResponse = HttpRequest::get_instance()->post('public/widget/data', [
                 'body' => json_encode($this->arrPayload)
@@ -182,7 +179,11 @@ class WidgetDocument
     private function set_parameters()
     {
         if (isset($this->arrInput['parameters']) && is_array($this->arrInput['parameters'])) {
-            $this->arrPayload['context']['parameters'] = $this->arrInput['parameters'];
+            if (isset($this->arrPayload['context'])) {
+                $this->arrPayload['context']['parameters'] = $this->arrInput['parameters'];
+            } else {
+                $this->arrPayload['parameters'] = $this->arrInput['parameters'];
+            }
         }
         return $this;
     }
@@ -196,6 +197,19 @@ class WidgetDocument
     {
         if (isset($this->arrInput['contextualUrls']) && is_array($this->arrInput['contextualUrls'])) {
             $this->arrPayload['context']['contextualUrls'] = $this->arrInput['contextualUrls'];
+        }
+        return $this;
+    }
+
+    /**
+     * Set contextualUrls array to the request payload
+     *
+     * @return WidgetDocument
+     */
+    private function set_contextUrl()
+    {
+        if (isset($this->arrInput['context']['url'])) {
+            $this->arrPayload['context']['url'] = $this->arrInput['context']['url'];
         }
         return $this;
     }
