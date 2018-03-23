@@ -208,11 +208,9 @@ class WidgetDocumentQuery
 
     public function getWpTerms($termsArray)
     {
-        $terms = "*";
         if (is_array($termsArray)) {
-            $termsArray = array_column($termsArray, 'name');
-            $terms = implode(' ', $termsArray);
+            return implode(' ', array_column($termsArray, 'name'));
         }
-        return $terms;
+        return "*";
     }
 }
