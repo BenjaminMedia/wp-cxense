@@ -202,7 +202,6 @@ class WidgetDocumentQuery
 
     public function get()
     {
-        ddHtml($this->query);
         return wp_cxense()->get_widget_documents($this->query);
     }
 
