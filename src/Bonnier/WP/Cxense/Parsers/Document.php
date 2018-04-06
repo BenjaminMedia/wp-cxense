@@ -37,11 +37,13 @@ class Document implements \JsonSerializable
         return isset($this->data->{$strKey}) ? $this->data->{$strKey} : null;
     }
 
-    public function getField($fieldKey) {
+    public function getField($fieldKey)
+    {
         return isset($this->formattedFields->{$fieldKey}) ? $this->formattedFields->{$fieldKey} : null;
     }
 
-    public function getHighlight($fieldKey) {
+    public function getHighlight($fieldKey)
+    {
         return isset($this->formattedHighlights->{$fieldKey}) ? $this->formattedHighlights->{$fieldKey} : null;
     }
 
