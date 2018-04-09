@@ -67,12 +67,8 @@ class DocumentSearch
             'title',
             'click_url',
             'url',
-            'bod-commercial-label',
-            'bod-commercial-format',
-            'dominantimage',
             'dominantthumbnail',
-            'recs-publishtime',
-            'recs-articleid'
+            'recs-publishtime'
         ]
     ];
 
