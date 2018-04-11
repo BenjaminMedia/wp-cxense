@@ -40,7 +40,7 @@ class WidgetDocumentQuery
     /**
      * @param mixed $context
      */
-    public function setContext($context): void
+    public function setContext($context)
     {
         $this->context = $context;
         $this->query['context'] = $this->getContext();
@@ -60,7 +60,7 @@ class WidgetDocumentQuery
     /**
      * @return string
      */
-    public function getSiteId(): string
+    public function getSiteId()
     {
         return $this->siteId;
     }
@@ -68,7 +68,7 @@ class WidgetDocumentQuery
     /**
      * @param string $siteId
      */
-    public function setSiteId(string $siteId): void
+    public function setSiteId(string $siteId)
     {
         $this->siteId = $siteId;
         $this->addParameter('siteId', $this->getSiteId());
@@ -82,7 +82,7 @@ class WidgetDocumentQuery
     /**
      * @param string $widgetId
      */
-    private function setWidgetId(string $widgetId): void
+    private function setWidgetId(string $widgetId)
     {
         $this->widgetId = $widgetId;
         $this->query['widgetId'] = $this->getWidgetId();
@@ -140,7 +140,7 @@ class WidgetDocumentQuery
      * @param mixed $context
      * @return WidgetDocumentQuery
      */
-    public function setMatchingMode($context): WidgetDocumentQuery
+    public function setMatchingMode($context)
     {
         $this->matchingMode = $context;
         $this->query['categories'] = [ 'taxonomy' => $this->getMatchingMode()];
@@ -159,7 +159,7 @@ class WidgetDocumentQuery
      * @param $categories
      * @return WidgetDocumentQuery
      */
-    public function setCategories(array $categories = null): WidgetDocumentQuery
+    public function setCategories(array $categories = null)
     {
         $this->categories = $this->getWpTerms($categories);
         $this->addParameter('category', $this->getCategories());
@@ -178,7 +178,7 @@ class WidgetDocumentQuery
      * @param String $tags
      * @return WidgetDocumentQuery
      */
-    public function setTags(array $tags = null): WidgetDocumentQuery
+    public function setTags(array $tags = null)
     {
         $this->tags = $this->getWpTerms($tags);
         $this->addParameter('tag', $this->getTags());

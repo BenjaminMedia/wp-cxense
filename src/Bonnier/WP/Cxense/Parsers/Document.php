@@ -8,7 +8,7 @@ namespace Bonnier\WP\Cxense\Parsers;
 /**
  * Document class
  */
-class Document implements \JsonSerializable
+class Document
 {
     protected $data;
     protected $formattedFields;
@@ -22,8 +22,11 @@ class Document implements \JsonSerializable
     public function __construct(\stdClass $objData)
     {
         $this->data = $objData;
-        $this->setFormattedFields($objData->fields);
-        $this->setFormattedHighlights($objData->highlights);
+
+        if (isset($objData->fields, $objData->highlights)) {
+            $this->setFormattedFields($objData->fields);
+            $this->setFormattedHighlights($objData->highlights);
+        }
     }
 
     /**
@@ -45,18 +48,6 @@ class Document implements \JsonSerializable
     public function getHighlight($fieldKey)
     {
         return isset($this->formattedHighlights->{$fieldKey}) ? $this->formattedHighlights->{$fieldKey} : null;
-    }
-
-    /**
-     * Specify data which should be serialized to JSON
-     * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return mixed data which can be serialized by <b>json_encode</b>,
-     * which is a value of any type other than a resource.
-     * @since 5.4.0
-     */
-    public function jsonSerialize()
-    {
-        return $this->data;
     }
 
     private function setFormattedHighlights($fields)

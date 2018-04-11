@@ -17,21 +17,21 @@ use Bonnier\WP\Cxense\Parsers\Document;
  */
 class WidgetDocument
 {
-    
+
     /**
      * Instance object
      *
      * @var WidgetDocument $objInstance
      */
     private static $objInstance;
-    
+
     /**
      * Input array
      *
      * @var array $arrInput
      */
     private $arrInput = [];
-    
+
     /**
      * Payload array
      *
@@ -45,7 +45,7 @@ class WidgetDocument
      * @var SettingsPage $objSettings
      */
     private $objSettings;
-    
+
     /**
      * Constructor
      *
@@ -57,7 +57,7 @@ class WidgetDocument
         $this->arrInput = $arrInput;
         $this->validate_widget_id();
     }
-    
+
     /**
      * Singleton implementation
      *
@@ -74,7 +74,7 @@ class WidgetDocument
         self::set_arrayInput($arrInput);
         return self::$objInstance;
     }
-    
+
     /**
      * Set settings object
      *
@@ -97,7 +97,7 @@ class WidgetDocument
         self::$objInstance->validate_widget_id();
         self::$objInstance->arrInput = $arrInput;
     }
-    
+
     /**
      * Get documents
      *
@@ -112,7 +112,7 @@ class WidgetDocument
             'matches' => $this->parse_documents($objDocuments)
         ];
     }
-    
+
     /**
      * Check for widget id presence
      *
@@ -124,7 +124,7 @@ class WidgetDocument
             throw new WidgetMissingId('Missing request "widgetId" key!');
         }
     }
-    
+
     /**
      * Get documents
      *
@@ -146,7 +146,7 @@ class WidgetDocument
 
         return json_decode($objResponse->getBody());
     }
-    
+
     /**
      * Set widget_id to the request payload
      *
@@ -157,7 +157,7 @@ class WidgetDocument
         $this->arrPayload['widgetId'] = $this->arrInput['widgetId'];
         return $this;
     }
-    
+
     /**
      * Set categories array to the request payload
      *
@@ -170,7 +170,7 @@ class WidgetDocument
         }
         return $this;
     }
-    
+
     /**
      * Set parameters array to the request payload
      *
@@ -227,7 +227,7 @@ class WidgetDocument
 
         return $this;
     }
-    
+
     /**
      * Parse documents to cxense object
      *
@@ -237,11 +237,11 @@ class WidgetDocument
     private function parse_documents(array $arrDocuments)
     {
         $arrCollection = [];
-        
+
         foreach ($arrDocuments as $objDocument) {
             $arrCollection[] = new Document($objDocument);
         }
-        
+
         return $arrCollection;
     }
 }
