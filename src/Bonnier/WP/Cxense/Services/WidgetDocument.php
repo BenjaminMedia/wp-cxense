@@ -105,7 +105,7 @@ class WidgetDocument
      */
     public function get_documents()
     {
-        $result = $this->set_categories()->set_contextualUrls()->set_contextUrl()->set_parameters()->set_user()->get();
+        $result = $this->set_categories()->set_contextUrl()->set_parameters()->set_user()->get();
         $objDocuments = isset($result->items) ? $result->items : [];
         return [
             'totalCount' => count($objDocuments),
@@ -127,8 +127,8 @@ class WidgetDocument
 
     /**
      * Get documents
-     *
-     * @return \Illuminate\Support\Collection
+     * @return mixed
+     * @throws WidgetException
      */
     private function get()
     {
@@ -189,20 +189,7 @@ class WidgetDocument
     }
 
     /**
-     * Set contextualUrls array to the request payload
-     *
-     * @return WidgetDocument
-     */
-    private function set_contextualUrls()
-    {
-        if (isset($this->arrInput['contextualUrls']) && is_array($this->arrInput['contextualUrls'])) {
-            $this->arrPayload['context']['contextualUrls'] = $this->arrInput['contextualUrls'];
-        }
-        return $this;
-    }
-
-    /**
-     * Set contextualUrls array to the request payload
+     * Set current page url to the request payload
      *
      * @return WidgetDocument
      */
