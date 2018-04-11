@@ -115,8 +115,8 @@ class WidgetDocument
 
     /**
      * Check for widget id presence
-     *
      * @return null
+     * @throws WidgetMissingId
      */
     private function validate_widget_id()
     {
@@ -195,8 +195,8 @@ class WidgetDocument
      */
     private function set_contextUrl()
     {
-        if (isset($this->arrInput['context']['url'])) {
-            $this->arrPayload['context']['url'] = $this->arrInput['context']['url'];
+        if (isset($this->arrInput['url'])) {
+            $this->arrPayload['context']['url'] = $this->arrInput['url'];
         }
         return $this;
     }
