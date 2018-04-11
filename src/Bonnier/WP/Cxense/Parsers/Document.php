@@ -11,6 +11,8 @@ namespace Bonnier\WP\Cxense\Parsers;
 class Document implements \JsonSerializable
 {
     protected $data;
+    protected $formattedFields;
+    protected $formattedHighlights;
 
     /**
      * Constructor
@@ -20,6 +22,8 @@ class Document implements \JsonSerializable
     public function __construct(\stdClass $objData)
     {
         $this->data = $objData;
+        $this->setFormattedFields($objData->fields);
+        $this->setFormattedHighlights($objData->highlights);
     }
 
     /**
@@ -33,6 +37,16 @@ class Document implements \JsonSerializable
         return isset($this->data->{$strKey}) ? $this->data->{$strKey} : null;
     }
 
+    public function getField($fieldKey)
+    {
+        return isset($this->formattedFields->{$fieldKey}) ? $this->formattedFields->{$fieldKey} : null;
+    }
+
+    public function getHighlight($fieldKey)
+    {
+        return isset($this->formattedHighlights->{$fieldKey}) ? $this->formattedHighlights->{$fieldKey} : null;
+    }
+
     /**
      * Specify data which should be serialized to JSON
      * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
@@ -43,5 +57,21 @@ class Document implements \JsonSerializable
     public function jsonSerialize()
     {
         return $this->data;
+    }
+
+    private function setFormattedHighlights($fields)
+    {
+        $this->formattedHighlights = new \stdClass();
+        foreach ($fields as $cxField) {
+            $this->formattedHighlights->{$cxField->field} = $cxField->highlight;
+        }
+    }
+
+    private function setFormattedFields($fields)
+    {
+        $this->formattedFields = new \stdClass();
+        foreach ($fields as $cxField) {
+            $this->formattedFields->{$cxField->field} = $cxField->value;
+        }
     }
 }
