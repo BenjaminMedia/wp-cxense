@@ -198,6 +198,9 @@ class WidgetDocument
         if (isset($this->arrInput['url'])) {
             $this->arrPayload['context']['url'] = $this->arrInput['url'];
         }
+        if (isset($this->arrInput['context']['url'])) {
+            $this->arrPayload['context']['url'] = $this->arrInput['context']['url'];
+        }
         return $this;
     }
 
