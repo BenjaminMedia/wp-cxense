@@ -2,6 +2,8 @@
 
 namespace Bonnier\WP\Cxense\Services;
 
+use Bonnier\WP\Cxense\WpCxense;
+
 class WidgetDocumentQuery
 {
     private $widgetId;
@@ -20,8 +22,8 @@ class WidgetDocumentQuery
 
     public function __construct()
     {
-        $this->setWidgetId(wp_cxense()->settings->get_setting_value('sortby_widget_id', get_locale()));
-        $this->setSiteId(wp_cxense()->settings->get_setting_value("site_id", get_locale()));
+        $this->setWidgetId(WpCxense::instance()->settings->get_setting_value('sortby_widget_id', get_locale()));
+        $this->setSiteId(WpCxense::instance()->settings->get_setting_value("site_id", get_locale()));
     }
 
     public static function make()
@@ -202,7 +204,7 @@ class WidgetDocumentQuery
 
     public function get()
     {
-        return wp_cxense()->get_widget_documents($this->query);
+        return WpCxense::instance()->get_widget_documents($this->query);
     }
 
     public function getWpTerms($termsArray)
