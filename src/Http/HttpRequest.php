@@ -5,6 +5,7 @@
 
 namespace Bonnier\WP\Cxense\Http;
 
+use Bonnier\WP\Cxense\Services\DocumentSearch;
 use Bonnier\WP\Cxense\Settings\SettingsPage;
 
 /**

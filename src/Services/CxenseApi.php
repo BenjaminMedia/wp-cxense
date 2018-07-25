@@ -7,8 +7,6 @@ use Bonnier\WP\Cxense\Exceptions\HttpException;
 use Bonnier\WP\Cxense\Models\Post;
 use Bonnier\WP\Cxense\Settings\SettingsPage;
 use Exception;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
 
 class CxenseApi
 {
