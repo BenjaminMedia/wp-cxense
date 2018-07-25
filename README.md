@@ -1,14 +1,13 @@
 # Bonnier Publications - WordPress cXense plugin
-
 This plugin enables your WordPress site to integrate with cXense.
 It adds the meta tags and scripts needed by cXense in order to scan your site.
 It also calls cXense whenever you make changes to your content.
 Finally it adds the possibility to save a cXense recommendation widget per content type and provides hooks to call them in your view/theme.
-### Requirements
 
+### Requirements
 - WordPress 4.3 or higher
 - Language support (Optional) Polylang plugin must installed and activated version 1.8.4 or higher
-- PHP 5.6 or higher
+- PHP 7.1 or higher
 
 ### Installation/Configuration
 
@@ -22,19 +21,16 @@ Download lastest release from: https://github.com/BenjaminMedia/wp-cxense/releas
 And unzip and place in your /wp-content/plugins directory.
 
 #### Settings
-
 Once you have installed and activated the plugin then make sure that you have
 a set of api credentials for the cXense API.
 Once you have your credentials you may go to the settings page labeled cXense.
 Here you must enter your ```cXense Site ID```, ```cXense API user```,
  ```cXense API key``` and finally your ```cXense Organisation prefix```.
 
- ##### Remember the plugin will not work until you check the ```Enable``` switch in the settings page
-
+##### Remember the plugin will not work until you check the ```Enable``` switch in the settings page
 ---
 
 ### Widgets
-
 The plugin will generate a ```CX Widget ID``` settings field for each post type
 you have available on your WordPress Installation. Here you must enter the
 cXense recommendation widget ID that you would like represented on your
@@ -63,7 +59,7 @@ following methods to get the widget data:
 
 ``` php
 
-wp_cxense()->render_widget();
+WpCxense::instance()->render_widget();
 
 ```
 
@@ -111,7 +107,7 @@ The sample output of this function could look like:
 
 ``` php
 
-wp_cxense()->get_widget_data();
+WpCxense::instance()->get_widget_data();
 
 ```
 
@@ -152,7 +148,7 @@ If the key 'query' is missing from the search array then a [DocumentSearchMissin
 ##### Search
 
 ``` php
-wp_cxense()->search_documents([
+WpCxense::instance()->search_documents([
     'query' => 'search_term', // mandatory
     'page' => 1, // optional, defaults to 1
     'count' => 10, // optional, defaults to 10
@@ -286,7 +282,7 @@ object(Bonnier\WP\Cxense\Parsers\Document)[710]
 If the key 'widget_id' is missing from the input array then a [WidgetMissingId](https://github.com/BenjaminMedia/wp-cxense/blob/search_documents/src/Bonnier/WP/Cxense/Exceptions/WidgetMissingId.php) exception is thrown.
 
 ``` php
-wp_cxense()->get_widget_documents([
+WpCxense::instance()->get_widget_documents([
     'widgetId' => 'widget_id', // mandatory
     'user' => ['ids' => ['usi' => 'cxUserId']], // optional
     'categories' => [
