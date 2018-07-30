@@ -2,6 +2,7 @@
 
 namespace Bonnier\WP\Cxense\Models;
 
+use Bonnier\Willow\MuPlugins\LanguageProvider;
 use Bonnier\WP\Cxense\Services\CxenseApi;
 use Bonnier\WP\Cxense\Settings\SettingsPage;
 
@@ -60,7 +61,7 @@ class Post
     private static function set_current_lang_from_post_id($postId)
     {
         if (self::$settings->languages_is_enabled()) {
-            self::$settings->set_current_locale(pll_get_post_language($postId));
+            self::$settings->set_current_locale(LanguageProvider::getPostLanguage($postId));
         }
     }
 }

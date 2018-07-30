@@ -2,9 +2,9 @@
 
 namespace Bonnier\WP\Cxense\Settings;
 
+use Bonnier\Willow\MuPlugins\LanguageProvider;
 use Bonnier\WP\Cxense\Settings\Partials\CustomTaxonomiesSettings;
 use Bonnier\WP\Cxense\Settings\Partials\WidgetSettings;
-use PLL_Language;
 
 class SettingsPage
 {
@@ -322,13 +322,13 @@ class SettingsPage
 
     public function languages_is_enabled()
     {
-        return function_exists('Pll') && PLL()->model->get_languages_list();
+        return LanguageProvider::enabled();
     }
 
     public function get_languages()
     {
         if ($this->languages_is_enabled()) {
-            return PLL()->model->get_languages_list();
+            return LanguageProvider::getLanguageList();
         }
         return false;
     }
@@ -336,12 +336,12 @@ class SettingsPage
     /**
      * Get the current language by looking at the current HTTP_HOST
      *
-     * @return null|PLL_Language
+     * @return null|string
      */
     public function get_current_language()
     {
         if ($this->languages_is_enabled()) {
-            return PLL()->model->get_language(pll_current_language());
+            return LanguageProvider::getCurrentLanguage('locale');
         }
         return null;
     }
@@ -360,8 +360,7 @@ class SettingsPage
         if ($this->currentLocale !== null) {
             return $this->currentLocale;
         }
-        $currentLang = $this->get_current_language();
-        return $currentLang ? $currentLang->locale : null;
+        return $this->get_current_language() ?? null;
     }
 
     private function get_select_field_options($field)
