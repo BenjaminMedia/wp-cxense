@@ -68,10 +68,7 @@ class WpCxense
 
         $this->settings = new SettingsPage();
         $this->scripts = new Scripts();
-    }
 
-    private function bootstrap()
-    {
         Post::watch_post_changes($this->settings);
         $this->scripts->bootstrap($this->settings);
         CxenseApi::bootstrap($this->settings);
@@ -84,7 +81,6 @@ class WpCxense
     {
         if (!self::$instance) {
             self::$instance = new self;
-            self::$instance->bootstrap();
 
             /**
              * Run after the plugin has been loaded.

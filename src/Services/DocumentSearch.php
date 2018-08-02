@@ -108,7 +108,7 @@ class DocumentSearch
     {
         $this->objSettings = $objSettings;
 
-        if ($strPrefix = $this->objSettings->get_organisation_prefix()) {
+        if ($strPrefix = $this->objSettings->getOrganisationPrefix()) {
             $this->arrFields['organisation'] = array_map(function ($strValue) use ($strPrefix) {
                 return $strPrefix . '-' . $strValue;
             }, $this->arrFields['organisation']);
@@ -163,7 +163,7 @@ class DocumentSearch
     {
         $this->set_site_id();
         $this->set_log_query();
-        $this->arrPayload['query'] = QueryLanguage::getQuery($this->objSettings->get_organisation_prefix(), $this->arrSearch['query']);
+        $this->arrPayload['query'] = QueryLanguage::getQuery($this->objSettings->getOrganisationPrefix(), $this->arrSearch['query']);
 
         $objResponse = HttpRequest::get_instance()->set_auth($this->objSettings)->post('document/search', [
             'body' => json_encode($this->arrPayload, JSON_UNESCAPED_UNICODE)
@@ -192,7 +192,7 @@ class DocumentSearch
      */
     private function set_site_id()
     {
-        $this->arrPayload['siteId'] = $this->objSettings->get_site_id();
+        $this->arrPayload['siteId'] = $this->objSettings->getSiteId();
         return $this;
     }
 

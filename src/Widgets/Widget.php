@@ -51,7 +51,7 @@ class Widget
     private static function get_widget_id(SettingsPage $settingsPage)
     {
         if (is_singular() || is_single()) {
-            $widgetIds = $settingsPage->get_widget_ids();
+            $widgetIds = $settingsPage->getWidgetIds();
 
             global $post;
 

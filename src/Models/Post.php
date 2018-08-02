@@ -2,7 +2,7 @@
 
 namespace Bonnier\WP\Cxense\Models;
 
-use Bonnier\Willow\MuPlugins\LanguageProvider;
+use Bonnier\Willow\MuPlugins\Helpers\LanguageProvider;
 use Bonnier\WP\Cxense\Services\CxenseApi;
 use Bonnier\WP\Cxense\Settings\SettingsPage;
 

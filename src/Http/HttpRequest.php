@@ -112,7 +112,7 @@ class HttpRequest
     public function set_auth(SettingsPage $objSettings)
     {
         $strDate = date("Y-m-d\TH:i:s.000O");
-        $this->arrHeaders['X-cXense-Authentication'] = 'username=' . $objSettings->get_api_user() . ' date=' . $strDate . ' hmac-sha256-hex=' . hash_hmac("sha256", $strDate, $objSettings->get_api_key());
+        $this->arrHeaders['X-cXense-Authentication'] = 'username=' . $objSettings->getApiUser() . ' date=' . $strDate . ' hmac-sha256-hex=' . hash_hmac("sha256", $strDate, $objSettings->getApiKey());
         
         return $this;
     }

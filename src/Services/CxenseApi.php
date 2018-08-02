@@ -109,7 +109,7 @@ class CxenseApi
      */
     private static function getCxenseUser()
     {
-        $cxUser = self::$settings->get_api_user();
+        $cxUser = self::$settings->getApiUser();
 
         if (!$cxUser) {
             throw new Exception('You must define constants CXENSE_USER_NAME and CXENSE_API_KEY', self::EXCEPTION_USER_NOT_DEFINED);
