@@ -9,23 +9,29 @@
       "name": "Bonnier Publications",
       "email": "interactive@bonnier.dk",
       "homepage": "http://bonnierpublications.com"
-    },
-    {
-      "name": "Alf Henderson",
-      "email": "alf.henderson@bonnier.dk"
     }
   ],
-  "support": {
-    "issues": "https://github.com/BenjaminMedia/wp-cxense/issues",
-    "source": "https://github.com/BenjaminMedia/wp-cxense"
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://wpackagist.org"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/BenjaminMedia/willow-mu-plugins"
+    }
+  ],
+  "require": {
+    "php": ">=7.1",
+    "johnpbloch/wordpress": "4.9.7",
+    "illuminate/support": "^5.6",
+    "bonnier/willow-mu-plugins": "dev-master"
   },
   "autoload": {
     "psr-4": {
       "Bonnier\\WP\\Cxense\\": "src"
     }
   },
-  "require": {
-    "php": ">=7.1",
-    "illuminate/support": "^5.6"
-  }
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }
