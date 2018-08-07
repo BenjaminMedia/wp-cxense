@@ -23,9 +23,11 @@
   ],
   "require": {
     "php": ">=7.1",
-    "johnpbloch/wordpress": "4.9.7",
     "illuminate/support": "^5.6",
     "bonnier/willow-mu-plugins": "dev-master"
+  },
+  "require-dev": {
+    "johnpbloch/wordpress": "^4.9"
   },
   "autoload": {
     "psr-4": {
