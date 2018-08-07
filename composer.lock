@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6e07b4ecb2e34a6b26aa93c52a0fedbe",
+    "content-hash": "b31dbe2bf92964fd4d486198532c13cf",
     "packages": [
         {
             "name": "bonnier/willow-mu-plugins",
-            "version": "dev-master",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:BenjaminMedia/willow-mu-plugins.git",
-                "reference": "2442a1b027305db79fe2609d648970896a31a287"
+                "reference": "c12da365f108bafdd08b8445e7552b3eb7dba409"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BenjaminMedia/willow-mu-plugins/zipball/2442a1b027305db79fe2609d648970896a31a287",
-                "reference": "2442a1b027305db79fe2609d648970896a31a287",
+                "url": "https://api.github.com/repos/BenjaminMedia/willow-mu-plugins/zipball/c12da365f108bafdd08b8445e7552b3eb7dba409",
+                "reference": "c12da365f108bafdd08b8445e7552b3eb7dba409",
                 "shasum": ""
             },
             "require": {
@@ -52,10 +52,10 @@
             ],
             "description": "A collection of Must Use WordPress Plugins for Willow",
             "support": {
-                "source": "https://github.com/BenjaminMedia/willow-mu-plugins/tree/master",
+                "source": "https://github.com/BenjaminMedia/willow-mu-plugins/tree/v1.0.0",
                 "issues": "https://github.com/BenjaminMedia/willow-mu-plugins/issues"
             },
-            "time": "2018-08-07T10:01:35+00:00"
+            "time": "2018-08-07T12:50:49+00:00"
         },
         {
             "name": "doctrine/inflector",
@@ -639,9 +639,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "bonnier/willow-mu-plugins": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
