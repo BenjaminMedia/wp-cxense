@@ -128,4 +128,9 @@ class SettingsPage extends AbstractSettingsPage
         // Intersect with order so searchable taxonomies are returned in the correct order
         return array_intersect($taxonomyOrder, $taxonomies);
     }
+
+    public function getSortbyWidgetId($locale = null)
+    {
+        return $this->getSettingValue('sortby_widget_id', $locale);
+    }
 }
