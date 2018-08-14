@@ -111,12 +111,12 @@ class HttpRequest
      */
     public function set_auth()
     {
-        $strDate = ;
+        $date = date("Y-m-d\TH:i:s.000O");
         $this->arrHeaders['X-cXense-Authentication'] = sprintf(
             'username=%s date=%s hmac-sha256-hex=%s',
             WpCxense::instance()->settings->getApiUser(),
-            date("Y-m-d\TH:i:s.000O"),
-            hash_hmac("sha256", $strDate, WpCxense::instance()->settings->getApiKey())
+            $date,
+            hash_hmac("sha256", $date, WpCxense::instance()->settings->getApiKey())
         );
 
         return $this;
