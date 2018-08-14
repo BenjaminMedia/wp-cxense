@@ -10,7 +10,6 @@ use Bonnier\WP\Cxense\Parsers\Document;
 
 class WidgetDocumentQuery
 {
-    private $widgetId;
     private $siteId;
     private $cxenseUserId;
     private $matchingMode;
@@ -33,9 +32,8 @@ class WidgetDocumentQuery
 
     public function __construct()
     {
-        //TODO
-//        header('Content-Type: text/html');
-//        ddHtml('Widget Document Query');
+        //TODO remove
+        header('Content-Type: text/html');
         $this->validateWidgetId(wp_cxense()->settings->get_setting_value('sortby_widget_id', get_locale()));
         $this->setSiteId(wp_cxense()->settings->get_setting_value("site_id", get_locale()));
     }
@@ -206,8 +204,8 @@ class WidgetDocumentQuery
     }
 
     /**
-     * @param String $tags
-     * @return WidgetDocumentQuery
+     * @param array|null $tags
+     * @return $this
      */
     public function setTags(array $tags = null)
     {
@@ -227,32 +225,29 @@ class WidgetDocumentQuery
         }
     }
 
-//    public function get()
-//    {
-//        return wp_cxense()->get_widget_documents($this->query);
-//    }
 
-
+    /**
+     * Return An array with total documents and matches
+     * @return array
+     */
     public function get()
     {
-//        var_dump($this->arrPayload);
+        var_dump($this->arrPayload);
 
         $result = $this->get_documents();
+        dd($result);
         $objDocuments = isset($result->items) ? $result->items : [];
         return [
             'totalCount' => count($objDocuments),
             'matches' => $this->parse_documents($objDocuments)
         ];
-
-
-//        return WidgetDocument::get($this->query);
-//        return wp_cxense()->get_widget_documents($this->query);
     }
+
 
     /**
      * Get documents
-     *
-     * @return array
+     * @return mixed|null
+     * @throws WidgetException
      */
     public function get_documents()
     {
@@ -271,13 +266,20 @@ class WidgetDocumentQuery
     }
 
 
+    /**
+     * @param $termsArray
+     * @return string
+     */
     public function getWpTerms($termsArray)
     {
-        if (is_array($termsArray)) {
-            return implode(' ', array_column($termsArray, 'name'));
+        //The second check to make sure we don't have null
+        if (!is_array($termsArray) || !isset($termsArray[0])) {
+            return "*";
         }
-        return "*";
+
+        return implode(' ', array_column($termsArray, 'name'));
     }
+
 
     /**
      * Parse documents to cxense object
