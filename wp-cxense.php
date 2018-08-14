@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: WP cXense
- * Version: 1.2.19
+ * Version: 1.3.0
  * Plugin URI: https://github.com/BenjaminMedia/wp-cxense
  * Description: This plugin integrates your site with cXense by adding meta tags and calling the cXense api
  * Author: Bonnier - Alf Henderson
@@ -155,43 +155,6 @@ class Plugin
     {
         return DocumentSearch::get_instance()
             ->set_search($arrSearch)
-            ->set_settings($this->settings)
-            ->get_documents();
-    }
-
-    /**
-     * Get widget documents
-     *
-     * @param array $arrInput
-     * @return array
-     */
-    public function get_widget_documents(array $arrInput)
-    {
-
-        //If cache is enabled in settings
-        if ($this->settings->get_setting_value('enable_query_cache', get_locale())) {
-            $strCacheKey = md5(json_encode($arrInput));
-
-            if ($arrResult = wp_cache_get($strCacheKey, 'cxense_plugin')) {
-                return $arrResult;
-            }
-
-            $arrResult = $this->getResult($arrInput);
-            wp_cache_add($strCacheKey, $arrResult, 'cxense_plugin', 30);
-
-            return $arrResult;
-        }
-
-        return $this->getResult($arrInput);
-    }
-
-    /**
-     * @param array $arrInput
-     * @return array
-     */
-    public function getResult(array $arrInput)
-    {
-        return WidgetDocument::get_instance($arrInput)
             ->set_settings($this->settings)
             ->get_documents();
     }
