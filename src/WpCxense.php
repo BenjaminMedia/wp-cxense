@@ -137,7 +137,6 @@ class WpCxense
     public function getResult(array $arrInput)
     {
         return WidgetDocument::get_instance($arrInput)
-            ->set_settings(WpCxense::instance()->settings)
             ->get_documents();
     }
 }
