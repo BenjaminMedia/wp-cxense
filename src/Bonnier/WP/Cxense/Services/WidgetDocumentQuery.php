@@ -201,9 +201,15 @@ class WidgetDocumentQuery
     private function getDocuments()
     {
         try {
+            $cacheKey = md5(json_encode($this->arrPayload));
+            if ($cachedResults = wp_cache_get($cacheKey, 'cxense_plugin')) {
+                return $cachedResults;
+            }
+
             $objResponse = HttpRequest::get_instance()->post('public/widget/data', [
                 'body' => json_encode($this->arrPayload)
             ]);
+            wp_cache_add($cacheKey, json_decode($objResponse->getBody()), 'cxense_plugin', 30);
         } catch (HttpException $exception) {
             if (is_admin()) {
                 throw new WidgetException('Failed to load widget:' . $exception->getMessage());
