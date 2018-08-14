@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "bonnier/willow-mu-plugins",
-            "version": "1.1.1",
+            "version": "1.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BenjaminMedia/willow-mu-plugins.git",
-                "reference": "b259aaf66f30218e08e1b2c48542cc6d38241214"
+                "reference": "59765af08251512ac99b055e406685f1d9418d19"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BenjaminMedia/willow-mu-plugins/zipball/b259aaf66f30218e08e1b2c48542cc6d38241214",
-                "reference": "b259aaf66f30218e08e1b2c48542cc6d38241214",
+                "url": "https://api.github.com/repos/BenjaminMedia/willow-mu-plugins/zipball/59765af08251512ac99b055e406685f1d9418d19",
+                "reference": "59765af08251512ac99b055e406685f1d9418d19",
                 "shasum": ""
             },
             "require": {
@@ -47,7 +47,7 @@
                 }
             ],
             "description": "A collection of Must Use WordPress Plugins for Willow",
-            "time": "2018-08-14T07:39:42+00:00"
+            "time": "2018-08-14T08:41:26+00:00"
         },
         {
             "name": "doctrine/inflector",
