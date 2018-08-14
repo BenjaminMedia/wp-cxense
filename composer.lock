@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "87cd73d70ea25b89e64830c70566b6d1",
+    "content-hash": "131a9adbfc81c081df3759bbca60dbad",
     "packages": [
         {
             "name": "bonnier/willow-mu-plugins",
-            "version": "1.1.0",
+            "version": "1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BenjaminMedia/willow-mu-plugins.git",
-                "reference": "15fbcc1978a56b400774292788d145c2b3b27b6e"
+                "reference": "b259aaf66f30218e08e1b2c48542cc6d38241214"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BenjaminMedia/willow-mu-plugins/zipball/15fbcc1978a56b400774292788d145c2b3b27b6e",
-                "reference": "15fbcc1978a56b400774292788d145c2b3b27b6e",
+                "url": "https://api.github.com/repos/BenjaminMedia/willow-mu-plugins/zipball/b259aaf66f30218e08e1b2c48542cc6d38241214",
+                "reference": "b259aaf66f30218e08e1b2c48542cc6d38241214",
                 "shasum": ""
             },
             "require": {
@@ -47,7 +47,7 @@
                 }
             ],
             "description": "A collection of Must Use WordPress Plugins for Willow",
-            "time": "2018-08-13T12:53:51+00:00"
+            "time": "2018-08-14T07:39:42+00:00"
         },
         {
             "name": "doctrine/inflector",
