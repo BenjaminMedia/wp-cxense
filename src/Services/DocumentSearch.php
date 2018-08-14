@@ -13,6 +13,7 @@ use Bonnier\WP\Cxense\Exceptions\DocumentSearchWrongSorting;
 use Bonnier\WP\Cxense\Http\HttpRequest;
 use Bonnier\WP\Cxense\Settings\SettingsPage;
 use Bonnier\WP\Cxense\Parsers\Document;
+use Bonnier\WP\Cxense\WpCxense;
 
 /**
  * DocumentSearch class
@@ -40,13 +41,6 @@ class DocumentSearch
      * @var array $arrPayload
      */
     private $arrPayload = [];
-
-    /**
-     * Settings object
-     *
-     * @var SettingsPage $objSettings
-     */
-    private $objSettings;
 
     /**
      * Returning fields
@@ -101,14 +95,11 @@ class DocumentSearch
     /**
      * Set settings object
      *
-     * @param SettingsPage $objSettings
      * @return DocumentSearch
      */
-    public function set_settings(SettingsPage $objSettings)
+    public function set_settings()
     {
-        $this->objSettings = $objSettings;
-
-        if ($strPrefix = $this->objSettings->getOrganisationPrefix()) {
+        if ($strPrefix = WpCxense::instance()->settings->getOrganisationPrefix()) {
             $this->arrFields['organisation'] = array_map(function ($strValue) use ($strPrefix) {
                 return $strPrefix . '-' . $strValue;
             }, $this->arrFields['organisation']);
@@ -163,9 +154,12 @@ class DocumentSearch
     {
         $this->set_site_id();
         $this->set_log_query();
-        $this->arrPayload['query'] = QueryLanguage::getQuery($this->objSettings->getOrganisationPrefix(), $this->arrSearch['query']);
+        $this->arrPayload['query'] = QueryLanguage::getQuery(
+            WpCxense::instance()->settings->getOrganisationPrefix(),
+            $this->arrSearch['query']
+        );
 
-        $objResponse = HttpRequest::get_instance()->set_auth($this->objSettings)->post('document/search', [
+        $objResponse = HttpRequest::get_instance()->set_auth()->post('document/search', [
             'body' => json_encode($this->arrPayload, JSON_UNESCAPED_UNICODE)
         ]);
 
@@ -192,7 +186,7 @@ class DocumentSearch
      */
     private function set_site_id()
     {
-        $this->arrPayload['siteId'] = $this->objSettings->getSiteId();
+        $this->arrPayload['siteId'] = WpCxense::instance()->settings->getSiteId();
         return $this;
     }
 
@@ -256,7 +250,11 @@ class DocumentSearch
 
             $arrFilterLines = [];
             foreach ($this->arrSearch['filter'] as $field => $value) {
-                $arrFilterLines[] = sprintf('filter(%s:%s)', $field, json_encode(array_map('stripslashes', $value), JSON_UNESCAPED_UNICODE));
+                $arrFilterLines[] = sprintf(
+                    'filter(%s:%s)',
+                    $field,
+                    json_encode(array_map('stripslashes', $value), JSON_UNESCAPED_UNICODE)
+                );
             }
 
             $strFilterOperator = 'OR';
@@ -279,7 +277,11 @@ class DocumentSearch
 
             $arrFilterLines = [];
             foreach ($this->arrSearch['filter_exclude'] as $field => $value) {
-                $arrFilterLines[] = sprintf('NOT filter(%s:%s)', $field, json_encode(array_map('stripslashes', $value), JSON_UNESCAPED_UNICODE));
+                $arrFilterLines[] = sprintf(
+                    'NOT filter(%s:%s)',
+                    $field,
+                    json_encode(array_map('stripslashes', $value), JSON_UNESCAPED_UNICODE)
+                );
             }
 
             if (isset($this->arrPayload['filter'])) {

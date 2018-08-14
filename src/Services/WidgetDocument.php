@@ -9,7 +9,6 @@ use Bonnier\WP\Cxense\Exceptions\HttpException;
 use Bonnier\WP\Cxense\Exceptions\WidgetException;
 use Bonnier\WP\Cxense\Exceptions\WidgetMissingId;
 use Bonnier\WP\Cxense\Http\HttpRequest;
-use Bonnier\WP\Cxense\Settings\SettingsPage;
 use Bonnier\WP\Cxense\Parsers\Document;
 
 /**
@@ -40,13 +39,6 @@ class WidgetDocument
     private $arrPayload = [];
 
     /**
-     * Settings object
-     *
-     * @var SettingsPage $objSettings
-     */
-    private $objSettings;
-
-    /**
      * Constructor
      *
      * @param array $arrInput
@@ -73,18 +65,6 @@ class WidgetDocument
 
         self::set_arrayInput($arrInput);
         return self::$objInstance;
-    }
-
-    /**
-     * Set settings object
-     *
-     * @param SettingsPage $objSettings
-     * @return WidgetDocument
-     */
-    public function set_settings(SettingsPage $objSettings)
-    {
-        $this->objSettings = $objSettings;
-        return $this;
     }
 
     /**

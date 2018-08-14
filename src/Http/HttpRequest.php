@@ -7,6 +7,7 @@ namespace Bonnier\WP\Cxense\Http;
 
 use Bonnier\WP\Cxense\Services\DocumentSearch;
 use Bonnier\WP\Cxense\Settings\SettingsPage;
+use Bonnier\WP\Cxense\WpCxense;
 
 /**
  * HttpRequest class
@@ -31,7 +32,7 @@ class HttpRequest
      * @var DocumentSearch $objInstance
      */
     private static $objInstance;
-    
+
     /**
      * Headers array
      *
@@ -40,7 +41,7 @@ class HttpRequest
     private $arrHeaders = [
         'Content-Type' => 'application/json'
     ];
-    
+
     /**
      * Singleton implementation
      *
@@ -54,7 +55,7 @@ class HttpRequest
         }
         return self::$objInstance;
     }
-    
+
     /**
      * Get http request
      *
@@ -70,7 +71,7 @@ class HttpRequest
                 'headers' => $this->arrHeaders
             ])
         );
-        
+
         return new HttpResponse($request);
     }
 
@@ -89,10 +90,10 @@ class HttpRequest
                 'headers' => $this->arrHeaders
             ])
         );
-        
+
         return new HttpResponse($request);
     }
-    
+
     /**
      * Build url
      *
@@ -102,18 +103,22 @@ class HttpRequest
     {
         return rtrim($this->strBaseUri, '/') . '/' . ltrim($strPath, '/');
     }
-    
+
     /**
      * Set auth header
      *
-     * @param SettingsPage $objSettings
      * @return null
      */
-    public function set_auth(SettingsPage $objSettings)
+    public function set_auth()
     {
-        $strDate = date("Y-m-d\TH:i:s.000O");
-        $this->arrHeaders['X-cXense-Authentication'] = 'username=' . $objSettings->getApiUser() . ' date=' . $strDate . ' hmac-sha256-hex=' . hash_hmac("sha256", $strDate, $objSettings->getApiKey());
-        
+        $date = date("Y-m-d\TH:i:s.000O");
+        $this->arrHeaders['X-cXense-Authentication'] = sprintf(
+            'username=%s date=%s hmac-sha256-hex=%s',
+            WpCxense::instance()->settings->getApiUser(),
+            $date,
+            hash_hmac("sha256", $date, WpCxense::instance()->settings->getApiKey())
+        );
+
         return $this;
     }
 }

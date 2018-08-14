@@ -6,6 +6,7 @@ use Bonnier\WP\Cxense\Http\HttpRequest;
 use Bonnier\WP\Cxense\Exceptions\HttpException;
 use Bonnier\WP\Cxense\Models\Post;
 use Bonnier\WP\Cxense\Settings\SettingsPage;
+use Bonnier\WP\Cxense\WpCxense;
 use Exception;
 
 class CxenseApi
@@ -16,17 +17,6 @@ class CxenseApi
     const CXENSE_PROFILE_PUSH = '/profile/content/push';
     const CXENSE_PROFILE_DELETE = '/profile/content/delete';
     const CXENSE_WIDGET_DATA = '/public/widget/data';
-
-    /* @var SettingsPage $settings */
-    protected static $settings;
-
-    /**
-     * @param SettingsPage $settingsPage
-     */
-    public static function bootstrap(SettingsPage $settingsPage)
-    {
-        self::$settings = $settingsPage;
-    }
 
     /**
      * @param $widgetId
@@ -109,7 +99,7 @@ class CxenseApi
      */
     private static function getCxenseUser()
     {
-        $cxUser = self::$settings->getApiUser();
+        $cxUser = WpCxense::instance()->settings->getApiUser();
 
         if (!$cxUser) {
             throw new Exception('You must define constants CXENSE_USER_NAME and CXENSE_API_KEY', self::EXCEPTION_USER_NOT_DEFINED);

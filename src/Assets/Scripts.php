@@ -4,23 +4,17 @@ namespace Bonnier\WP\Cxense\Assets;
 
 use Bonnier\WP\Cxense\Settings\Partials\CustomTaxonomiesSettings;
 use Bonnier\WP\Cxense\Settings\SettingsPage;
+use Bonnier\WP\Cxense\WpCxense;
 
 class Scripts
 {
-    /**
-     * @var static SettingsPage
-     */
-    private static $settings;
-
     /**
      * @var string Organization prefix
      */
     private $org_prefix;
 
-    public function bootstrap(SettingsPage $settings)
+    public function bootstrap()
     {
-        self::$settings = $settings;
-
         // Filter to add custom cxense meta tags if needed
         add_filter('cxense_head_tags', [$this, 'head_tags'], 5);
         add_action('wp_head', [$this, 'add_head_tags']);
@@ -29,7 +23,7 @@ class Scripts
 
     public function head_tags()
     {
-        $org_prefix_setting = self::$settings->get_organisation_prefix();
+        $org_prefix_setting = WpCxense::instance()->settings->getOrganisationPrefix();
         $this->org_prefix = $org_prefix_setting ? $org_prefix_setting . '-' : '';
 
         $recs_tags = [];
@@ -38,14 +32,14 @@ class Scripts
         $recs_tags[$this->org_prefix . 'country'] = (strtoupper(isset($locale[1]) ? $locale[1] : $locale[0]));
         $recs_tags[$this->org_prefix . 'language'] = strtoupper($locale[0]);
 
-        if (self::$settings->get_brand()) {
-            $recs_tags[$this->org_prefix . 'brand'] = self::$settings->get_brand();
+        if ($brand = WpCxense::instance()->settings->getBrand()) {
+            $recs_tags[$this->org_prefix . 'brand'] = $brand;
         }
 
         $recs_tags[$this->org_prefix . 'pagetype'] = $this->get_pagetype();
 
         $recs_tags['recs:recommendable'] = $this->get_recommendable();
-        
+
         if (is_singular() && is_single()) {
             global $post;
 
@@ -64,7 +58,9 @@ class Scripts
 
                 // Override the previous meta value if category parent exists
                 if ($this->get_category()->parent) {
-                    $recs_tags[$this->org_prefix . 'taxo-cat-top'] = $this->get_root_category($this->get_category()->cat_ID);
+                    $recs_tags[$this->org_prefix . 'taxo-cat-top'] = $this->get_root_category(
+                        $this->get_category()->cat_ID
+                    );
                 }
 
                 // Current category link to listpage
@@ -123,7 +119,7 @@ class Scripts
 
     private function persisted_query_id_tag()
     {
-        if ($persisted_query_id = self::$settings->get_persisted_query_id()) {
+        if ($persisted_query_id = WpCxense::instance()->settings->getPersistedQueryId()) {
             echo '<meta name="cxense-persisted-query-id" content="' . $persisted_query_id . '"></meta>' . PHP_EOL;
         }
     }
@@ -143,8 +139,8 @@ class Scripts
 
     public function add_cxense_script()
     {
-        if (self::$settings->get_enabled()) {
-            $siteId = self::$settings->get_site_id();
+        if (WpCxense::instance()->settings->getEnabled()) {
+            $siteId = WpCxense::instance()->settings->getSiteId();
 
             $script = "
             <!-- Cxense script begin -->

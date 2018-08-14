@@ -5,15 +5,12 @@ namespace Bonnier\WP\Cxense\Models;
 use Bonnier\Willow\MuPlugins\Helpers\LanguageProvider;
 use Bonnier\WP\Cxense\Services\CxenseApi;
 use Bonnier\WP\Cxense\Settings\SettingsPage;
+use Bonnier\WP\Cxense\WpCxense;
 
 class Post
 {
-    private static $settings;
-
-    public static function watch_post_changes(SettingsPage $settingsPage)
+    public static function watch_post_changes()
     {
-        self::$settings = $settingsPage;
-
         // Ping crawler when post is changed
         add_action('transition_post_status', [__CLASS__, 'post_status_changed'], 10, 3);
     }
@@ -38,7 +35,7 @@ class Post
         // for the current context.
         self::set_current_lang_from_post_id($postId);
 
-        if (self::$settings->get_enabled()) {
+        if (WpCxense::instance()->settings->getEnabled()) {
             return CxenseApi::pingCrawler($postId);
         }
     }
@@ -60,8 +57,8 @@ class Post
      */
     private static function set_current_lang_from_post_id($postId)
     {
-        if (self::$settings->languages_is_enabled()) {
-            self::$settings->set_current_locale(LanguageProvider::getPostLanguage($postId));
+        if (WpCxense::instance()->settings->languagesIsEnabled()) {
+            WpCxense::instance()->settings->setCurrentLocale(LanguageProvider::getPostLanguage($postId));
         }
     }
 }
