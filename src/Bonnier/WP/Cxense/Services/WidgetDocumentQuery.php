@@ -10,13 +10,9 @@ use Bonnier\WP\Cxense\Parsers\Document;
 
 class WidgetDocumentQuery
 {
-    private $siteId;
     private $cxenseUserId;
     private $matchingMode;
-    private $categories;
-    private $tags;
-    private $query;
-    private $context;
+    private $arrPayload = [];
 
     const POPULAR = 'trend';
     const RELATED = 'contextual'; // Articles similar to the current article.
@@ -24,62 +20,36 @@ class WidgetDocumentQuery
     const RECENTLY_VIEWED = 'recent';
 
     /**
-     * Payload array
-     *
-     * @var array $arrPayload
+     * WidgetDocumentQuery constructor.
      */
-    private $arrPayload = [];
-
     public function __construct()
     {
-        //TODO remove
-        header('Content-Type: text/html');
         $this->validateWidgetId(wp_cxense()->settings->get_setting_value('sortby_widget_id', get_locale()));
         $this->setSiteId(wp_cxense()->settings->get_setting_value("site_id", get_locale()));
     }
 
+    /**
+     * Create instance
+     * @return static
+     */
     public static function make()
     {
         return new static();
     }
 
     /**
-     * @return mixed
+     * @param string $key
+     * @param $value
+     * @return $this
      */
-    public function getContext()
-    {
-        return $this->context;
-    }
-
-    /**
-     * @param mixed $context
-     */
-    public function setContext($context)
-    {
-        $this->context = $context;
-        if (isset($context['url'])) {
-            $this->arrPayload['context'] = $context;
-        }
-//        $this->query['context'] = $this->getContext();
-    }
-
     public function addContext(string $key, $value)
     {
-        if (!isset($this->query['context'])) {
-            $this->query['context'] = [];
+        if (!isset($this->arrPayload['context'])) {
+            $this->arrPayload['context'] = [];
         }
-        $context = $this->getContext();
-        $context[$key] = $value;
-        $this->setContext($context);
-        return $this;
-    }
 
-    /**
-     * @return string
-     */
-    public function getSiteId()
-    {
-        return $this->siteId;
+        $this->arrPayload['context'][$key] = $value;
+        return $this;
     }
 
     /**
@@ -87,8 +57,7 @@ class WidgetDocumentQuery
      */
     public function setSiteId(string $siteId)
     {
-        $this->siteId = $siteId;
-        $this->addParameter('siteId', $this->getSiteId());
+        $this->addParameter('siteId', $siteId);
     }
 
 
@@ -103,38 +72,41 @@ class WidgetDocumentQuery
         if (!isset($widgetId) && is_admin()) {
             throw new WidgetMissingId('Missing request "widgetId" key!');
         }
-        $this->setWidgetId($widgetId);
-    }
-
-    /**
-     * @param string $widgetId
-     */
-    private function setWidgetId(string $widgetId)
-    {
-        $this->query['widgetId'] = $widgetId;
         $this->arrPayload['widgetId'] = $widgetId;
     }
 
 
+    /**
+     * @param $key
+     * @param $value
+     * @return $this
+     */
     public function addParameter($key, $value)
     {
-        if (!isset($this->query['parameters'])) {
-            $this->query['parameters'] = [];
+        if (!isset($this->arrPayload['context']['parameters'])) {
+            $this->arrPayload['context']['parameters'] = [];
         }
-        array_push($this->query['parameters'], [
+
+        array_push($this->arrPayload['context']['parameters'], [
             'key' => $key,
             'value' => $value
         ]);
-        $this->arrPayload['context']['parameters'] = $this->query['parameters'];
+
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function bySimilarReads()
     {
         $this->setMatchingMode(self::SIMILAR_READS);
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function byRecentlyViewed()
     {
         $this->setMatchingMode(self::RECENTLY_VIEWED);
@@ -143,24 +115,22 @@ class WidgetDocumentQuery
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function byPopular()
     {
         $this->setMatchingMode(self::POPULAR);
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function byRelated()
     {
         $this->setMatchingMode(self::RELATED);
         return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getMatchingMode()
-    {
-        return $this->matchingMode;
     }
 
     /**
@@ -170,18 +140,8 @@ class WidgetDocumentQuery
     public function setMatchingMode($context)
     {
         $this->matchingMode = $context;
-        $this->query['categories'] = [ 'taxonomy' => $context];
-
         $this->arrPayload['context']['categories'] = [ 'taxonomy' => $context];
         return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getCategories()
-    {
-        return $this->categories;
     }
 
     /**
@@ -190,17 +150,8 @@ class WidgetDocumentQuery
      */
     public function setCategories(array $categories = null)
     {
-        $this->categories = $this->getWpTerms($categories);
-        $this->addParameter('category', $this->getCategories());
+        $this->addParameter('category', $this->getWpTerms($categories));
         return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTags()
-    {
-        return $this->tags;
     }
 
     /**
@@ -209,20 +160,22 @@ class WidgetDocumentQuery
      */
     public function setTags(array $tags = null)
     {
-        $this->tags = $this->getWpTerms($tags);
-        $this->addParameter('tag', $this->getTags());
+        $this->addParameter('tag', $this->getWpTerms($tags));
         return $this;
     }
 
+    /**
+     * Set cxenseUserId from Cookie. Might not work on WILLOW FRONTEND
+     */
     public function setCxenseUserId()
     {
-        if (isset($_COOKIE['cX_P'])) {
-            $this->cxenseUserId = $_COOKIE['cX_P'];
-            $this->arrPayload['user']= ['ids' => ['usi' => $this->cxenseUserId]];
-            $this->query['user'] = ['ids' => ['usi' => $this->cxenseUserId]];
-        } else {
+        if (!isset($_COOKIE['cX_P'])) {
             $this->cxenseUserId = '';
+            return;
         }
+
+        $this->cxenseUserId = $_COOKIE['cX_P'];
+        $this->arrPayload['user']= ['ids' => ['usi' => $this->cxenseUserId]];
     }
 
 
@@ -232,24 +185,20 @@ class WidgetDocumentQuery
      */
     public function get()
     {
-        var_dump($this->arrPayload);
-
-        $result = $this->get_documents();
-        dd($result);
+        $result = $this->getDocuments();
         $objDocuments = isset($result->items) ? $result->items : [];
         return [
             'totalCount' => count($objDocuments),
-            'matches' => $this->parse_documents($objDocuments)
+            'matches' => $this->parseDocuments($objDocuments)
         ];
     }
-
 
     /**
      * Get documents
      * @return mixed|null
      * @throws WidgetException
      */
-    public function get_documents()
+    private function getDocuments()
     {
         try {
             $objResponse = HttpRequest::get_instance()->post('public/widget/data', [
@@ -287,7 +236,7 @@ class WidgetDocumentQuery
      * @param array $arrDocuments
      * @return array
      */
-    private function parse_documents(array $arrDocuments)
+    private function parseDocuments(array $arrDocuments)
     {
         $arrCollection = [];
 
