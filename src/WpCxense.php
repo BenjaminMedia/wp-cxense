@@ -69,9 +69,8 @@ class WpCxense
         $this->settings = new SettingsPage();
         $this->scripts = new Scripts();
 
-        Post::watch_post_changes($this->settings);
-        $this->scripts->bootstrap($this->settings);
-        CxenseApi::bootstrap($this->settings);
+        Post::watch_post_changes();
+        $this->scripts->bootstrap();
     }
 
     /**
@@ -92,38 +91,16 @@ class WpCxense
     }
 
     /**
-     * Render the widget for the current page includes html structure from cXense,
-     * returns null on failure and true on success
-     *
-     * @return bool|null
-     *
-     */
-    public function render_widget()
-    {
-        return Widget::render($this->settings);
-    }
-
-    /**
-     * Returns an array of the items to be displayed in the widget for the current page or null on failure
-     *
-     * @return null|array
-     */
-    public function get_widget_data()
-    {
-        return Widget::get_widget_data($this->settings);
-    }
-
-    /**
      * Search documents
      *
      * @param array $arrSearch
-     * @return array
+     * @return \stdClass
      */
     public function search_documents(array $arrSearch)
     {
         return DocumentSearch::get_instance()
             ->set_search($arrSearch)
-            ->set_settings($this->settings)
+            ->set_settings()
             ->get_documents();
     }
 
@@ -137,7 +114,7 @@ class WpCxense
     {
 
         //If cache is enabled in settings
-        if ($this->settings->get_setting_value('enable_query_cache', get_locale())) {
+        if (WpCxense::instance()->settings->enableQueryCache()) {
             $strCacheKey = md5(json_encode($arrInput));
 
             if ($arrResult = wp_cache_get($strCacheKey, 'cxense_plugin')) {
@@ -160,7 +137,7 @@ class WpCxense
     public function getResult(array $arrInput)
     {
         return WidgetDocument::get_instance($arrInput)
-            ->set_settings($this->settings)
+            ->set_settings(WpCxense::instance()->settings)
             ->get_documents();
     }
 }

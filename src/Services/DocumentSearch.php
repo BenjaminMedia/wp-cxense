@@ -13,6 +13,7 @@ use Bonnier\WP\Cxense\Exceptions\DocumentSearchWrongSorting;
 use Bonnier\WP\Cxense\Http\HttpRequest;
 use Bonnier\WP\Cxense\Settings\SettingsPage;
 use Bonnier\WP\Cxense\Parsers\Document;
+use Bonnier\WP\Cxense\WpCxense;
 
 /**
  * DocumentSearch class
@@ -101,14 +102,11 @@ class DocumentSearch
     /**
      * Set settings object
      *
-     * @param SettingsPage $objSettings
      * @return DocumentSearch
      */
-    public function set_settings(SettingsPage $objSettings)
+    public function set_settings()
     {
-        $this->objSettings = $objSettings;
-
-        if ($strPrefix = $this->objSettings->getOrganisationPrefix()) {
+        if ($strPrefix = WpCxense::instance()->settings->getOrganisationPrefix()) {
             $this->arrFields['organisation'] = array_map(function ($strValue) use ($strPrefix) {
                 return $strPrefix . '-' . $strValue;
             }, $this->arrFields['organisation']);
