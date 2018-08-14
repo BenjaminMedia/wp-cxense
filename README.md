@@ -285,23 +285,19 @@ object(Bonnier\WP\Cxense\Parsers\Document)[710]
 
 If the key 'widget_id' is missing from the input array then a [WidgetMissingId](https://github.com/BenjaminMedia/wp-cxense/blob/search_documents/src/Bonnier/WP/Cxense/Exceptions/WidgetMissingId.php) exception is thrown.
 
+Example how to fetch cxense data
 ``` php
-wp_cxense()->get_widget_documents([
-    'widgetId' => 'widget_id', // mandatory
-    'user' => ['ids' => ['usi' => 'cxUserId']], // optional
-    'categories' => [
-        'type' => 'value' // 'taxonomy' => 'trend'
-    ],
-    'parameters' => [
-        0 => [
-            'key' => 'key', // 'key' => 'category'
-            'value' => 'value' // 'value' => 'shopping'
-        ],
-        ...
-    ],
-    'contextualUrls' => [
-        0 => 'https://articleNotToBeIncludedInResults.com',
-        ...
-    ],
-]);
+WidgetDocumentQuery::make()
+                    ->addContext('url', get_permalink())
+                    ->setMatchingMode($this->getCxenseTaxonomy())
+                    ->addParameter('pageType', 'article gallery story')
+                    ->setCategories(array($this->getCategory()))
+                    ->setTags(array($this->getTag()))
+                    ->get();
+```
+
+#### Recently viewed by user 'TAX_RECENT'
+This type of taxonomy requires user browser cookie. In order to fetch it from the browser console you can use
+```
+cX.getUserId()
 ```
