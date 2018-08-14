@@ -2,6 +2,12 @@
 
 namespace Bonnier\WP\Cxense\Services;
 
+use Bonnier\WP\Cxense\Http\HttpRequest;
+use Bonnier\WP\Cxense\Exceptions\HttpException;
+use Bonnier\WP\Cxense\Exceptions\WidgetException;
+use Bonnier\WP\Cxense\Exceptions\WidgetMissingId;
+use Bonnier\WP\Cxense\Parsers\Document;
+
 class WidgetDocumentQuery
 {
     private $widgetId;
@@ -18,9 +24,19 @@ class WidgetDocumentQuery
     const SIMILAR_READS = 'collabctx'; // People who have read the current article have also read these articles.
     const RECENTLY_VIEWED = 'recent';
 
+    /**
+     * Payload array
+     *
+     * @var array $arrPayload
+     */
+    private $arrPayload = [];
+
     public function __construct()
     {
-        $this->setWidgetId(wp_cxense()->settings->get_setting_value('sortby_widget_id', get_locale()));
+        //TODO
+//        header('Content-Type: text/html');
+//        ddHtml('Widget Document Query');
+        $this->validateWidgetId(wp_cxense()->settings->get_setting_value('sortby_widget_id', get_locale()));
         $this->setSiteId(wp_cxense()->settings->get_setting_value("site_id", get_locale()));
     }
 
@@ -43,7 +59,10 @@ class WidgetDocumentQuery
     public function setContext($context)
     {
         $this->context = $context;
-        $this->query['context'] = $this->getContext();
+        if (isset($context['url'])) {
+            $this->arrPayload['context'] = $context;
+        }
+//        $this->query['context'] = $this->getContext();
     }
 
     public function addContext(string $key, $value)
@@ -74,9 +93,19 @@ class WidgetDocumentQuery
         $this->addParameter('siteId', $this->getSiteId());
     }
 
-    public function getWidgetId()
+
+    /**
+     * Check for widget id presence
+     * @param string $widgetId
+     * @return null
+     * @throws WidgetMissingId
+     */
+    private function validateWidgetId(string $widgetId)
     {
-        return $this->widgetId;
+        if (!isset($widgetId) && is_admin()) {
+            throw new WidgetMissingId('Missing request "widgetId" key!');
+        }
+        $this->setWidgetId($widgetId);
     }
 
     /**
@@ -84,10 +113,9 @@ class WidgetDocumentQuery
      */
     private function setWidgetId(string $widgetId)
     {
-        $this->widgetId = $widgetId;
-        $this->query['widgetId'] = $this->getWidgetId();
+        $this->query['widgetId'] = $widgetId;
+        $this->arrPayload['widgetId'] = $widgetId;
     }
-
 
 
     public function addParameter($key, $value)
@@ -99,6 +127,7 @@ class WidgetDocumentQuery
             'key' => $key,
             'value' => $value
         ]);
+        $this->arrPayload['context']['parameters'] = $this->query['parameters'];
         return $this;
     }
 
@@ -143,7 +172,9 @@ class WidgetDocumentQuery
     public function setMatchingMode($context)
     {
         $this->matchingMode = $context;
-        $this->query['categories'] = [ 'taxonomy' => $this->getMatchingMode()];
+        $this->query['categories'] = [ 'taxonomy' => $context];
+
+        $this->arrPayload['context']['categories'] = [ 'taxonomy' => $context];
         return $this;
     }
 
@@ -189,21 +220,56 @@ class WidgetDocumentQuery
     {
         if (isset($_COOKIE['cX_P'])) {
             $this->cxenseUserId = $_COOKIE['cX_P'];
-            $this->query['user'] = ['ids' => ['usi' => $this->getCxUserId()]];
+            $this->arrPayload['user']= ['ids' => ['usi' => $this->cxenseUserId]];
+            $this->query['user'] = ['ids' => ['usi' => $this->cxenseUserId]];
         } else {
             $this->cxenseUserId = '';
         }
     }
 
-    public function getCxUserId()
-    {
-        return $this->cxenseUserId;
-    }
+//    public function get()
+//    {
+//        return wp_cxense()->get_widget_documents($this->query);
+//    }
+
 
     public function get()
     {
-        return wp_cxense()->get_widget_documents($this->query);
+//        var_dump($this->arrPayload);
+
+        $result = $this->get_documents();
+        $objDocuments = isset($result->items) ? $result->items : [];
+        return [
+            'totalCount' => count($objDocuments),
+            'matches' => $this->parse_documents($objDocuments)
+        ];
+
+
+//        return WidgetDocument::get($this->query);
+//        return wp_cxense()->get_widget_documents($this->query);
     }
+
+    /**
+     * Get documents
+     *
+     * @return array
+     */
+    public function get_documents()
+    {
+        try {
+            $objResponse = HttpRequest::get_instance()->post('public/widget/data', [
+                'body' => json_encode($this->arrPayload)
+            ]);
+        } catch (HttpException $exception) {
+            if (is_admin()) {
+                throw new WidgetException('Failed to load widget:' . $exception->getMessage());
+            }
+            return null;
+        }
+
+        return json_decode($objResponse->getBody());
+    }
+
 
     public function getWpTerms($termsArray)
     {
@@ -211,5 +277,22 @@ class WidgetDocumentQuery
             return implode(' ', array_column($termsArray, 'name'));
         }
         return "*";
+    }
+
+    /**
+     * Parse documents to cxense object
+     *
+     * @param array $arrDocuments
+     * @return array
+     */
+    private function parse_documents(array $arrDocuments)
+    {
+        $arrCollection = [];
+
+        foreach ($arrDocuments as $objDocument) {
+            $arrCollection[] = new Document($objDocument);
+        }
+
+        return $arrCollection;
     }
 }
