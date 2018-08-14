@@ -202,6 +202,8 @@ class WidgetDocumentQuery
     {
         try {
             $cacheKey = md5(json_encode($this->arrPayload));
+            $expiresIn = 10 * HOUR_IN_SECONDS;
+
             if ($cachedResults = wp_cache_get($cacheKey, 'cxense_plugin')) {
                 return $cachedResults;
             }
@@ -209,7 +211,7 @@ class WidgetDocumentQuery
             $objResponse = HttpRequest::get_instance()->post('public/widget/data', [
                 'body' => json_encode($this->arrPayload)
             ]);
-            wp_cache_add($cacheKey, json_decode($objResponse->getBody()), 'cxense_plugin', 30);
+            wp_cache_add($cacheKey, json_decode($objResponse->getBody()), 'cxense_plugin', $expiresIn);
         } catch (HttpException $exception) {
             if (is_admin()) {
                 throw new WidgetException('Failed to load widget:' . $exception->getMessage());
