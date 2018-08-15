@@ -7,6 +7,7 @@ use Bonnier\WP\Cxense\Exceptions\HttpException;
 use Bonnier\WP\Cxense\Exceptions\WidgetException;
 use Bonnier\WP\Cxense\Exceptions\WidgetMissingId;
 use Bonnier\WP\Cxense\Parsers\Document;
+use Bonnier\WP\Cxense\WpCxense;
 
 class WidgetDocumentQuery
 {
@@ -24,8 +25,8 @@ class WidgetDocumentQuery
      */
     public function __construct()
     {
-        $this->validateWidgetId(wp_cxense()->settings->get_setting_value('sortby_widget_id', get_locale()));
-        $this->setSiteId(wp_cxense()->settings->get_setting_value("site_id", get_locale()));
+        $this->validateWidgetId(WpCxense::instance()->settings->get_setting_value('sortby_widget_id', get_locale()));
+        $this->setSiteId(WpCxense::instance()->settings->get_setting_value("site_id", get_locale()));
     }
 
     /**
