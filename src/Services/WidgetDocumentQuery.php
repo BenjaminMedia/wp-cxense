@@ -2,69 +2,55 @@
 
 namespace Bonnier\WP\Cxense\Services;
 
+use Bonnier\WP\Cxense\Http\HttpRequest;
+use Bonnier\WP\Cxense\Exceptions\HttpException;
+use Bonnier\WP\Cxense\Exceptions\WidgetException;
+use Bonnier\WP\Cxense\Exceptions\WidgetMissingId;
+use Bonnier\WP\Cxense\Parsers\Document;
 use Bonnier\WP\Cxense\WpCxense;
 
 class WidgetDocumentQuery
 {
-    private $widgetId;
-    private $siteId;
     private $cxenseUserId;
     private $matchingMode;
-    private $categories;
-    private $tags;
-    private $query;
-    private $context;
+    private $arrPayload = [];
 
     const POPULAR = 'trend';
     const RELATED = 'contextual'; // Articles similar to the current article.
     const SIMILAR_READS = 'collabctx'; // People who have read the current article have also read these articles.
     const RECENTLY_VIEWED = 'recent';
 
+    /**
+     * WidgetDocumentQuery constructor.
+     */
     public function __construct()
     {
-        $this->setWidgetId(WpCxense::instance()->settings->getSortbyWidgetId());
+        $this->validateWidgetId(WpCxense::instance()->settings->getSortbyWidgetId());
         $this->setSiteId(WpCxense::instance()->settings->getSiteId());
     }
 
+    /**
+     * Create instance
+     * @return static
+     */
     public static function make()
     {
         return new static();
     }
 
     /**
-     * @return mixed
+     * @param string $key
+     * @param $value
+     * @return $this
      */
-    public function getContext()
-    {
-        return $this->context;
-    }
-
-    /**
-     * @param mixed $context
-     */
-    public function setContext($context)
-    {
-        $this->context = $context;
-        $this->query['context'] = $this->getContext();
-    }
-
     public function addContext(string $key, $value)
     {
-        if (!isset($this->query['context'])) {
-            $this->query['context'] = [];
+        if (!isset($this->arrPayload['context'])) {
+            $this->arrPayload['context'] = [];
         }
-        $context = $this->getContext();
-        $context[$key] = $value;
-        $this->setContext($context);
-        return $this;
-    }
 
-    /**
-     * @return string
-     */
-    public function getSiteId()
-    {
-        return $this->siteId;
+        $this->arrPayload['context'][$key] = $value;
+        return $this;
     }
 
     /**
@@ -72,44 +58,56 @@ class WidgetDocumentQuery
      */
     public function setSiteId(string $siteId)
     {
-        $this->siteId = $siteId;
-        $this->addParameter('siteId', $this->getSiteId());
+        $this->addParameter('siteId', $siteId);
     }
 
-    public function getWidgetId()
-    {
-        return $this->widgetId;
-    }
 
     /**
+     * Check for widget id presence
      * @param string $widgetId
+     * @return null
+     * @throws WidgetMissingId
      */
-    private function setWidgetId(string $widgetId)
+    private function validateWidgetId(string $widgetId)
     {
-        $this->widgetId = $widgetId;
-        $this->query['widgetId'] = $this->getWidgetId();
+        if (!isset($widgetId) && is_admin()) {
+            throw new WidgetMissingId('Missing request "widgetId" key!');
+        }
+        $this->arrPayload['widgetId'] = $widgetId;
     }
 
 
-
+    /**
+     * @param $key
+     * @param $value
+     * @return $this
+     */
     public function addParameter($key, $value)
     {
-        if (!isset($this->query['parameters'])) {
-            $this->query['parameters'] = [];
+        if (!isset($this->arrPayload['context']['parameters'])) {
+            $this->arrPayload['context']['parameters'] = [];
         }
-        array_push($this->query['parameters'], [
+
+        array_push($this->arrPayload['context']['parameters'], [
             'key' => $key,
             'value' => $value
         ]);
+
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function bySimilarReads()
     {
         $this->setMatchingMode(self::SIMILAR_READS);
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function byRecentlyViewed()
     {
         $this->setMatchingMode(self::RECENTLY_VIEWED);
@@ -118,24 +116,22 @@ class WidgetDocumentQuery
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function byPopular()
     {
         $this->setMatchingMode(self::POPULAR);
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function byRelated()
     {
         $this->setMatchingMode(self::RELATED);
         return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getMatchingMode()
-    {
-        return $this->matchingMode;
     }
 
     /**
@@ -145,16 +141,8 @@ class WidgetDocumentQuery
     public function setMatchingMode($context)
     {
         $this->matchingMode = $context;
-        $this->query['categories'] = [ 'taxonomy' => $this->getMatchingMode()];
+        $this->arrPayload['context']['categories'] = [ 'taxonomy' => $context];
         return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getCategories()
-    {
-        return $this->categories;
     }
 
     /**
@@ -163,55 +151,108 @@ class WidgetDocumentQuery
      */
     public function setCategories(array $categories = null)
     {
-        $this->categories = $this->getWpTerms($categories);
-        $this->addParameter('category', $this->getCategories());
+        $this->addParameter('category', $this->getWpTerms($categories));
         return $this;
     }
 
     /**
-     * @return mixed
-     */
-    public function getTags()
-    {
-        return $this->tags;
-    }
-
-    /**
-     * @param String $tags
-     * @return WidgetDocumentQuery
+     * @param array|null $tags
+     * @return $this
      */
     public function setTags(array $tags = null)
     {
-        $this->tags = $this->getWpTerms($tags);
-        $this->addParameter('tag', $this->getTags());
+        $this->addParameter('tag', $this->getWpTerms($tags));
         return $this;
     }
 
+    /**
+     * Set cxenseUserId from Cookie. Might not work on WILLOW FRONTEND
+     */
     public function setCxenseUserId()
     {
-        if (isset($_COOKIE['cX_P'])) {
-            $this->cxenseUserId = $_COOKIE['cX_P'];
-            $this->query['user'] = ['ids' => ['usi' => $this->getCxUserId()]];
-        } else {
+        if (!isset($_COOKIE['cX_P'])) {
             $this->cxenseUserId = '';
+            return;
         }
+
+        $this->cxenseUserId = $_COOKIE['cX_P'];
+        $this->arrPayload['user']= ['ids' => ['usi' => $this->cxenseUserId]];
     }
 
-    public function getCxUserId()
-    {
-        return $this->cxenseUserId;
-    }
 
+    /**
+     * Return An array with total documents and matches
+     * @return array
+     */
     public function get()
     {
-        return WpCxense::instance()->get_widget_documents($this->query);
+        $result = $this->getDocuments();
+        $objDocuments = isset($result->items) ? $result->items : [];
+        return [
+            'totalCount' => count($objDocuments),
+            'matches' => $this->parseDocuments($objDocuments)
+        ];
     }
 
+    /**
+     * Get documents
+     * @return mixed|null
+     * @throws WidgetException
+     */
+    private function getDocuments()
+    {
+        try {
+            $cacheKey = md5(json_encode($this->arrPayload));
+            $expiresIn = 10 * HOUR_IN_SECONDS;
+
+            if ($cachedResults = wp_cache_get($cacheKey, 'cxense_plugin')) {
+                return $cachedResults;
+            }
+
+            $objResponse = HttpRequest::get_instance()->post('public/widget/data', [
+                'body' => json_encode($this->arrPayload)
+            ]);
+            wp_cache_add($cacheKey, json_decode($objResponse->getBody()), 'cxense_plugin', $expiresIn);
+        } catch (HttpException $exception) {
+            if (is_admin()) {
+                throw new WidgetException('Failed to load widget:' . $exception->getMessage());
+            }
+            return null;
+        }
+
+        return json_decode($objResponse->getBody());
+    }
+
+
+    /**
+     * @param $termsArray
+     * @return string
+     */
     public function getWpTerms($termsArray)
     {
-        if (is_array($termsArray)) {
-            return implode(' ', array_column($termsArray, 'name'));
+        //The second check to make sure we don't have null
+        if (!is_array($termsArray) || !isset($termsArray[0])) {
+            return "*";
         }
-        return "*";
+
+        return implode(' ', array_column($termsArray, 'name'));
+    }
+
+
+    /**
+     * Parse documents to cxense object
+     *
+     * @param array $arrDocuments
+     * @return array
+     */
+    private function parseDocuments(array $arrDocuments)
+    {
+        $arrCollection = [];
+
+        foreach ($arrDocuments as $objDocument) {
+            $arrCollection[] = new Document($objDocument);
+        }
+
+        return $arrCollection;
     }
 }
