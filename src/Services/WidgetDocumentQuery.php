@@ -25,8 +25,8 @@ class WidgetDocumentQuery
      */
     public function __construct()
     {
-        $this->validateWidgetId(WpCxense::instance()->settings->get_setting_value('sortby_widget_id', get_locale()));
-        $this->setSiteId(WpCxense::instance()->settings->get_setting_value("site_id", get_locale()));
+        $this->validateWidgetId(WpCxense::instance()->settings->getSortbyWidgetId());
+        $this->setSiteId(WpCxense::instance()->settings->getSiteId());
     }
 
     /**
