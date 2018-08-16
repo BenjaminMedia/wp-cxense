@@ -173,9 +173,8 @@ class WidgetDocumentQueryTest extends WPTestCase
         $this->assertArrayHasKey('matches', $results);
         $this->assertInternalType(IsType::TYPE_INT, $results['totalCount']);
 
-        if(isset($results['totalCount']) && $results['totalCount'] > 0){
+        if (isset($results['totalCount']) && $results['totalCount'] > 0) {
             $this->assertInstanceOf(Document::class, $results['matches'][0]);
         }
     }
-
 }
