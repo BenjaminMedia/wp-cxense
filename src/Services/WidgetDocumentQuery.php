@@ -2,10 +2,10 @@
 
 namespace Bonnier\WP\Cxense\Services;
 
+use Bonnier\WP\Cxense\Exceptions\WidgetMissingId;
 use Bonnier\WP\Cxense\Http\HttpRequest;
 use Bonnier\WP\Cxense\Exceptions\HttpException;
 use Bonnier\WP\Cxense\Exceptions\WidgetException;
-use Bonnier\WP\Cxense\Exceptions\WidgetMissingId;
 use Bonnier\WP\Cxense\Parsers\Document;
 use Bonnier\WP\Cxense\WpCxense;
 
@@ -68,9 +68,9 @@ class WidgetDocumentQuery
      * @return null
      * @throws WidgetMissingId
      */
-    private function validateWidgetId(string $widgetId)
+    private function validateWidgetId(?string $widgetId)
     {
-        if (!isset($widgetId) && is_admin()) {
+        if (!isset($widgetId) && current_user_can('administrator')) {
             throw new WidgetMissingId('Missing request "widgetId" key!');
         }
         $this->arrPayload['widgetId'] = $widgetId;
@@ -179,6 +179,13 @@ class WidgetDocumentQuery
         $this->arrPayload['user']= ['ids' => ['usi' => $this->cxenseUserId]];
     }
 
+    /**
+     * @return array
+     */
+    public function getArrayPayLoad()
+    {
+        return $this->arrPayload;
+    }
 
     /**
      * Return An array with total documents and matches
