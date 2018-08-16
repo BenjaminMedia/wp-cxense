@@ -5,7 +5,6 @@ namespace Bonnier\WP\Cxense\Tests;
 use Bonnier\WP\Cxense\Exceptions\WidgetMissingId;
 use Bonnier\WP\Cxense\Parsers\Document;
 use Bonnier\WP\Cxense\Services\WidgetDocumentQuery;
-use Bonnier\WP\Cxense\WpCxense;
 use Codeception\TestCase\WPTestCase;
 use PHPUnit\Framework\Constraint\IsType;
 
@@ -129,10 +128,10 @@ class WidgetDocumentQueryTest extends WPTestCase
         $test = false;
         $this->newWidgetDocumentQuery();
         $this->widgetDocumentQuery->setCategories();
-        foreach($this->widgetDocumentQuery->getArrayPayLoad()['context']['parameters'] as $param){
-                if($param['key'] === 'category' && $param['value'] === '*'){
-                    $test = true;
-                }
+        foreach ($this->widgetDocumentQuery->getArrayPayLoad()['context']['parameters'] as $param) {
+            if ($param['key'] === 'category' && $param['value'] === '*') {
+                $test = true;
+            }
         }
         $this->assertTrue($test);
     }
@@ -144,8 +143,8 @@ class WidgetDocumentQueryTest extends WPTestCase
         $category = get_term_by('id', 1, 'category');
         $this->widgetDocumentQuery->setCategories(array($category));
 
-        foreach($this->widgetDocumentQuery->getArrayPayLoad()['context']['parameters'] as $param){
-            if($param['key'] === 'category' && $param['value'] === $category->name){
+        foreach ($this->widgetDocumentQuery->getArrayPayLoad()['context']['parameters'] as $param) {
+            if ($param['key'] === 'category' && $param['value'] === $category->name) {
                 $test = true;
             }
         }
@@ -158,8 +157,8 @@ class WidgetDocumentQueryTest extends WPTestCase
         $this->newWidgetDocumentQuery();
         $this->widgetDocumentQuery->addParameter('pageType', 'article gallery story');
 
-        foreach($this->widgetDocumentQuery->getArrayPayLoad()['context']['parameters'] as $param){
-            if($param['key'] === 'pageType' && $param['value'] === 'article gallery story'){
+        foreach ($this->widgetDocumentQuery->getArrayPayLoad()['context']['parameters'] as $param) {
+            if ($param['key'] === 'pageType' && $param['value'] === 'article gallery story') {
                 $test = true;
             }
         }
