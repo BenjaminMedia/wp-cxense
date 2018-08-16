@@ -3,9 +3,11 @@
 namespace Bonnier\WP\Cxense\Tests;
 
 use Bonnier\WP\Cxense\Exceptions\WidgetMissingId;
+use Bonnier\WP\Cxense\Parsers\Document;
 use Bonnier\WP\Cxense\Services\WidgetDocumentQuery;
 use Bonnier\WP\Cxense\WpCxense;
 use Codeception\TestCase\WPTestCase;
+use PHPUnit\Framework\Constraint\IsType;
 
 class WidgetDocumentQueryTest extends WPTestCase
 {
@@ -47,6 +49,18 @@ class WidgetDocumentQueryTest extends WPTestCase
     {
         $this->setSiteAndWidgetIds();
         $this->widgetDocumentQuery = WidgetDocumentQuery::make();
+    }
+
+    private function newWidgetDocumentQueryWithParams()
+    {
+        $this->setSiteAndWidgetIds();
+        $this->widgetDocumentQuery = WidgetDocumentQuery::make()
+            ->addContext('url', $this->permalink)
+            ->byRelated()
+            ->addParameter('pageType', 'article gallery story')
+            ->setCategories();
+
+        return $this->widgetDocumentQuery;
     }
 
     public function testWidgetDocumentQueryHasAWidgetId()
@@ -150,6 +164,19 @@ class WidgetDocumentQueryTest extends WPTestCase
             }
         }
         $this->assertTrue($test);
+    }
+
+    public function testGetDocumentsHttpRequest()
+    {
+        //This is mocking a real Request
+        $results = $this->newWidgetDocumentQueryWithParams()->get();
+        $this->assertArrayHasKey('totalCount', $results);
+        $this->assertArrayHasKey('matches', $results);
+        $this->assertInternalType(IsType::TYPE_INT, $results['totalCount']);
+
+        if(isset($results['totalCount']) && $results['totalCount'] > 0){
+            $this->assertInstanceOf(Document::class, $results['matches'][0]);
+        }
     }
 
 }
