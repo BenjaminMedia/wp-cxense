@@ -17,11 +17,21 @@
     "bonnier/willow-mu-plugins": "^1.1"
   },
   "require-dev": {
-    "johnpbloch/wordpress": "^4.9"
+    "johnpbloch/wordpress": "^4.9",
+    "phpunit/phpunit": "7.1.*",
+    "lucatume/wp-browser": "^2.1"
   },
   "autoload": {
     "psr-4": {
       "Bonnier\\WP\\Cxense\\": "src"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Bonnier\\WP\\Cxense\\Tests\\": "tests"
+    }
+  },
+  "scripts": {
+    "wpunit": "vendor/bin/codecept run wpunit"
   }
 }
