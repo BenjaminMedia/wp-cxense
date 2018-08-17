@@ -7,12 +7,12 @@ jobs:
         environment:
           - DB_USER=homestead
           - DB_PASSWORD=secret
-          - DB_NAME=wp-test
+          - DB_NAME=wp-tests
           - DB_HOST=127.0.0.1
       - image: circleci/mysql:5.7.18
         environment:
           - MYSQL_ROOT_PASSWORD=secret
-          - MYSQL_DATABASE=wp-test
+          - MYSQL_DATABASE=wp-tests
           - MYSQL_USER=homestead
           - MYSQL_PASSWORD=secret
     working_directory: ~/wp-cxense
@@ -34,7 +34,6 @@ jobs:
           key: composer-v1-{{ checksum "composer.lock" }}
           paths:
             - vendor
-            - web/wp
       - run:
           name: Run WpUnit Tests
           command: composer wpunit
