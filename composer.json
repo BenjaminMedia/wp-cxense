@@ -23,7 +23,11 @@
   },
   "autoload": {
     "psr-4": {
-      "Bonnier\\WP\\Cxense\\": "src",
+      "Bonnier\\WP\\Cxense\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
       "Bonnier\\WP\\Cxense\\Tests\\": "tests"
     }
   },
