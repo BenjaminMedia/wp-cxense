@@ -73,7 +73,6 @@ class WidgetDocumentQueryTest extends WPTestCase
     {
         $this->setSiteAndWidgetIds();
         $this->newWidgetDocumentQuery();
-        var_dump($this->widgetDocumentQuery);
         $this->assertContains('siteId', $this->widgetDocumentQuery->getArrayPayLoad()['context']['parameters'][0]);
     }
 
