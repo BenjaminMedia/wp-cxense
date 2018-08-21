@@ -168,7 +168,7 @@ class WidgetDocumentQueryTest extends WPTestCase
     {
         //This is mocking a real Request and giving back a fake HTTP Response
         //It prevents wordpress from executing the API call and gives back the response you provide in the filter
-        add_filter( 'pre_http_request', [$this, 'fakeApiCall'], 10, 3);
+        add_filter('pre_http_request', [$this, 'fakeApiCall'], 10, 3);
 
         $results = $this->newWidgetDocumentQueryWithParams()->get();
         $this->assertArrayHasKey('totalCount', $results);
@@ -180,9 +180,9 @@ class WidgetDocumentQueryTest extends WPTestCase
         }
     }
 
-    public function fakeApiCall($false, $args, $url )
+    public function fakeApiCall($false, $args, $url)
     {
-        if($url !== $this->cxenseApiUrl){
+        if ($url !== $this->cxenseApiUrl) {
             return null;
         }
         return $this->getFakeHttpResponse();
@@ -194,7 +194,7 @@ class WidgetDocumentQueryTest extends WPTestCase
         $fakeResults = new \stdClass();
         $fakeResults->items = array();
 
-        for($i=0; $i<10;$i++){
+        for ($i=0; $i<10;$i++) {
             $fakeData = new \stdClass();
             $fakeData->{'recs-articleid'} = $i;
             $fakeData->dominantimage = 'https://images.bonnier.cloud/files/bob/production/2018/08/16121934/01_IMGL22721.jpg';
