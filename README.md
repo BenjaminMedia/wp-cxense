@@ -297,3 +297,4 @@ This type of taxonomy requires user browser cookie. In order to fetch it from th
 ```
 cX.getUserId()
 ```
+

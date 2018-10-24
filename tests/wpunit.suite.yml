@@ -14,3 +14,4 @@ modules:
             domain: "%WP_DOMAIN%"
             adminEmail: "%ADMIN_EMAIL%"
             title: "Test"
+            configFile: "tests/test-config.php"
