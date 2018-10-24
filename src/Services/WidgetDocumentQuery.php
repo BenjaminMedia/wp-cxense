@@ -252,7 +252,7 @@ class WidgetDocumentQuery
      * @param array $arrDocuments
      * @return array
      */
-    private function parseDocuments(array $arrDocuments)
+    public function parseDocuments(array $arrDocuments)
     {
         $arrCollection = [];
 

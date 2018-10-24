@@ -11,11 +11,11 @@ use PHPUnit\Framework\Constraint\IsType;
 class WidgetDocumentQueryTest extends WPTestCase
 {
     protected $widgetIdKey = 'sortby_widget_id';
-    protected $widgetIdValue = 'e30ea28424568ac42178e75e67228f59c1a5a9ed';
-
+    protected $widgetIdValue = 'e12313b31424';
     protected $siteIdKey = 'site_id';
-    protected $siteIdValue = '9222363338076056876';
+    protected $siteIdValue = '123456789';
     protected $permalink = 'http://ivd.test';
+    protected $cxenseApiUrl = 'https://api.cxense.com/public/widget/data';
 
     protected $arrPayload =[];
 
@@ -166,7 +166,10 @@ class WidgetDocumentQueryTest extends WPTestCase
 
     public function testGetDocumentsHttpRequest()
     {
-        //This is mocking a real Request
+        //This is mocking a real Request and giving back a fake HTTP Response
+        //It prevents wordpress from executing the API call and gives back the response you provide in the filter
+        add_filter('pre_http_request', [$this, 'fakeApiCall'], 10, 3);
+
         $results = $this->newWidgetDocumentQueryWithParams()->get();
         $this->assertArrayHasKey('totalCount', $results);
         $this->assertArrayHasKey('matches', $results);
@@ -175,5 +178,41 @@ class WidgetDocumentQueryTest extends WPTestCase
         if (isset($results['totalCount']) && $results['totalCount'] > 0) {
             $this->assertInstanceOf(Document::class, $results['matches'][0]);
         }
+    }
+
+    public function fakeApiCall($false, $args, $url)
+    {
+        if ($url !== $this->cxenseApiUrl) {
+            return null;
+        }
+        return $this->getFakeHttpResponse();
+    }
+
+    public function getFakeHttpResponse()
+    {
+        $fakeResponse['response']['code'] = 200;
+        $fakeResults = new \stdClass();
+        $fakeResults->items = array();
+
+        for ($i=0; $i<10;$i++) {
+            $fakeData = new \stdClass();
+            $fakeData->{'recs-articleid'} = $i;
+            $fakeData->dominantimage = 'https://images.bonnier.cloud/files/bob/production/2018/08/16121934/01_IMGL22721.jpg';
+            $fakeData->dominantthumbnail = "http://content-thumbnail.cxpublic.com/content/dominantthumbnail/24256b39389b377fa03bc96ec72b647c8e0f3ef9.jpg?5b75505b";
+            $fakeData->_type = "backfill";
+            $fakeData->description = "Bliv inspireret af vores stylists måde at indrette med planter og dybe farver.";
+            $fakeData->{'bod-taxo-cat-top'} = "Indretning";
+            $fakeData->title = "Sådan har du aldrig før set Vinterhaven på Ordrupgaard";
+            $fakeData->click_url = "http://api.cxense.com/public/widget/click/randomLongId";
+            $fakeData->{'bod-taxo-cat'} = "Indretning";
+            $fakeData->{'recs-publishtime'} = "2018-08-16T12:18:17.000Z";
+            $fakeData->url = "https://bobedre.dk/indretning/sadan-har-du-aldrig-for-set-vinterhaven-pa-ordrupgaard";
+
+            $fakeResults->items[] = $fakeData;
+        }
+
+        $fakeResponse['body'] = json_encode($fakeResults);
+
+        return $fakeResponse;
     }
 }

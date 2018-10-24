@@ -1,0 +1,45 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: circleci/php:7.1-fpm-browsers
+        environment:
+          - DB_USER=homestead
+          - DB_PASSWORD=secret
+          - DB_NAME=wp-tests
+          - DB_HOST=127.0.0.1
+      - image: circleci/mysql:5.7.18
+        environment:
+          - MYSQL_ROOT_PASSWORD=secret
+          - MYSQL_DATABASE=wp-tests
+          - MYSQL_USER=homestead
+          - MYSQL_PASSWORD=secret
+    working_directory: ~/wp-cxense
+    steps:
+      - checkout
+      - run:
+         name: Install PHP libzip-dev
+         command: sudo apt-get install -y libzip-dev libpng-dev
+      - run:
+         name: Install PHP Modules
+         command: sudo docker-php-ext-install zip pdo mysqli pdo_mysql gd
+      - run: sudo composer self-update
+      - restore_cache:
+          keys:
+            - composer-v1-{{ checksum "composer.lock" }}
+            - composer-v1-
+      - run: composer install -n --prefer-dist
+      - save_cache:
+          key: composer-v1-{{ checksum "composer.lock" }}
+          paths:
+            - vendor
+      - run:
+          name: Run WpUnit Tests
+          command: composer wpunit
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build:
+          context: Willow
