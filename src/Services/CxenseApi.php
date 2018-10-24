@@ -81,7 +81,7 @@ class CxenseApi
     {
         self::getCxenseUser();
 
-        $objResponse = HttpRequest::get_instance()->set_auth(self::$settings)->post($path, [
+        $objResponse = HttpRequest::get_instance()->set_auth()->post($path, [
             'body' => json_encode($args),
             'timeout' => $timeout
         ]);
