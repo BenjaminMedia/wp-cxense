@@ -15,7 +15,7 @@ class CxenseApi
     const EXCEPTION_UNAUTHORIZED = 1;
     const EXCEPTION_TIME_OUT = 2;
     const CXENSE_PROFILE_PUSH = '/profile/content/push';
-    const CXENSE_PROFILE_DELETE = '/profile/content/delete';
+    const CXENSE_PROFILE_DELETE = '/document/delete';
     const CXENSE_WIDGET_DATA = '/public/widget/data';
 
     /**
@@ -52,8 +52,14 @@ class CxenseApi
 
             try {
                 if (!is_plugin_active('wp-bonnier-cache/wp-bonnier-cache.php')) {
-                    $apiPath = $delete || ! Post::is_published($postId) ? self::CXENSE_PROFILE_DELETE : self::CXENSE_PROFILE_PUSH;
-                    return self::request($apiPath, ['url'=> $contentUrl]);
+                    if ($delete || !Post::is_published($postId)) {
+                        return self::request(self::CXENSE_PROFILE_DELETE, [
+                            'siteId' => WpCxense::instance()->settings->getSiteId(),
+                            'url' => $contentUrl
+                        ]);
+                    }
+
+                    return self::request(self::CXENSE_PROFILE_PUSH, ['url'=> $contentUrl]);
                 }
             } catch (Exception $e) {
                 if ($e instanceof HttpException) {
