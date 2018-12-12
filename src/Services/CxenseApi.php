@@ -53,17 +53,20 @@ class CxenseApi
             try {
                 if (!is_plugin_active('wp-bonnier-cache/wp-bonnier-cache.php')) {
                     if ($delete || !Post::is_published($postId)) {
-                        return self::request(self::CXENSE_PROFILE_DELETE, [
+                        $apiPath = self::CXENSE_PROFILE_DELETE;
+                        return self::request($apiPath, [
                             'siteId' => WpCxense::instance()->settings->getSiteId(),
                             'url' => $contentUrl
                         ]);
                     }
 
-                    return self::request(self::CXENSE_PROFILE_PUSH, ['url'=> $contentUrl]);
+                    $apiPath = self::CXENSE_PROFILE_PUSH;
+                    return self::request($apiPath, ['url'=> $contentUrl]);
                 }
             } catch (Exception $e) {
                 if ($e instanceof HttpException) {
-                    error_log('WP cXense: Failed calling cXense api: ' . $apiPath . ' response code: '. $e->getCode() .' error: ' . $e->getMessage());
+                    error_log('WP cXense: Failed calling cXense api: ' . $apiPath . ' response code: ' .
+                        $e->getCode() .' error: ' . $e->getMessage());
                 }
 
                 if ($e->getCode() == self::EXCEPTION_USER_NOT_DEFINED) {
