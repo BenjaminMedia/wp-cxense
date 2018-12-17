@@ -225,6 +225,8 @@ class WidgetDocumentQuery
                 throw new WidgetException('Failed to load widget:' . $exception->getMessage());
             }
             return null;
+        } catch (\Exception $exception) {
+            return null;
         }
 
         return json_decode($objResponse->getBody());
