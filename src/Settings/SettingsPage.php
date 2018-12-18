@@ -41,6 +41,10 @@ class SettingsPage extends AbstractSettingsPage
             'type' => 'text',
             'name' => 'SortBy Widget ID',
         ],
+        'shuffle_widget_id' => [
+            'type' => 'text',
+            'name' => 'Shuffle Widget ID',
+        ],
         'persisted_query_id' => [
             'type' => 'text',
             'name' => 'Persisted Query ID',
