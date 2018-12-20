@@ -138,6 +138,11 @@ class SettingsPage extends AbstractSettingsPage
         return $this->getSettingValue('sortby_widget_id', $locale);
     }
 
+    public function getShuffleWidgetId($locale = null)
+    {
+        return $this->getSettingValue('shuffle_widget_id', $locale);
+    }
+
     public function enableQueryCache($locale = null)
     {
         return $this->getSettingValue('enable_query_cache', $locale);

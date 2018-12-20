@@ -119,6 +119,15 @@ class WidgetDocumentQuery
     /**
      * @return $this
      */
+    public function byShuffle()
+    {
+        $this->arrPayload['widgetId'] = WpCxense::instance()->settings->getShuffleWidgetId();
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
     public function byPopular()
     {
         $this->setMatchingMode(self::POPULAR);
