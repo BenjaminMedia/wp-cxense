@@ -17,6 +17,7 @@ class WidgetDocumentQuery
 
     const POPULAR = 'trend';
     const RELATED = 'contextual'; // Articles similar to the current article.
+    const RELATED_MAX_2_YEARS = 'contextual_max_2_y'; // Articles similar to the current article.
     const SIMILAR_READS = 'collabctx'; // People who have read the current article have also read these articles.
     const RECENTLY_VIEWED = 'recent';
 
@@ -43,7 +44,7 @@ class WidgetDocumentQuery
      * @param $value
      * @return $this
      */
-    public function addContext(string $key, $value)
+    public function addContext(string $key, $value) : self
     {
         if (!isset($this->arrPayload['context'])) {
             $this->arrPayload['context'] = [];
@@ -140,6 +141,7 @@ class WidgetDocumentQuery
     public function byRelated()
     {
         $this->setMatchingMode(self::RELATED);
+
         return $this;
     }
 
