@@ -367,7 +367,11 @@ class DocumentSearch
      */
     private function set_result_fields()
     {
-        $this->arrPayload['resultFields'] = array_merge($this->arrFields['generic'], $this->arrFields['organisation']);
+        $this->arrPayload['resultFields'] = array_merge(
+            $this->arrFields['generic'],
+            $this->arrFields['organisation'],
+            isset($this->arrSearch['fields'])  ? $this->arrSearch['fields'] : []
+        );
         return $this;
     }
 

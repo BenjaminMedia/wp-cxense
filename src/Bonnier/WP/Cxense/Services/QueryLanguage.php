@@ -16,14 +16,22 @@ class QueryLanguage
      * @param $strQuery
      * @return string
      */
-    public static function getQuery($orgPrefix, $strQuery)
+    public static function getQuery($orgPrefix, $searchString)
     {
-        //Default search field priority
+        // Default search field priority
         $strFieldPriority = 'title^3, '.$orgPrefix.'-taxo-cat^2, description^2, '.$orgPrefix.'-taxo-cat-top^1, body^1';
-        $strQuery = '"' . stripslashes($strQuery) . '"';
-        $strQuery = $strFieldPriority . ':' . $strQuery;
-        $strQuery = 'query(' . $strQuery . ')';
+        $query = 'query(' . $strFieldPriority . ':"' . stripslashes($searchString) . '")';
 
-        return $strQuery;
+        // If the query is two words then also search for the words put together without a space between
+        if (preg_match('/^(\S+) (\S+)$/', $searchString, $res)) {
+            $searchStringSpaceRemoved = $res[1] . $res[2];
+            $query .= ' or query(' . $strFieldPriority . ':"' . stripslashes($searchStringSpaceRemoved) . '")';
+        }
+
+        // Add query for phrase search with higher priority
+        $strFieldPriorityPhrase = 'title^6, '.$orgPrefix.'-taxo-cat^4, description^4, '.$orgPrefix.'-taxo-cat-top^2, body^2';
+        $query .= ' or query(' . $strFieldPriorityPhrase . ':"' . stripslashes($searchString) . '", token-op=phrase)';
+
+        return $query;
     }
 }
