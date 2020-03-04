@@ -151,8 +151,7 @@ class DocumentSearch
             ->set_result_fields()
             ->get();
 
-        if(!$objDocuments)
-        {
+        if (!$objDocuments) {
             return null;
         }
 
