@@ -10,6 +10,7 @@ use Bonnier\WP\Cxense\Exceptions\DocumentSearchMissingCount;
 use Bonnier\WP\Cxense\Exceptions\DocumentSearchWrongFacet;
 use Bonnier\WP\Cxense\Exceptions\DocumentSearchWrongFilter;
 use Bonnier\WP\Cxense\Exceptions\DocumentSearchWrongSorting;
+use Bonnier\WP\Cxense\Exceptions\HttpException;
 use Bonnier\WP\Cxense\Http\HttpRequest;
 use Bonnier\WP\Cxense\Settings\SettingsPage;
 use Bonnier\WP\Cxense\Parsers\Document;
@@ -150,6 +151,11 @@ class DocumentSearch
             ->set_result_fields()
             ->get();
 
+        if(!$objDocuments)
+        {
+            return null;
+        }
+
         $objDocuments->matches = $this->parse_documents($objDocuments->matches);
         return $objDocuments;
     }
@@ -165,11 +171,14 @@ class DocumentSearch
         $this->set_log_query();
         $this->arrPayload['query'] = QueryLanguage::getQuery($this->objSettings->get_organisation_prefix(), $this->arrSearch['query']);
 
-        $objResponse = HttpRequest::get_instance()->set_auth($this->objSettings)->post('document/search', [
-            'body' => json_encode($this->arrPayload, JSON_UNESCAPED_UNICODE)
-        ]);
-
-        return json_decode($objResponse->getBody());
+        try {
+            $objResponse = HttpRequest::get_instance()->set_auth($this->objSettings)->post('document/search', [
+                'body' => json_encode($this->arrPayload, JSON_UNESCAPED_UNICODE)
+            ]);
+            return json_decode($objResponse->getBody());
+        } catch (HttpException $exception) {
+            return null;
+        }
     }
 
     /**
