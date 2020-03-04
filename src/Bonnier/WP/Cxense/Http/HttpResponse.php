@@ -17,7 +17,7 @@ class HttpResponse
         $this->originalRequest = $request;
 
         if (is_wp_error($request)) {
-            throw new Exception($request->get_error_message());
+            throw new HttpException($request->get_error_message());
         }
 
         if ($this->getStatusCode() >= 400) {
