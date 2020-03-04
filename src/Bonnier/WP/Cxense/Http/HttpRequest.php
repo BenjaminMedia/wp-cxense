@@ -13,8 +13,8 @@ use Bonnier\WP\Cxense\Settings\SettingsPage;
 class HttpRequest
 {
     const DEFAULT_OPTIONS = [
-        'timeout' => 15,
-        'redirection' => 15,
+        'timeout' => 5,
+        'redirection' => 5,
     ];
 
     /**
@@ -30,7 +30,7 @@ class HttpRequest
      * @var DocumentSearch $objInstance
      */
     private static $objInstance;
-    
+
     /**
      * Headers array
      *
@@ -39,7 +39,7 @@ class HttpRequest
     private $arrHeaders = [
         'Content-Type' => 'application/json'
     ];
-    
+
     /**
      * Singleton implementation
      *
@@ -53,7 +53,7 @@ class HttpRequest
         }
         return self::$objInstance;
     }
-    
+
     /**
      * Get http request
      *
@@ -69,7 +69,7 @@ class HttpRequest
                 'headers' => $this->arrHeaders
             ])
         );
-        
+
         return new HttpResponse($request);
     }
 
@@ -88,10 +88,10 @@ class HttpRequest
                 'headers' => $this->arrHeaders
             ])
         );
-        
+
         return new HttpResponse($request);
     }
-    
+
     /**
      * Build url
      *
@@ -101,7 +101,7 @@ class HttpRequest
     {
         return rtrim($this->strBaseUri, '/') . '/' . ltrim($strPath, '/');
     }
-    
+
     /**
      * Set auth header
      *
@@ -112,7 +112,7 @@ class HttpRequest
     {
         $strDate = date("Y-m-d\TH:i:s.000O");
         $this->arrHeaders['X-cXense-Authentication'] = 'username=' . $objSettings->get_api_user() . ' date=' . $strDate . ' hmac-sha256-hex=' . hash_hmac("sha256", $strDate, $objSettings->get_api_key());
-        
+
         return $this;
     }
 }
