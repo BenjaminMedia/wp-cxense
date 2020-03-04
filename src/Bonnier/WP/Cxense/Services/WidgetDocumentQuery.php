@@ -210,7 +210,7 @@ class WidgetDocumentQuery
 
             $objResponse = HttpRequest::get_instance()->post('public/widget/data', [
                 'body' => json_encode($this->arrPayload)
-            ]);
+            ], $secure = false);
             wp_cache_add($cacheKey, json_decode($objResponse->getBody()), 'cxense_plugin', $expiresIn);
         } catch (HttpException $exception) {
             if (is_admin()) {

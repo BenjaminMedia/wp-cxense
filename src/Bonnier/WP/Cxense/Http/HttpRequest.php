@@ -15,6 +15,7 @@ class HttpRequest
     const DEFAULT_OPTIONS = [
         'timeout' => 5,
         'redirection' => 5,
+        'sslverify' => false,
     ];
 
     /**
@@ -22,7 +23,7 @@ class HttpRequest
      *
      * @var string $strBaseUrl
      */
-    private $strBaseUri = 'https://api.cxense.com';
+    private $strBaseUri = 'api.cxense.com';
 
     /**
      * Instance object
@@ -61,11 +62,11 @@ class HttpRequest
      * @param array $arrOptions
      * @return HttpResponse
      */
-    public function get($strPath, array $arrOptions = [])
+    public function get($strPath, array $arrOptions = [], $secure = true)
     {
-        $request = wp_remote_get($this->build_uri($strPath), array_merge(
-            self::DEFAULT_OPTIONS,
-            $arrOptions, [
+        $request = wp_remote_get($this->build_uri($strPath, $secure), array_merge(
+                self::DEFAULT_OPTIONS,
+                $arrOptions, [
                 'headers' => $this->arrHeaders
             ])
         );
@@ -80,11 +81,11 @@ class HttpRequest
      * @param array $arrOptions
      * @return HttpResponse
      */
-    public function post($strPath, array $arrOptions = [])
+    public function post($strPath, array $arrOptions = [], $secure = true)
     {
-        $request = wp_remote_post($this->build_uri($strPath), array_merge(
-            self::DEFAULT_OPTIONS,
-            $arrOptions, [
+        $request = wp_remote_post($this->build_uri($strPath, $secure), array_merge(
+                self::DEFAULT_OPTIONS,
+                $arrOptions, [
                 'headers' => $this->arrHeaders
             ])
         );
@@ -97,9 +98,13 @@ class HttpRequest
      *
      * @param string $strPath
      */
-    private function build_uri($strPath)
+    private function build_uri($strPath, $secure = true)
     {
-        return rtrim($this->strBaseUri, '/') . '/' . ltrim($strPath, '/');
+        return  sprintf('http%s://%s/%s',
+            $secure ? 's' : '',
+            $this->strBaseUri,
+            ltrim($strPath, '/')
+        );
     }
 
     /**
