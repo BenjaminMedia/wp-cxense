@@ -17,7 +17,8 @@ class WidgetDocumentQuery
 
     const POPULAR = 'trend';
     const RELATED = 'contextual'; // Articles similar to the current article.
-    const RELATED_MAX_2_YEARS = 'contextual_max_2_y'; // Articles similar to the current article.
+    const RELATED_MAX_1_YEARS = 'contextual_max_1_y'; // Similar max 1 year old articles
+    const RELATED_MAX_2_YEARS = 'contextual_max_2_y'; // Similar max 2 years old articles
     const SIMILAR_READS = 'collabctx'; // People who have read the current article have also read these articles.
     const RECENTLY_VIEWED = 'recent';
 
