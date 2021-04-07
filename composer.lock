@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c3973fdfaebb9b22e10699dd295ccdb1",
+    "content-hash": "5c7986bd5944e1746763d49306f755c3",
     "packages": [
         {
             "name": "bonnier/willow-mu-plugins",
@@ -7162,7 +7162,9 @@
     "platform": {
         "php": "~7.1"
     },
-    "platform-dev": [],
+    "platform-dev": {
+        "composer-plugin-api": "^1.1"
+    },
     "platform-overrides": {
         "php": "7.1.33"
     },

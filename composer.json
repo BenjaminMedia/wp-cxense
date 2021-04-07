@@ -26,7 +26,8 @@
     "johnpbloch/wordpress": "^4.9",
     "phpunit/phpunit": "7.1.*",
     "lucatume/wp-browser": "^2.1",
-    "codeception/codeception": "2.4.5"
+    "codeception/codeception": "2.4.5",
+    "composer-plugin-api": "^1.1"
   },
   "autoload": {
     "psr-4": {
