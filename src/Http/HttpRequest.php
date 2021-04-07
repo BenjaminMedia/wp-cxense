@@ -73,7 +73,7 @@ class HttpRequest
                 [
                     'headers' => $this->arrHeaders
             ]
-        )
+            )
         );
 
         return new HttpResponse($request);
@@ -96,7 +96,7 @@ class HttpRequest
                 [
                     'headers' => $this->arrHeaders
             ]
-        )
+            )
         );
 
         return new HttpResponse($request);
