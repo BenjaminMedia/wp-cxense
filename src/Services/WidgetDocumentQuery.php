@@ -178,6 +178,16 @@ class WidgetDocumentQuery
     }
 
     /**
+     * @param array|null $editorialTypes
+     * @return $this
+     */
+    public function setEditorialTypes(array $editorialTypes = null)
+    {
+        $this->addParameter('editorialType', $this->getWpTerms($editorialTypes));
+        return $this;
+    }
+
+    /**
      * Set cxenseUserId from Cookie. Might not work on WILLOW FRONTEND
      */
     public function setCxenseUserId()
