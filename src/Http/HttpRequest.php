@@ -68,10 +68,10 @@ class HttpRequest
         $request = wp_remote_get(
             $this->build_uri($strPath),
             array_merge(
-            self::DEFAULT_OPTIONS,
-            $arrOptions,
-            [
-                'headers' => $this->arrHeaders
+                self::DEFAULT_OPTIONS,
+                $arrOptions,
+                [
+                    'headers' => $this->arrHeaders
             ]
         )
         );
@@ -91,10 +91,10 @@ class HttpRequest
         $request = wp_remote_post(
             $this->build_uri($strPath),
             array_merge(
-            self::DEFAULT_OPTIONS,
-            $arrOptions,
-            [
-                'headers' => $this->arrHeaders
+                self::DEFAULT_OPTIONS,
+                $arrOptions,
+                [
+                    'headers' => $this->arrHeaders
             ]
         )
         );
