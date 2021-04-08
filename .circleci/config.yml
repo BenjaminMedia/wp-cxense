@@ -25,8 +25,6 @@ jobs:
          name: Install PHP Modules
          command: sudo docker-php-ext-install zip pdo mysqli pdo_mysql gd
       
-      - run: sudo composer self-update --stable
-      
       - run: composer install -n --prefer-dist
       - save_cache:
           key: composer-v1-{{ checksum "composer.lock" }}
