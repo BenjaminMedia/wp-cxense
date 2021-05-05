@@ -51,7 +51,7 @@ class CxenseApi
             $contentUrl = is_numeric($postId) ? get_permalink($postId) : $postId;
 
             try {
-                if (!is_plugin_active('wp-bonnier-cache/wp-bonnier-cache.php')) {
+                if (WpCxense::instance()->settings->getSiteId()) {
                     if ($delete || !Post::is_published($postId)) {
                         $apiPath = self::CXENSE_PROFILE_DELETE;
                         return self::request($apiPath, [
