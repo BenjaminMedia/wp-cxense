@@ -70,6 +70,8 @@ class DocumentSearch
         ]
     ];
 
+    private $response;
+
     /**
      * Constructor
      */
@@ -163,7 +165,9 @@ class DocumentSearch
             'body' => json_encode($this->arrPayload, JSON_UNESCAPED_UNICODE)
         ]);
 
-        return json_decode($objResponse->getBody());
+        $this->response = $objResponse->getBody();
+
+        return json_decode($this->response);
     }
 
     /**
@@ -188,6 +192,22 @@ class DocumentSearch
     {
         $this->arrPayload['siteId'] = WpCxense::instance()->settings->getSiteId();
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function get_payload(): array
+    {
+        return $this->arrPayload;
+    }
+
+    /**
+     * @return array
+     */
+    public function get_response(): array
+    {
+        return $this->response;
     }
 
     /**

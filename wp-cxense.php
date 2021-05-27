@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: WP cXense
- * Version: 3.1.0
+ * Version: 3.1.1
  * Plugin URI: https://github.com/BenjaminMedia/wp-cxense
  * Description: This plugin integrates your site with cXense by adding meta tags and calling the cXense api
  * Author: Bonnier - Alf Henderson
