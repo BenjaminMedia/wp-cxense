@@ -70,7 +70,7 @@ class DocumentSearch
         ]
     ];
 
-    private $response;
+    private $response = '';
 
     /**
      * Constructor
