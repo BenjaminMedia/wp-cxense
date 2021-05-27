@@ -203,9 +203,9 @@ class DocumentSearch
     }
 
     /**
-     * @return array
+     * @return string
      */
-    public function get_response(): array
+    public function get_response(): string
     {
         return $this->response;
     }
