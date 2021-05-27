@@ -65,11 +65,15 @@ class HttpRequest
      */
     public function get($strPath, array $arrOptions = [])
     {
-        $request = wp_remote_get($this->build_uri($strPath), array_merge(
-            self::DEFAULT_OPTIONS,
-            $arrOptions, [
-                'headers' => $this->arrHeaders
-            ])
+        $request = wp_remote_get(
+            $this->build_uri($strPath),
+            array_merge(
+                self::DEFAULT_OPTIONS,
+                $arrOptions,
+                [
+                    'headers' => $this->arrHeaders
+            ]
+            )
         );
 
         return new HttpResponse($request);
@@ -84,11 +88,15 @@ class HttpRequest
      */
     public function post($strPath, array $arrOptions = [])
     {
-        $request = wp_remote_post($this->build_uri($strPath), array_merge(
-            self::DEFAULT_OPTIONS,
-            $arrOptions, [
-                'headers' => $this->arrHeaders
-            ])
+        $request = wp_remote_post(
+            $this->build_uri($strPath),
+            array_merge(
+                self::DEFAULT_OPTIONS,
+                $arrOptions,
+                [
+                    'headers' => $this->arrHeaders
+            ]
+            )
         );
 
         return new HttpResponse($request);

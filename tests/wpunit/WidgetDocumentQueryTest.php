@@ -38,7 +38,8 @@ class WidgetDocumentQueryTest extends WPTestCase
 
     private function setSiteAndWidgetIds()
     {
-        update_option('wp_cxense_settings',
+        update_option(
+            'wp_cxense_settings',
             array($this->widgetIdKey => $this->widgetIdValue,
                   $this->siteIdKey => $this->siteIdValue)
         );
