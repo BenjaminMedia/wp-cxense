@@ -53,7 +53,13 @@ class DocumentSearch
             'taxo-cat-top',
             'taxo-cat-url',
             'taxo-editorialtype',
-            'pagetype'
+            'pagetype',
+            'template',
+            'recipe-meta-energy',
+            'recipe-meta-energy-unit',
+            'recipe-meta-time',
+            'recipe-meta-time-unit',
+            'video-meta-duration'
         ],
         'generic' => [
             'author',
