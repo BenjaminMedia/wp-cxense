@@ -18,6 +18,8 @@ class CxenseApi
     const CXENSE_PROFILE_DELETE = '/document/delete';
     const CXENSE_WIDGET_DATA = '/public/widget/data';
 
+    const ACF_CATEGORY_ID = 'field_58e39a7118284';
+
     /**
      * @param $widgetId
      * @return null
@@ -49,6 +51,12 @@ class CxenseApi
     {
         if (!wp_is_post_revision($postId) && !wp_is_post_autosave($postId)) {
             $contentUrl = is_numeric($postId) ? get_permalink($postId) : $postId;
+
+            $categoryId = $_REQUEST['acf'][static::ACF_CATEGORY_ID] ?? null;
+            if ($categoryId) {
+                $categorySlug = get_term($categoryId)->slug;
+                $contentUrl = str_replace('/uncategorized/', "/$categorySlug/", $contentUrl);
+            }
 
             try {
                 if (WpCxense::instance()->settings->getSiteId()) {
