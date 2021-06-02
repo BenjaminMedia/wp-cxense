@@ -59,7 +59,9 @@ class DocumentSearch
             'recipe-meta-energy-unit',
             'recipe-meta-time',
             'recipe-meta-time-unit',
-            'video-meta-duration'
+            'video-meta-duration',
+            'video-meta-workout-time',
+            'video-meta-workout-level'
         ],
         'generic' => [
             'author',
