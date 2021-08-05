@@ -1,6 +1,7 @@
 {
   "name": "benjaminmedia/wp-cxense",
   "description": "This plugin integrates your site with cXense by adding meta tags and calling the cXense api",
+  "license": "MIT",
   "type": "wordpress-plugin",
   "keywords": ["wordpress", "plugin"],
   "homepage": "https://github.com/BenjaminMedia/wp-cxense",
