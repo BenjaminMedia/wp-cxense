@@ -61,7 +61,9 @@ class DocumentSearch
             'recipe-meta-time-unit',
             'video-meta-duration',
             'video-meta-workout-time',
-            'video-meta-workout-level'
+            'video-meta-workout-level',
+            'commercial-label',
+            'commercial-format'
         ],
         'generic' => [
             'author',
@@ -69,8 +71,6 @@ class DocumentSearch
             'title',
             'click_url',
             'url',
-            'bod-commercial-label',
-            'bod-commercial-format',
             'dominantimage',
             'dominantthumbnail',
             'recs-publishtime',
