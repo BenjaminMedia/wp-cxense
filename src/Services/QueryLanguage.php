@@ -19,7 +19,7 @@ class QueryLanguage
     public static function getQuery($orgPrefix, $strQuery)
     {
         //Default search field priority
-        $strFieldPriority = 'title^3, '.$orgPrefix.'-taxo-cat^2, description^2, '.$orgPrefix.'-taxo-cat-top^1, body^1';
+        $strFieldPriority = 'title^3, '.$orgPrefix.'-taxo-cat^2, description^2, heading^2, '.$orgPrefix.'-taxo-cat-top^1, body^1';
         $strQuery = '"' . stripslashes($strQuery) . '"';
         $strQuery = $strFieldPriority . ':' . $strQuery;
         $strQuery = 'query(' . $strQuery . ')';
