@@ -17,6 +17,8 @@ class HttpRequest
     const DEFAULT_OPTIONS = [
         'timeout' => 15,
         'redirection' => 15,
+        'sslverify' => false,
+        'verify' => false,
     ];
 
     /**
