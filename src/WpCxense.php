@@ -71,6 +71,8 @@ class WpCxense
 
         Post::watch_post_changes();
         $this->scripts->bootstrap();
+
+        add_filter('https_ssl_verify', '__return_false');
     }
 
     /**
