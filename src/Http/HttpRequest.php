@@ -53,7 +53,7 @@ class HttpRequest
     {
         if (!isset(self::$objInstance)) {
             $obj = __CLASS__;
-            self:: $objInstance = new $obj();
+            self::$objInstance = new $obj();
         }
         return self::$objInstance;
     }
