@@ -19,7 +19,7 @@
     }
   },
   "require": {
-    "php": "~7.1",
+    "php": ">7.1",
     "illuminate/support": "^5.6",
     "bonnier/willow-mu-plugins": "^2.0",
     "bordoni/phpass": "dev-main"
