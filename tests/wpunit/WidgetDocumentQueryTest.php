@@ -22,9 +22,9 @@ class WidgetDocumentQueryTest extends WPTestCase
     /* @var WidgetDocumentQuery */
     protected $widgetDocumentQuery;
 
-    public function setUp()
+    public function _setUp()
     {
-        parent::setUp();
+        parent::_setUp();
         //set current user to admin
         wp_set_current_user(1);
     }
@@ -174,7 +174,7 @@ class WidgetDocumentQueryTest extends WPTestCase
         $results = $this->newWidgetDocumentQueryWithParams()->get();
         $this->assertArrayHasKey('totalCount', $results);
         $this->assertArrayHasKey('matches', $results);
-        $this->assertInternalType(IsType::TYPE_INT, $results['totalCount']);
+        $this->assertIsInt($results['totalCount']);
 
         if (isset($results['totalCount']) && $results['totalCount'] > 0) {
             $this->assertInstanceOf(Document::class, $results['matches'][0]);
