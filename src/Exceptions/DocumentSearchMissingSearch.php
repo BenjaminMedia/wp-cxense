@@ -10,7 +10,6 @@ namespace Bonnier\WP\Cxense\Exceptions;
  */
 class DocumentSearchMissingSearch extends \Exception
 {
-    
     /**
      * Constructor
      *
