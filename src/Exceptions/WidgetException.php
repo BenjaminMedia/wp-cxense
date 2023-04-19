@@ -10,7 +10,6 @@ namespace Bonnier\WP\Cxense\Exceptions;
  */
 class WidgetException extends \Exception
 {
-    
     /**
      * Constructor
      *

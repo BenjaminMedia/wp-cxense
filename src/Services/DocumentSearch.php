@@ -20,7 +20,6 @@ use Bonnier\WP\Cxense\WpCxense;
  */
 class DocumentSearch
 {
-
     /**
      * Instance object
      *
