@@ -12,7 +12,8 @@ class Post
     public static function watch_post_changes()
     {
         // Ping crawler when post is changed
-        add_action('transition_post_status', [__CLASS__, 'post_status_changed'], 10, 3);
+        // // We are pinging Cxense from wp-cache plugin
+        // add_action('transition_post_status', [__CLASS__, 'post_status_changed'], 10, 3);
     }
 
     public static function post_status_changed($new_status, $old_status, $post)
