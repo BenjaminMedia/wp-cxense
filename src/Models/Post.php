@@ -31,7 +31,6 @@ class Post
 
     public static function update_post($postId)
     {
-
         // We have to set the current locale on the settings page in order to get the correct localized settings
         // for the current context.
         self::set_current_lang_from_post_id($postId);

@@ -9,7 +9,6 @@ namespace Bonnier\WP\Cxense\Exceptions;
  */
 class DocumentSearchWrongSorting extends \Exception
 {
-
     /**
      * DocumentSearchWrongSorting constructor.
      *
